@@ -12,11 +12,37 @@ import Feature4 from "@/components/features/Feature4.astro";
 import Feature5 from "@/components/features/Feature5.astro";
 import Testimonial1 from "@/components/testimonials/Testimonial1.astro";
 import Pricing1 from "@/components/pricing/Pricing1.astro";
+import Hero2 from "@/components/headers/Hero2.astro";
+import { fetchHomeSections } from "@/data/sanity/fetch";
+
+const sections = await fetchHomeSections();
+const sectionComponents = {
+  hero1: Hero1,
+  hero2: Hero2,
+  feature1: Feature1,
+} as const;
 ---
 
 <BaseLayout>
   <!-- Sanity Sections here -->
-  
+  {sections && sections.length > 0 && (
+    <>
+      {sections.map((section) => {
+        if (section?._type === "hero1") {
+          return <Hero1 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section?._type === "hero2") {
+          return <Hero2 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section?._type === "feature1") {
+          return (
+            <Feature1 feature={section as import("@/data/sanity").Feature1Section} />
+          );
+        }
+        return null;
+      })}
+    </>
+  )}
   <!-- End Sanity Sections -->
   <Hero1 />
   <section>

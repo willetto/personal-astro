@@ -1,12 +1,19 @@
-<!-- TODO(Branding): Replace favicon paths with your generated icons -->
-<!-- Favicons -->
-<link rel="icon" href="/favicon.ico" sizes="any" />
+---
+import { fetchSiteHead } from "@/data/sanity/fetch";
+const head = await fetchSiteHead();
+const faviconUrl = head?.favicon?.assetUrl || "/favicon.ico";
+
+console.log('faviconUrl', faviconUrl);
+---
+
+<!-- Favicons (fallback to local assets if not set) -->
+<link rel="icon" href={faviconUrl} sizes="any" />
 <link rel="icon" href="/icon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/manifest.webmanifest" />
 
 <!-- Favicon for IE -->
-<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href={faviconUrl} type="image/x-icon" />
 
 <!-- Favicons for different sizes -->
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />

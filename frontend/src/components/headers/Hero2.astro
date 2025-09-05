@@ -9,6 +9,22 @@ import Link from "@/components/foundations/elements/Link.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
 // Icons
 import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
+
+interface Props { feature?: import("@/data/sanity").Hero }
+const { feature } = Astro.props as Props;
+
+const header = feature?.header || "Powerful financial APIs for tech innovators";
+const subheading = feature?.subheading || "Seamless, scalable infrastructure for managing funds store, transfer, and reconcile money with ease.";
+
+const primaryLabel = feature?.primaryCtaLabel || "Get started";
+const primaryHref = feature?.primaryCtaHref || "/forms/sign-up";
+const primaryTarget = feature?.primaryCtaTarget || "";
+const primaryRel = primaryTarget === "_blank" ? "noopener noreferrer" : undefined;
+
+const secondaryLabel = feature?.secondaryCtaLabel || "Contact sales";
+const secondaryHref = feature?.secondaryCtaHref || "/forms/contact";
+const secondaryTarget = feature?.secondaryCtaTarget || "";
+const secondaryRel = secondaryTarget === "_blank" ? "noopener noreferrer" : undefined;
 ---
 
 <section class="hero-2">
@@ -43,7 +59,7 @@ import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
           data-aos-duration="1000"
           class="font-semibold tracking-tighter text-base-800 lg:text-balance"
         >
-          Powerful financial APIs for tech innovators
+          {header}
         </Text>
         <Text
           tag="p"
@@ -52,8 +68,7 @@ import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
           data-aos-duration="1500"
           class="max-w-lg mt-4 font-medium text-base-800 md:text-balance"
         >
-          Seamless, scalable infrastructure for managing funds store, transfer,
-          and reconcile money with ease.
+          {subheading}
         </Text>
         <div
           data-aos="fade-up"
@@ -63,11 +78,13 @@ import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
           <Link
             size="base"
             variant="default"
-            href="/forms/sign-up"
+            href={primaryHref}
+            target={primaryTarget}
+            rel={primaryRel}
             gap="xs"
             class="group"
           >
-            Get started
+            {primaryLabel}
             <ChevronRight
               size="sm"
               class="duration-300 easy-out-in group-hover:translate-x-2"
@@ -76,11 +93,13 @@ import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
           <Link
             size="base"
             variant="muted"
-            href="/forms/contact"
+            href={secondaryHref}
+            target={secondaryTarget}
+            rel={secondaryRel}
             gap="xs"
             class="group"
           >
-            Contact sales
+            {secondaryLabel}
             <ChevronRight
               size="sm"
               class="duration-300 easy-out-in group-hover:translate-x-2"

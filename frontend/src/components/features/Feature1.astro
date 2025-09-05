@@ -14,11 +14,31 @@ import Stacked from "@/components/foundations/icons/Stacked.astro";
 import WaveSquare from "@/components/foundations/icons/WaveSquare.astro";
 import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
 import ArrowIteration from "@/components/foundations/icons/ArrowIteration.astro";
-const data = [
+
+interface Props { feature?: import("@/data/sanity").Feature1Section }
+const { feature } = Astro.props as Props;
+
+const header = feature?.header || "Banking without barriers";
+const subheading =
+  feature?.subheading ||
+  "Instantly open accounts, connect directly to payment networks, and build with flexible, future-ready tools—no outdated systems holding you back.";
+
+const primaryLabel = feature?.primaryCtaLabel || "Get started";
+const primaryHref = feature?.primaryCtaHref || "/forms/sign-up";
+const primaryTarget = feature?.primaryCtaTarget || "";
+const primaryRel = primaryTarget === "_blank" ? "noopener noreferrer" : undefined;
+
+const secondaryLabel = feature?.secondaryCtaLabel || "Contact sales";
+const secondaryHref = feature?.secondaryCtaHref || "/forms/contact";
+const secondaryTarget = feature?.secondaryCtaTarget || "";
+const secondaryRel = secondaryTarget === "_blank" ? "noopener noreferrer" : undefined;
+
+const data = (feature?.features || [
   {
     icon: "Filters",
     category: "ACH",
-    text: "Initiate ACH transactions, process both credits and debits, verify accounts in advance, and store frequently used details.",
+    text:
+      "Initiate ACH transactions, process both credits and debits, verify accounts in advance, and store frequently used details.",
   },
   {
     icon: "WaveSquare",
@@ -28,12 +48,14 @@ const data = [
   {
     icon: "ArrowIteration",
     category: "Cards",
-    text: "Generate custom cards for users, control authorizations in real-time, and set personalized limits.",
+    text:
+      "Generate custom cards for users, control authorizations in real-time, and set personalized limits.",
   },
   {
     icon: "Plus",
     category: "Checks",
-    text: "Send customized checks globally via API or deposit them digitally using the dashboard.",
+    text:
+      "Send customized checks globally via API or deposit them digitally using the dashboard.",
   },
   {
     icon: "Cursor",
@@ -48,14 +70,16 @@ const data = [
   {
     icon: "Camera",
     category: "FedNow",
-    text: "A new Federal Reserve payment system enabling round-the-clock money transfers between participating banks.",
+    text:
+      "A new Federal Reserve payment system enabling round-the-clock money transfers between participating banks.",
   },
   {
     icon: "Stacked",
     category: "Payment scheduling",
-    text: "Automate and schedule payments in advance to streamline financial operations.",
+    text:
+      "Automate and schedule payments in advance to streamline financial operations.",
   },
-];
+]) as Array<{ icon?: string; category?: string; text?: string }>;
 ---
 <section class="feature-1">
   <Wrapper variant="standard" class="py-12 border-t">
@@ -77,7 +101,7 @@ const data = [
         data-aos-duration="1000"
         class="mt-8 font-semibold tracking-tight text-base-800"
       >
-        Banking without barriers
+        {header}
       </Text>
       <Text
         tag="p"
@@ -86,8 +110,7 @@ const data = [
         data-aos-duration="1500"
         class="mt-2 text-base text-base-500 md:text-balance"
       >
-        Instantly open accounts, connect directly to payment networks, and build
-        with flexible, future-ready tools—no outdated systems holding you back.
+        {subheading}
       </Text>
       <div
         data-aos="fade-up"
@@ -97,11 +120,13 @@ const data = [
         <Link
           size="base"
           variant="default"
-          href="/forms/sign-up"
+          href={primaryHref}
+          target={primaryTarget}
+          rel={primaryRel}
           gap="xs"
           class="group"
         >
-          Get started
+          {primaryLabel}
           <ChevronRight
             size="sm"
             class="duration-300 easy-out-in group-hover:translate-x-2"
@@ -110,11 +135,13 @@ const data = [
         <Link
           size="base"
           variant="muted"
-          href="/forms/contact"
+          href={secondaryHref}
+          target={secondaryTarget}
+          rel={secondaryRel}
           gap="xs"
           class="group"
         >
-          Contact sales
+          {secondaryLabel}
           <ChevronRight
             size="sm"
             class="duration-300 easy-out-in group-hover:translate-x-2"

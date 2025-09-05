@@ -1,12 +1,15 @@
-<!-- TODO(Branding): Review and update site meta tags -->
+---
+import { fetchSiteHead } from "@/data/sanity/fetch";
+
+const head = await fetchSiteHead();
+const siteTitle = head?.siteTitle || "Your Website Title";
+---
+
 <!-- Meta Tags -->
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Your Website Title</title>
-<meta
-  name="description"
-  content="A brief description of your website content."
-/>
+<title>{siteTitle}</title>
+<meta name="description" content="" />
 <meta name="keywords" content="keyword1, keyword2, keyword3" />
 <meta name="author" content="Your Name or Company Name" />
 
@@ -15,3 +18,17 @@
 
 <!-- For IE -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<script>
+  (() => {
+    try {
+      const __siteTitle = JSON.parse(`{JSON.stringify(siteTitle)}`);
+      console.debug('[Head] siteTitle (Sanity)', __siteTitle);
+      requestAnimationFrame(() => {
+        console.debug('[Head] document.title (after frame)', document.title);
+      });
+    } catch (e) {
+      console.error('[Head] siteTitle debug failed', e);
+    }
+  })();
+  </script>
