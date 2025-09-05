@@ -1,0 +1,23 @@
+---
+description: Transform a static section to a dynamic, sanity powered section
+globs:
+alwaysApply: false
+---
+
+Use @Sanity and @Astro Docs to set up the astro files in @features/ to be sections available in sanity studio.
+
+The header and subheading should be optional text fields. If they aren't filled on sanity, then don't render them.
+
+Any other prose should use sanity portable text.
+
+For anything that is mapped or repeated code, make a card block or equivlant block for that element.
+
+If there is an icon field, have a feidl where I can search the icons in @icons/ from inside of sanity. OR let me upload my own png or svg.
+
+Keep all relevant tailwind classes, but also add a descriptive class name to elements.
+
+Create a schema in @studio/ for these and make it so they can be added on any page. Write groq query for these.
+
+Make it so any feature added to the home page will be rendered in @index.astro . It should respect the order of the sections and render any section in the order given by sanity.
+
+Double check that there are no type errors in changed files.

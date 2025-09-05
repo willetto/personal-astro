@@ -1,6 +1,5 @@
-import { creator } from "./creator";
-import { imageWithAlt } from "./image-with-alt";
+import { page } from "./page";
 import { portableText } from "./portable-text";
-import { product } from "./product";
+import { siteSettings } from "./site-settings";
 
-export const schemaTypes = [creator, product, imageWithAlt, portableText];
+export const schemaTypes = [page, portableText, siteSettings];
