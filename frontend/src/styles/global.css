@@ -105,19 +105,21 @@
   /* Shadows */
   --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  --shadow-2xl: 0px 6.6px 4.7px 0px rgba(26, 43, 59, 0.07),
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl:
+    0px 6.6px 4.7px 0px rgba(26, 43, 59, 0.07),
     0px 16.7px 11.8px 0px rgba(26, 43, 59, 0.1),
     0px 34px 24.1px 0px rgba(26, 43, 59, 0.13),
     0px 70px 49.6px 0px rgba(26, 43, 59, 0.16),
     0px 192px 136px 0px rgba(26, 43, 59, 0.23);
   --shadow-button-before: 0px 2px 0.4px 0px rgba(255, 255, 255, 0.16) inset;
-  --shadow-bottom: rgba(0, 0, 0, 0.09) 0px 1.34368px 0.537473px -0.625px,
+  --shadow-bottom:
+    rgba(0, 0, 0, 0.09) 0px 1.34368px 0.537473px -0.625px,
     rgba(0, 0, 0, 0.086) 0px 3.18477px 1.27391px -1.25px,
     rgba(0, 0, 0, 0.083) 0px 5.80935px 2.32374px -1.875px,
     rgba(0, 0, 0, 0.08) 0px 9.65803px 3.86321px -2.5px,
@@ -150,6 +152,7 @@
 }
 :root {
   color-scheme: light dark;
+  --nav-height: 0px;
 
   .brand-heading-color {
     color: var(--heading-text-color);

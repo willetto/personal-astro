@@ -1,0 +1,13 @@
+---
+import { PortableText as PT } from "astro-portabletext";
+
+interface Props {
+  value?: any[];
+}
+
+const { value = [] } = Astro.props as Props;
+---
+
+<PT value={value} />
+
+

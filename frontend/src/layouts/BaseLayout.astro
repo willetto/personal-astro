@@ -24,7 +24,7 @@ const { hideNav = false, hideFooter = false } = Astro.props;
       class="bg-stripes max-w-7xl mx-auto border-x border-base-200 px-2 md:px-0 w-full lg:overflow-hidden"
     >
       {!hideNav && <Navigation />}
-      <main class="grow">
+      <main class="grow" style="padding-top: var(--nav-height, 0px);">
         <slot />
       </main>
     { !hideFooter && <Footer /> }

@@ -1,8 +1,8 @@
 ---
 import { fetchSiteHead } from "@/data/sanity/fetch";
 
-const head = await fetchSiteHead();
-const siteTitle = head?.siteTitle || "Your Website Title";
+const head: any = await fetchSiteHead();
+const siteTitle = (head && (head as any).siteTitle) || "Your Website Title";
 ---
 
 <!-- Meta Tags -->

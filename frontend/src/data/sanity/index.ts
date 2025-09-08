@@ -31,7 +31,11 @@ export type Feature1Section = {
   features?: Feature1Item[];
 };
 
-export type Section = Hero | Feature1Section;
+export type HomeHeroSvelteSection = {
+  _type: "homeHeroSvelte";
+};
+
+export type Section = Hero | Feature1Section | HomeHeroSvelteSection;
 
 export type SiteHead = {
   title?: string;

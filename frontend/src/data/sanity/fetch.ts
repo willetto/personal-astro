@@ -78,7 +78,7 @@ export async function fetchSiteHead(): Promise<SiteHead | null> {
     const result = await sanityClient.fetch<SiteHead | null>(
       SITE_SETTINGS_HEAD_QUERY
     );
-    debugLog("Site settings fetched", result);
+    // debugLog("Site settings fetched", result);
     return result ?? null;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

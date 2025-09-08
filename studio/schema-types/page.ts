@@ -32,7 +32,12 @@ export const page = defineType({
       name: "sections",
       title: "Sections",
       type: "array",
-      of: [{ type: "hero1" }, { type: "hero2" }, { type: "feature1" }],
+      of: [
+        { type: "homeHeroSvelte" },
+        { type: "hero1" },
+        { type: "hero2" },
+        { type: "feature1" },
+      ],
       description:
         "Structured sections that render on the frontend. Add hero sections and Feature 1 here.",
     }),

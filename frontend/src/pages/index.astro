@@ -14,6 +14,8 @@ import Testimonial1 from "@/components/testimonials/Testimonial1.astro";
 import Pricing1 from "@/components/pricing/Pricing1.astro";
 import Hero2 from "@/components/headers/Hero2.astro";
 import { fetchHomeSections } from "@/data/sanity/fetch";
+// Svelte component
+import HeroHome from "@svelte_components/hero-home.svelte";
 
 const sections = await fetchHomeSections();
 const sectionComponents = {
@@ -24,10 +26,20 @@ const sectionComponents = {
 ---
 
 <BaseLayout>
+
+<!-- Svelte Components now rendered via Sanity sections order -->
+
   <!-- Sanity Sections here -->
   {sections && sections.length > 0 && (
     <>
       {sections.map((section) => {
+        if (section?._type === "homeHeroSvelte") {
+          return (
+            <Wrapper variant="carousel">
+              <HeroHome />
+            </Wrapper>
+          );
+        }
         if (section?._type === "hero1") {
           return <Hero1 feature={section as import("@/data/sanity").Hero} />;
         }
