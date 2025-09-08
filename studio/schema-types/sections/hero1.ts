@@ -28,13 +28,6 @@ export const hero1 = defineType({
       type: "string",
     }),
     defineField({
-      name: "primaryCtaTarget",
-      title: "Primary CTA Target",
-      type: "string",
-      options: { list: ["", "_blank", "_self", "_parent", "_top"] },
-      initialValue: "",
-    }),
-    defineField({
       name: "secondaryCtaLabel",
       title: "Secondary CTA Label",
       type: "string",
@@ -45,19 +38,26 @@ export const hero1 = defineType({
       type: "string",
     }),
     defineField({
-      name: "secondaryCtaTarget",
-      title: "Secondary CTA Target",
+      name: "gradientFromColor",
+      title: "Gradient From Color",
       type: "string",
-      options: { list: ["", "_blank", "_self", "_parent", "_top"] },
-      initialValue: "",
+      description:
+        "Starting color for the background gradient (hex format, e.g., #7CFF6B)",
+    }),
+    defineField({
+      name: "gradientToColor",
+      title: "Gradient To Color",
+      type: "string",
+      description:
+        "Ending color for the background gradient (hex format, e.g., #FFF042)",
     }),
   ],
   preview: {
-    select: { title: "header", subtitle: "primaryCtaLabel" },
-    prepare({ title, subtitle }) {
+    select: { title: "header" },
+    prepare({ title }) {
       return {
         title: title || "Hero 1",
-        subtitle: subtitle ? `CTA: ${subtitle}` : "",
+        subtitle: "Hero 1",
       } as { title: string; subtitle?: string };
     },
   },

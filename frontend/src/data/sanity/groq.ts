@@ -4,10 +4,10 @@ export const HERO_FIELDS = `
   subheading,
   primaryCtaLabel,
   primaryCtaHref,
-  primaryCtaTarget,
   secondaryCtaLabel,
   secondaryCtaHref,
-  secondaryCtaTarget
+  gradientFromColor,
+  gradientToColor
 `;
 
 export const FEATURE1_FIELDS = `
@@ -16,10 +16,8 @@ export const FEATURE1_FIELDS = `
   subheading,
   primaryCtaLabel,
   primaryCtaHref,
-  primaryCtaTarget,
   secondaryCtaLabel,
   secondaryCtaHref,
-  secondaryCtaTarget,
   features[] {
     icon,
     category,

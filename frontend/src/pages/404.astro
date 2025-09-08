@@ -2,6 +2,7 @@
 // Assets
 import { Image } from "astro:assets";
 import LimeStripe from "@/images/assets/LimeStripe.png";
+import LimeStripeSvg from "@/components/assets/LimeStripeSvg.astro";
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Link from "@/components/foundations/elements/Link.astro";
@@ -18,9 +19,9 @@ import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
       variant="standard"
       class="relative py-32 overflow-hidden h-dvh flex flex-col items-center justify-center"
     >
-      <Image
-        src={LimeStripe}
-        alt="Lime Stripe"
+      <LimeStripeSvg
+        fromColor="oklch(90.07% 0.21 98.27)"
+        toColor="oklch(66.98% 0.2236 43.225)"
         class="absolute inset-0 size-full pointer-events-none"
       />
 
@@ -32,7 +33,7 @@ import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
           data-aos-duration="1000"
           class="font-semibold tracking-tighter text-base-800 lg:text-balance"
         >
-          Erro 404
+          Error 404
         </Text>
         <Text
           tag="p"
@@ -53,7 +54,7 @@ import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
           <Link
             size="base"
             variant="default"
-            href="/forms/sign-up"
+            href="/"
             gap="xs"
             class="group w-full"
           >
@@ -61,20 +62,7 @@ import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
               size="sm"
               class="duration-300 easy-out-in group-hover:translate-x-2"
             />
-            Go to front page
-          </Link>
-          <Link
-            size="base"
-            variant="muted"
-            href="/forms/contact"
-            gap="xs"
-            class="group w-full"
-          >
-            See all pages
-            <ChevronRight
-              size="sm"
-              class="duration-300 easy-out-in group-hover:translate-x-2"
-            />
+            Head on home.
           </Link>
         </div>
       </div>

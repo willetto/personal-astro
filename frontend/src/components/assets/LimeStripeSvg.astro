@@ -1,0 +1,81 @@
+---
+interface Props {
+  fromColor?: string;
+  toColor?: string;
+  class?: string;
+}
+
+const {
+  fromColor = "oklch(90.07% 0.21 98.27)",
+  toColor = "oklch(90.07% 0.21 98.27)",
+  class: className = "",
+} = Astro.props as Props;
+---
+
+<svg
+  class={className}
+  viewBox="0 0 1600 900"
+  preserveAspectRatio="xMidYMid slice"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <defs>
+    <!-- Base left-to-right color blend -->
+    <linearGradient id="limeStripeGradient" x1="0" y1="0" x2="1600" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color={fromColor} />
+      <stop offset="100%" stop-color={toColor} />
+    </linearGradient>
+
+    <!-- Subtle angled sheen across the band to emulate lighting -->
+    <linearGradient id="sheenGradient" x1="0" y1="0" x2="0" y2="900" gradientUnits="userSpaceOnUse" gradientTransform="rotate(-12 800 450)">
+      <stop offset="0" stop-color={fromColor} stop-opacity="0" />
+      <stop offset="0.48" stop-color={toColor} stop-opacity="0.35" />
+      <stop offset="0.82" stop-color={fromColor} stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Radial highlights at a few points along the ribbon -->
+    <radialGradient id="highlight1" cx="350" cy="260" r="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color={fromColor} stop-opacity="0.35" />
+      <stop offset="80%" stop-color={fromColor} stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="highlight2" cx="900" cy="420" r="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color={toColor} stop-opacity="0.28" />
+      <stop offset="85%" stop-color={toColor} stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="highlight3" cx="1350" cy="560" r="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color={toColor} stop-opacity="0.22" />
+      <stop offset="85%" stop-color={toColor} stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Taller, descending ribbon from left to right -->
+  <g>
+    <!-- Base color fill -->
+    <path
+d="M-102 0C162.5 -2.47955e-05 262.5 156.5 498 118C733.5 79.5 808 12.5 968 172.5C1148 352.5 1106.5 437 1330.5 371.5C1554.5 306 1661.62 510.397 1658 543C1639.5 709.5 1658 680.5 1639.5 852.5C1439.5 812.5 878.5 589 521 606C163.5 623 92 628 -88 468L-102 0Z"
+      fill="url(#limeStripeGradient)"
+    />
+
+    <!-- Angled sheen overlay for depth -->
+    <path
+      d="M-102 0C162.5 -2.47955e-05 262.5 156.5 498 118C733.5 79.5 808 12.5 968 172.5C1148 352.5 1106.5 437 1330.5 371.5C1554.5 306 1661.62 510.397 1658 543C1639.5 709.5 1658 680.5 1639.5 852.5C1439.5 812.5 878.5 589 521 606C163.5 623 92 628 -88 468L-102 0Z"
+      fill="url(#sheenGradient)"
+    />
+
+    <!-- Radial highlight passes to mimic PNG's soft blobs -->
+    <path
+      d="M-102 0C162.5 -2.47955e-05 262.5 156.5 498 118C733.5 79.5 808 12.5 968 172.5C1148 352.5 1106.5 437 1330.5 371.5C1554.5 306 1661.62 510.397 1658 543C1639.5 709.5 1658 680.5 1639.5 852.5C1439.5 812.5 878.5 589 521 606C163.5 623 92 628 -88 468L-102 0Z"
+      fill="url(#highlight1)"
+    />
+    <path
+      d="M-102 0C162.5 -2.47955e-05 262.5 156.5 498 118C733.5 79.5 808 12.5 968 172.5C1148 352.5 1106.5 437 1330.5 371.5C1554.5 306 1661.62 510.397 1658 543C1639.5 709.5 1658 680.5 1639.5 852.5C1439.5 812.5 878.5 589 521 606C163.5 623 92 628 -88 468L-102 0Z"
+      fill="url(#highlight2)"
+    />
+    <path
+      d="M-102 0C162.5 -2.47955e-05 262.5 156.5 498 118C733.5 79.5 808 12.5 968 172.5C1148 352.5 1106.5 437 1330.5 371.5C1554.5 306 1661.62 510.397 1658 543C1639.5 709.5 1658 680.5 1639.5 852.5C1439.5 812.5 878.5 589 521 606C163.5 623 92 628 -88 468L-102 0Z"
+      fill="url(#highlight3)"
+    />
+  </g>
+</svg>
+
+

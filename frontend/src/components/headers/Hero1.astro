@@ -1,7 +1,6 @@
 ---
 // Assets
-import { Image } from "astro:assets";
-import LimeStripe from "@/images/assets/LimeStripe.png";
+import LimeStripeSvg from "@/components/assets/LimeStripeSvg.astro";
 import { Code } from "astro:components";
 import VisualAsset1 from "@/components/assets/VisualAsset1.astro";
 // Fundations
@@ -19,13 +18,12 @@ const subheading = feature?.subheading || "Seamless, scalable infrastructure for
 
 const primaryLabel = feature?.primaryCtaLabel || "Get started";
 const primaryHref = feature?.primaryCtaHref || "/forms/sign-up";
-const primaryTarget = feature?.primaryCtaTarget || "";
-const primaryRel = primaryTarget === "_blank" ? "noopener noreferrer" : undefined;
 
 const secondaryLabel = feature?.secondaryCtaLabel || "Contact sales";
 const secondaryHref = feature?.secondaryCtaHref || "/forms/contact";
-const secondaryTarget = feature?.secondaryCtaTarget || "";
-const secondaryRel = secondaryTarget === "_blank" ? "noopener noreferrer" : undefined;
+
+const gradientFromColor = feature?.gradientFromColor || "oklch(90.07% 0.21 98.27)";
+const gradientToColor = feature?.gradientToColor || "oklch(66.98% 0.2236 43.225)";
 ---
 
 <section class="hero-1 relative overflow-hidden">
@@ -33,12 +31,11 @@ const secondaryRel = secondaryTarget === "_blank" ? "noopener noreferrer" : unde
     variant="standard"
     class="relative z-20 py-32 lg:pb-80 overflow-hidden"
   >
-    <Image
-      src={LimeStripe}
-      alt="Lime Stripe"
-      class="absolute inset-0 size-full pointer-events-none scale-180 rotate-x-170 top-100"
+    <LimeStripeSvg
+      fromColor={gradientFromColor}
+      toColor={gradientToColor}
+      class="absolute inset-0 size-full pointer-events-none scale-180 top-50 rotate-x-300"
     />
-
     <div class="relative">
       <Text
         tag="h1"
@@ -67,8 +64,6 @@ const secondaryRel = secondaryTarget === "_blank" ? "noopener noreferrer" : unde
           size="base"
           variant="default"
           href={primaryHref}
-          target={primaryTarget}
-          rel={primaryRel}
           gap="xs"
           class="group"
         >
@@ -82,8 +77,6 @@ const secondaryRel = secondaryTarget === "_blank" ? "noopener noreferrer" : unde
           size="base"
           variant="muted"
           href={secondaryHref}
-          target={secondaryTarget}
-          rel={secondaryRel}
           gap="xs"
           class="group"
         >

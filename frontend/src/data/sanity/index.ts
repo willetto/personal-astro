@@ -6,10 +6,10 @@ export type Hero = {
   subheading?: string;
   primaryCtaLabel?: string;
   primaryCtaHref?: string;
-  primaryCtaTarget?: LinkTarget;
   secondaryCtaLabel?: string;
   secondaryCtaHref?: string;
-  secondaryCtaTarget?: LinkTarget;
+  gradientFromColor?: string;
+  gradientToColor?: string;
 };
 
 export type Feature1Item = {
@@ -24,10 +24,8 @@ export type Feature1Section = {
   subheading?: string;
   primaryCtaLabel?: string;
   primaryCtaHref?: string;
-  primaryCtaTarget?: LinkTarget;
   secondaryCtaLabel?: string;
   secondaryCtaHref?: string;
-  secondaryCtaTarget?: LinkTarget;
   features?: Feature1Item[];
 };
 
