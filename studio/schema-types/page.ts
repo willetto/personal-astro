@@ -22,18 +22,12 @@ export const page = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "content",
-      title: "Content",
-      type: "portableText",
-      description:
-        "Rich text content rendered by the frontend's RichText component.",
-    }),
-    defineField({
       name: "sections",
       title: "Sections",
       type: "array",
       of: [
         { type: "homeHeroSvelte" },
+        { type: "fruitLabelSkills" },
         { type: "hero1" },
         { type: "hero2" },
         { type: "feature1" },

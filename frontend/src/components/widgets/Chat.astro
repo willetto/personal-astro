@@ -16,10 +16,10 @@ const { class: className = "", ...rest } = Astro.props;
 <div
   id="chat-bubble"
   {...rest}
-  class={`${className} opacity-0 z-50 pointer-events-none  w-auto sm:w-[350px] max-h-[90vh] overflow-y-auto bg-white bg-stripes shadow-2xl transition-opacity duration-300 outline outline-base-200 p-2 rounded-xl`}
+  class={`${className} opacity-0 z-50 pointer-events-none  w-auto sm:w-[350px] max-h-[90vh] overflow-y-auto bg-white bg-stripes shadow-xl transition-opacity duration-300 outline outline-base-200 p-2 rounded-xl`}
 >
   <div
-    class="bg-white outline outline-base-200 shadow-2xl rounded-lg overflow-hidden divide-y divide-base-200"
+    class="bg-white outline outline-base-200 shadow-xl rounded-lg overflow-hidden divide-y divide-base-200"
   >
     <div class="flex flex-col items-center justify-center h-32 p-6">
       <Text tag="h3" variant="textLG" class="font-medium text-base-800"

@@ -5,6 +5,7 @@ import { hero1 } from "./sections/hero1";
 import { hero2 } from "./sections/hero2";
 import { feature1 } from "./sections/feature1";
 import { homeHeroSvelte } from "./sections/homeHeroSvelte";
+import { fruitLabelSkills } from "./sections/fruitLabelSkills";
 
 export const schemaTypes = [
   page,
@@ -14,4 +15,5 @@ export const schemaTypes = [
   hero2,
   feature1,
   homeHeroSvelte,
+  fruitLabelSkills,
 ];

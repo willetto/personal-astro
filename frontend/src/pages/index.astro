@@ -16,6 +16,7 @@ import Hero2 from "@/components/headers/Hero2.astro";
 import { fetchHomeSections } from "@/data/sanity/fetch";
 // Svelte component
 import HeroHome from "@svelte_components/hero-home.svelte";
+import Skills from "@svelte_components/skills.svelte";
 
 const sections = await fetchHomeSections();
 const sectionComponents = {
@@ -26,8 +27,8 @@ const sectionComponents = {
 ---
 
 <BaseLayout>
-
 <!-- Svelte Components now rendered via Sanity sections order -->
+
 
   <!-- Sanity Sections here -->
   {sections && sections.length > 0 && (
@@ -37,6 +38,13 @@ const sectionComponents = {
           return (
             <Wrapper variant="carousel">
               <HeroHome />
+            </Wrapper>
+          );
+        }
+        if (section?._type === "fruitLabelSkills") {
+          return (
+            <Wrapper variant="carousel">
+              <Skills />
             </Wrapper>
           );
         }

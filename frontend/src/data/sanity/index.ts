@@ -35,7 +35,15 @@ export type HomeHeroSvelteSection = {
   _type: "homeHeroSvelte";
 };
 
-export type Section = Hero | Feature1Section | HomeHeroSvelteSection;
+export type FruitLabelSkillsSection = {
+  _type: "fruitLabelSkills";
+};
+
+export type Section =
+  | Hero
+  | Feature1Section
+  | HomeHeroSvelteSection
+  | FruitLabelSkillsSection;
 
 export type SiteHead = {
   title?: string;

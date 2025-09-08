@@ -44,7 +44,7 @@ const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
         >
           {
             tags.map((tag) => (
-              <li class="p-2 aspect-square bg-whit outline outline-base-200 group rounded-xl shadow flex justify-center items-center group relative hover:shadow-2xl duration-300">
+              <li class="p-2 aspect-square bg-whit outline outline-base-200 group rounded-xl shadow flex justify-center items-center group relative hover:shadow-xl duration-300">
                 <a href={`/blog/tags/${tag}`} class="absolute inset-0" />
                 <Text
                   tag="p"
