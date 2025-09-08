@@ -6,6 +6,7 @@ import {
   FIRST_PAGE_WITH_SECTIONS_QUERY,
   PAGE_LIST_QUERY,
   SITE_SETTINGS_HEAD_QUERY,
+  SITE_SETTINGS_FAVICON_QUERY,
 } from "./groq";
 
 const projectId = import.meta.env.SANITY_STUDIO_PROJECT_ID;
@@ -82,6 +83,27 @@ export async function fetchSiteHead(): Promise<SiteHead | null> {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     errorLog("fetchSiteHead failed", { message });
+    return null;
+  }
+}
+
+export type SiteFavicon = {
+  favicon?: {
+    asset?: { _ref?: string };
+    assetUrl?: string;
+    assetMimeType?: string;
+    assetExt?: string;
+    alt?: string;
+  };
+};
+
+export async function fetchSiteFavicon(): Promise<SiteFavicon | null> {
+  try {
+    const result = await sanityClient.fetch<SiteFavicon | null>(
+      SITE_SETTINGS_FAVICON_QUERY
+    );
+    return result ?? null;
+  } catch {
     return null;
   }
 }

@@ -1,64 +1,34 @@
 ---
-import { AstroSeo } from "@astrolib/seo";
+import { fetchSiteHead } from "@/data/sanity/fetch";
+
+const head = await fetchSiteHead();
+const siteTitle = head?.title || "Personal Site";
+const description = "A detailed description of your page content.";
+const canonical = "https://yoursite.com/current-page";
+const ogImage = "https://yoursite.com/og-image.jpg";
 ---
 
-<!-- TODO(Branding): Update all SEO fields (title, description, canonical, OG/Twitter) -->
-<AstroSeo
-  title="Your Page Title"
-  description="A detailed description of your page content."
-  canonical="https://yoursite.com/current-page"
-  openGraph={{
-    url: "https://yoursite.com/current-page",
-    title: "Your Page Title",
-    description: "A detailed description of your page content.",
-    images: [
-      {
-        url: "https://yoursite.com/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Open Graph Image Alt",
-        type: "image/jpeg",
-      },
-    ],
-    site_name: "Your Site Name",
-    type: "website",
-    locale: "en_US",
-  }}
-  twitter={{
-    handle: "@yourhandle",
-    site: "@yoursite",
-    cardType: "summary_large_image",
-  }}
-/>
+<!-- Primary Meta Tags -->
+<title>{siteTitle}</title>
+<meta name="title" content={siteTitle} />
+<meta name="description" content={description} />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.yourwebsite.com/" />
-<meta property="og:title" content="Your Website Title" />
-<meta
-  property="og:description"
-  content="A brief description of your website content."
-/>
-<meta
-  property="og:image"
-  content="https://www.yourwebsite.com/path/to/image.jpg"
-/>
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={siteTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content="https://www.yourwebsite.com/" />
-<meta property="twitter:title" content="Your Website Title" />
-<meta
-  property="twitter:description"
-  content="A brief description of your website content."
-/>
-<meta
-  property="twitter:image"
-  content="https://www.yourwebsite.com/path/to/image.jpg"
-/>
+<meta property="twitter:url" content={canonical} />
+<meta property="twitter:title" content={siteTitle} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={ogImage} />
 
 <!-- Canonical URL -->
-<link rel="canonical" href="https://www.yourwebsite.com/" />
+<link rel="canonical" href={canonical} />
 
 <!-- Additional SEO -->
 <meta name="robots" content="index, follow" />

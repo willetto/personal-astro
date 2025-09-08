@@ -16,13 +16,12 @@ const defaultClass = [
   "ring-base-800",
 ];
 // Accent button
-const accentClass = ["text-base-900", "bg-teal-500 ", "ring-teal-600"];
+const accentClass = ["text-base-900", "bg-tw-yellow", "ring-tw-yellow"];
 // Muted button
 const mutedClass = [
   "text-black",
   "bg-base-100 ",
   "hover:bg-base-100",
-  "ring-base-200",
 ];
 // Size (only applies if variant is not "link")
 const xs = ["h-8", "px-3", "py-2", "text-xs rounded-md"];
@@ -63,7 +62,7 @@ const additionalClasses = className ? className.split(" ") : [];
           "hover:opacity-90",
           "hover:shadow-none",
           "focus-visible:outline-none  focus:outline-2",
-          "focus:outline-teal-300 ",
+          "focus:outline-tw-green ",
           "inset-shadow-xs inset-shadow-white/30 ring  active:inset-shadow-transparent",
           variant === "muted" && mutedClass,
           variant === "accent" && accentClass,

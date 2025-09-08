@@ -34,7 +34,7 @@ export type Feature1Section = {
 export type Section = Hero | Feature1Section;
 
 export type SiteHead = {
-  siteTitle?: string;
+  title?: string;
   favicon?: {
     asset?: { _ref?: string };
     assetUrl?: string;

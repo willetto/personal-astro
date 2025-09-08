@@ -86,7 +86,13 @@ export const SITE_SETTINGS_FAVICON_FIELDS = `
 
 export const SITE_SETTINGS_HEAD_QUERY = `
   *[_type == "siteSettings"][0] {
-    siteTitle,
+    title,
+    ${SITE_SETTINGS_FAVICON_FIELDS}
+  }
+`;
+
+export const SITE_SETTINGS_FAVICON_QUERY = `
+  *[_type == "siteSettings"][0] {
     ${SITE_SETTINGS_FAVICON_FIELDS}
   }
 `;

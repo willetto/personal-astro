@@ -9,9 +9,9 @@ const { variant = "standard", class: extraClass = "" } = Astro.props;
 const variantClasses = {
   // Standard wrapper
   standard:
-    "max-w-6xl bg-white  2xl:max-w-[1400px] mx-auto border-x border-base-200 p-4",
+    "max-w-6xl 2xl:max-w-[1400px] mx-auto border-x brand-border-color p-4",
   carousel:
-    "max-w-6xl bg-white  2xl:max-w-[1400px] mx-auto border-x border-base-200",
+    "max-w-6xl 2xl:max-w-[1400px] mx-auto border-x brand-border-color",
   modal: "max-w-6xl   2xl:max-w-[1400px] mx-auto p-4",
   // Prose styles
   prose:
@@ -21,6 +21,13 @@ const variantClasses = {
 const classes = `Wrapper ${variantClasses[variant]} ${extraClass}`.trim();
 ---
 
-<div class={classes}>
+<div class={`wrapper ${classes}`}>
   <slot />
 </div>
+
+<style>
+  .wrapper {
+    background-color: light-dark(var(--color-base-50), var(--color-base-900));
+    color: light-dark(var(--color-base-800), var(--color-base-50));
+  }
+</style>

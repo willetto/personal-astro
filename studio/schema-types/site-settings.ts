@@ -1,31 +1,39 @@
 import { defineField, defineType } from "sanity";
+import { EarthGlobeIcon } from "@sanity/icons";
 
 export const siteSettings = defineType({
   name: "siteSettings",
   title: "Site Settings",
   type: "document",
+  icon: EarthGlobeIcon,
+  preview: {
+    select: {
+      title: "title",
+    },
+    prepare({ title }) {
+      return {
+        title: "Global Site Settings",
+        subtitle: title || "Untitled",
+      };
+    },
+  },
   fields: [
     defineField({
-      name: "title",
-      title: "Title",
-      type: "string",
-      initialValue: "Global Site Settings",
+      name: "favicon",
+      title: "Favicon",
+      description:
+        "Upload an SVG or PNG favicon. Prefer square images; SVG recommended.",
+      type: "image",
+      options: {
+        accept: "image/svg+xml,image/png",
+      },
     }),
     defineField({
-      name: "siteTitle",
+      name: "title",
       title: "Site Title",
       type: "string",
       description: "Title used for <title> and basic SEO defaults.",
       validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "favicon",
-      title: "Favicon",
-      type: "image",
-      options: { hotspot: false },
-      description:
-        "Primary favicon (ICO/PNG). Other sizes can be generated as needed.",
-      fields: [defineField({ name: "alt", title: "Alt text", type: "string" })],
     }),
   ],
 });

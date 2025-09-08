@@ -1,24 +1,58 @@
 ---
-import { fetchSiteHead } from "@/data/sanity/fetch";
-const head = await fetchSiteHead();
-const faviconUrl = head?.favicon?.assetUrl || "/favicon.ico";
+import { fetchSiteFavicon } from "@/data/sanity/fetch";
 
-console.log('faviconUrl', faviconUrl);
+const siteFav = await fetchSiteFavicon();
+
+const assetUrl: string | null = (siteFav?.favicon?.assetUrl as string | undefined) || null;
+const mime: string | undefined = siteFav?.favicon?.assetMimeType;
+const ext: string | undefined = siteFav?.favicon?.assetExt;
+const isSvg: boolean = Boolean(
+  (mime && mime.includes("svg")) || ext === "svg" || (assetUrl && assetUrl.endsWith(".svg"))
+);
+
+function withParams(url: string | null, params: Record<string, string | number>): string | null {
+  if (!url) return null;
+  const u = new URL(url);
+  Object.entries(params).forEach(([k, v]) => u.searchParams.set(k, String(v)));
+  return u.toString();
+}
+
+const icon16 = withParams(assetUrl, { w: 16, h: 16, fit: "crop", fm: "png" });
+const icon32 = withParams(assetUrl, { w: 32, h: 32, fit: "crop", fm: "png" });
+const icon48 = withParams(assetUrl, { w: 48, h: 48, fit: "crop", fm: "png" });
+const apple180 = withParams(assetUrl, { w: 180, h: 180, fit: "crop", fm: "png" });
 ---
 
-<!-- Favicons (fallback to local assets if not set) -->
-<link rel="icon" href={faviconUrl} sizes="any" />
-<link rel="icon" href="/icon.svg" type="image/svg+xml" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<!-- Favicons -->
+{isSvg && assetUrl ? (
+  <link rel="icon" href={assetUrl} type="image/svg+xml" />
+): (
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+)}
+
+{icon16 ? (
+  <link rel="icon" type="image/png" sizes="16x16" href={icon16} />
+): (
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+)}
+{icon32 ? (
+  <link rel="icon" type="image/png" sizes="32x32" href={icon32} />
+): (
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+)}
+{icon48 ? (
+  <link rel="icon" type="image/png" sizes="48x48" href={icon48} />
+): (
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+)}
+
+{apple180 ? (
+  <link rel="apple-touch-icon" sizes="180x180" href={apple180} />
+): (
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+)}
+
 <link rel="manifest" href="/manifest.webmanifest" />
 
-<!-- Favicon for IE -->
-<link rel="shortcut icon" href={faviconUrl} type="image/x-icon" />
-
-<!-- Favicons for different sizes -->
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
-
-<!-- Apple Touch Icon (for backwards compatibility) -->
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<!-- Fallback ICO for legacy browsers -->
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
