@@ -1,25 +1,29 @@
-## Sanity + Astro: Dynamic Slug Routing Guide
+# Sanity + Astro: Dynamic Slug Routing Guide
 
-This guide shows how to connect a Sanity document type to an Astro dynamic route (e.g., `/[ROUTE_PREFIX]/[...slug].astro`) so that each Sanity document renders at a subroute in Astro.
+This guide shows how to connect a Sanity document type to Astro dynamic routes, supporting both prefixed routes (e.g., `/posts/[...slug].astro`) and root-level routes (e.g., `/[...slug].astro`) where each Sanity document renders directly at the domain root.
 
-You can adapt this to any pair like `posts/` with a `post` schema. Replace bracketed placeholders with your own values, e.g. `[DOC_TYPE]`, `[ROUTE_PREFIX]`, `[PROJECT_ROOT]`.
+You can adapt this to any document type. Replace bracketed placeholders with your own values: `[DOC_TYPE]`, `[ROUTE_PREFIX]`, `[PROJECT_ROOT]`.
 
-References:
+## References
 
 - Astro routing: [getStaticPaths() docs](https://docs.astro.build/en/reference/routing-reference/#getstaticpaths)
-- Sanity + Astro integration patterns: [Sanity guide](https://www.sanity.io/guides/sanity-astro-blog#7e50d8602669)
+- Sanity + Astro integration: [Sanity guide](https://www.sanity.io/guides/sanity-astro-blog#7e50d8602669)
 
 ---
 
-### Prerequisites
+## Prerequisites
 
-- An Astro project with a front-end workspace at `[FRONTEND_ROOT]` (e.g., `frontend/`).
-- A Sanity Studio with schemas at `[STUDIO_ROOT]` (e.g., `studio/`).
-- Environment variables for Sanity available to the Astro app: `SANITY_STUDIO_PROJECT_ID`, `SANITY_STUDIO_DATASET`.
+- An Astro project with a front-end workspace at `[FRONTEND_ROOT]` (e.g., `frontend/`)
+- A Sanity Studio with schemas at `[STUDIO_ROOT]` (e.g., `studio/`)
+- Environment variables for Sanity: `SANITY_STUDIO_PROJECT_ID`, `SANITY_STUDIO_DATASET`
 
 ---
 
-### 1) Define a Sanity schema with a slug
+## Approach 1: Root-Level Dynamic Routing
+
+This approach renders Sanity pages directly at the domain root (e.g., `/about`, `/contact`) while keeping a static home page.
+
+### 1) Define a Sanity schema with sections
 
 Create `[STUDIO_ROOT]/schema-types/[DOC_TYPE].ts`:
 
@@ -47,7 +51,20 @@ export const [DOC_TYPE] = defineType({
       },
       validation: (rule) => rule.required(),
     }),
-    // ... add your fields
+    defineField({
+      name: "sections",
+      title: "Sections",
+      type: "array",
+      of: [
+        { type: "hero1" },
+        { type: "hero2" },
+        { type: "feature1" },
+        { type: "caseStudyListings" },
+        { type: "contactForm" },
+        // Add your section types here
+      ],
+      description: "Structured sections that render on the frontend.",
+    }),
   ],
   preview: {
     select: { title: "title", subtitle: "slug.current" },
@@ -55,112 +72,165 @@ export const [DOC_TYPE] = defineType({
 });
 ```
 
-Slug best practice:
+**Slug best practice:** Store plain segments like `about` or `contact`. Do NOT include leading slashes or prefixes.
 
-- Store a plain, segment-only value like `rule29`.
-- Do NOT include leading slashes (`/rule29`) or route prefixes (`[ROUTE_PREFIX]/rule29`). Your Astro route provides the prefix.
+### 2) Configure Sanity client and types
 
----
-
-### 2) Configure the Sanity client in Astro
-
-Create or edit `[FRONTEND_ROOT]/src/data/sanity/fetch.ts` (or `[FRONTEND_ROOT]/src/data/sanity/client.ts`):
+In `[FRONTEND_ROOT]/src/data/sanity/index.ts`, add page types:
 
 ```ts
-import { createClient } from "@sanity/client";
+export type PageListItem = {
+  _id: string;
+  title: string;
+  slug: string;
+};
 
-const projectId = import.meta.env.SANITY_STUDIO_PROJECT_ID;
-const dataset = import.meta.env.SANITY_STUDIO_DATASET || "production";
-const apiVersion = "[YYYY-MM-DD]"; // e.g., "2025-08-19"
-
-export const sanityClient = createClient({
-  apiVersion,
-  dataset,
-  projectId,
-  useCdn: true,
-});
+export type PageDetail = {
+  _id: string;
+  title: string;
+  slug: string;
+  sections?: Section[];
+};
 ```
 
-Notes:
+### 3) Add GROQ queries
 
-- Consider `useCdn: false` during static builds if you rely on rebuilds to avoid stale content (see Sanity guide).
-- Keep `apiVersion` current to match the API behavior you expect.
-
----
-
-### 3) Write GROQ queries for list and detail by slug
-
-Create `[FRONTEND_ROOT]/src/data/sanity/groq.ts`:
+In `[FRONTEND_ROOT]/src/data/sanity/groq.ts`:
 
 ```ts
-export const [DOC_TYPE_UPPER]_LIST_FIELDS = `
-  _id,
-  title,
-  "slug": slug.current
-`;
-
-export const [DOC_TYPE_UPPER]_DETAIL_FIELDS = `
-  _id,
-  title,
-  "slug": slug.current,
-  // include other fields you need, e.g. sections
-`;
-
-export const [DOC_TYPE_UPPER]_LIST_QUERY = `
+export const PAGE_LIST_QUERY = `
   *[_type == "[DOC_TYPE]"] | order(title asc) {
-    ${[DOC_TYPE_UPPER]_LIST_FIELDS}
+    _id,
+    title,
+    "slug": slug.current
   }
 `;
 
-export const [DOC_TYPE_UPPER]_BY_SLUG_QUERY = `
+export const PAGE_BY_SLUG_QUERY = `
   *[_type == "[DOC_TYPE]" && slug.current == $slug][0] {
-    ${[DOC_TYPE_UPPER]_DETAIL_FIELDS}
+    _id,
+    title,
+    "slug": slug.current,
+    sections[] {
+      // Include all your section fields here
+      _type,
+      // ... other section fields
+    }
   }
 `;
 ```
 
-Then add helpers in `[FRONTEND_ROOT]/src/data/sanity/fetch.ts`:
+### 4) Add fetch functions
+
+In `[FRONTEND_ROOT]/src/data/sanity/fetch.ts`:
 
 ```ts
-import {
-  [DOC_TYPE_UPPER]_LIST_QUERY,
-  [DOC_TYPE_UPPER]_BY_SLUG_QUERY,
-} from "./groq";
+import { PAGE_LIST_QUERY, PAGE_BY_SLUG_QUERY } from "./groq";
+import type { PageListItem, PageDetail } from ".";
 
-export type [DocType]ListItem = {
-  _id: string;
-  title: string;
-  slug: string;
-};
-
-export type [DocType]Detail = {
-  _id: string;
-  title: string;
-  slug: string;
-  // add fields to match your detail query
-};
-
-export async function fetchAll[DocTypePlural](): Promise<[DocType]ListItem[]> {
-  const result = await sanityClient.fetch<[DocType]ListItem[]>(
-    [DOC_TYPE_UPPER]_LIST_QUERY
-  );
-  return Array.isArray(result) ? result : [];
+export async function fetchAllPages(): Promise<PageListItem[]> {
+  try {
+    const result = await sanityClient.fetch<PageListItem[]>(PAGE_LIST_QUERY);
+    return Array.isArray(result) ? result : [];
+  } catch (err) {
+    console.error("fetchAllPages failed", err);
+    return [];
+  }
 }
 
-export async function fetch[DocType]BySlug(
-  slug: string
-): Promise<[DocType]Detail | null> {
-  const result = await sanityClient.fetch<[DocType]Detail>(
-    [DOC_TYPE_UPPER]_BY_SLUG_QUERY,
-    { slug }
-  );
-  return result ?? null;
+export async function fetchPageBySlug(slug: string): Promise<PageDetail | null> {
+  try {
+    const page = await sanityClient.fetch<PageDetail | null>(
+      PAGE_BY_SLUG_QUERY,
+      { slug }
+    );
+    return page ?? null;
+  } catch (err) {
+    console.error("fetchPageBySlug failed", err);
+    return null;
+  }
 }
 ```
+
+### 5) Create root-level dynamic route
+
+Create `[FRONTEND_ROOT]/src/pages/[...slug].astro`:
+
+```astro
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { fetchAllPages, fetchPageBySlug } from "@/data/sanity/fetch";
+import type { PageDetail, Section } from "@/data/sanity";
+
+// Import your section components
+import Hero1 from "@/components/headers/Hero1.astro";
+import Hero2 from "@/components/headers/Hero2.astro";
+import Feature1 from "@/components/features/Feature1.astro";
+// ... other imports
+
+export async function getStaticPaths() {
+  const pages = await fetchAllPages();
+
+  // Exclude home slugs so index.astro handles "/"
+  const HOME_SLUGS = new Set(["", "/", "home", "index", "root"]);
+
+  const paths = pages
+    .filter((p) => {
+      const s = String(p?.slug ?? "");
+      return !HOME_SLUGS.has(s);
+    })
+    .map((p) => ({ params: { slug: String(p.slug) } }));
+
+  return paths;
+}
+
+const { slug } = Astro.params;
+const pageSlug = String(slug);
+const page: PageDetail | null = await fetchPageBySlug(pageSlug);
+
+if (!page) {
+  return Astro.redirect("/404");
+}
+---
+
+<BaseLayout>
+  {page.sections && page.sections.length > 0 ? (
+    <>
+      {page.sections.map((section: Section) => {
+        // Explicitly render each section type to avoid hydration issues
+        if (section._type === "hero1") {
+          return <Hero1 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section._type === "hero2") {
+          return <Hero2 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section._type === "feature1") {
+          return <Feature1 feature={section as import("@/data/sanity").Feature1Section} />;
+        }
+        // Add other section types...
+        return null;
+      })}
+    </>
+  ) : (
+    <div class="wrapper py-16 text-center">
+      <h1 class="text-4xl font-bold">No content found for this page.</h1>
+      <p class="mt-4 text-lg">Please add sections in Sanity Studio.</p>
+    </div>
+  )}
+</BaseLayout>
+```
+
+### 6) Keep static home page
+
+Your existing `[FRONTEND_ROOT]/src/pages/index.astro` remains unchanged and handles the home route (`/`).
 
 ---
 
-### 4) Create the dynamic Astro route
+## Approach 2: Prefixed Dynamic Routing
+
+This approach renders pages under a prefix (e.g., `/posts/my-post`).
+
+### Create prefixed dynamic route
 
 Create `[FRONTEND_ROOT]/src/pages/[ROUTE_PREFIX]/[...slug].astro`:
 
@@ -171,211 +241,261 @@ import { fetchAll[DocTypePlural], fetch[DocType]BySlug } from "@/data/sanity/fet
 
 export async function getStaticPaths() {
   const items = await fetchAll[DocTypePlural]();
-  // IMPORTANT: Return a string for the param value
   return items.map((item) => ({ params: { slug: String(item.slug) } }));
 }
 
 const params = Astro.params;
 const slug = Array.isArray(params.slug) ? params.slug.join("/") : params.slug || "";
 const doc = await fetch[DocType]BySlug(slug);
-const notFound = !doc;
 ---
 
 <BaseLayout>
-  {notFound ? (
-    <div>Not found</div>
-  ) : (
+  {doc ? (
     <article>
       <h1>{doc.title}</h1>
-      <!-- Render your fields here -->
+      <!-- Render your content here -->
     </article>
+  ) : (
+    <div>Not found</div>
   )}
 </BaseLayout>
 ```
 
-Why strings for `params`? Astro expects `params` values to be strings (or numbers). Passing arrays/objects will throw an error. See Astro docs.
-
 ---
 
-### 5) Optional: a listing page at the route prefix
+## Handling Hydrated Components (Svelte/React/Vue)
 
-Create `[FRONTEND_ROOT]/src/pages/[ROUTE_PREFIX].astro` to display a list of documents:
+**⚠️ Critical:** Avoid dynamic component hydration with variables, as it causes `NoMatchingImport` errors.
 
+### ❌ Don't do this:
 ```astro
----
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import { fetchAll[DocTypePlural] } from "@/data/sanity/fetch";
-const items = await fetchAll[DocTypePlural]();
----
+{sections.map((section) => {
+  const Component = sectionComponents[section._type];
+  return <Component client:load />; // This will fail!
+})}
+```
 
-<BaseLayout>
-  <ul>
-    {items.map((i) => (
-      <li><a href={`/[ROUTE_PREFIX]/${i.slug}`}>{i.title}</a></li>
-    ))}
-  </ul>
-</BaseLayout>
+### ✅ Do this instead:
+```astro
+{sections.map((section) => {
+  // Explicit handling for hydrated components
+  if (section._type === "heroSvelte") {
+    return (
+      <Wrapper variant="carousel">
+        <HeroSvelte client:load />
+      </Wrapper>
+    );
+  }
+  if (section._type === "skillsReact") {
+    return <SkillsReact client:load />;
+  }
+  
+  // Static Astro components can use dynamic mapping
+  const Component = astroComponents[section._type];
+  return Component ? <Component feature={section} /> : null;
+})}
 ```
 
 ---
 
-### 6) Build & verify
+## Common Issues & Solutions
 
-1. Ensure some `[DOC_TYPE]` documents are published in the `[DATASET]` dataset and that their `slug.current` values are plain segments (e.g., `rule29`).
-2. Run `pnpm dev` or `npm run dev` in `[FRONTEND_ROOT]` and visit `http://localhost:4321/[ROUTE_PREFIX]/[your-slug]`.
-3. If using full builds, ensure the content is published before the build runs.
+### NoMatchingImport Error
+- **Cause:** Using dynamic component variables with client directives
+- **Solution:** Render hydrated components explicitly, not through variables
 
----
+### Invalid getStaticPaths Parameter
+- **Symptom:** `Expected string, received object`
+- **Solution:** Always return strings: `{ params: { slug: String(item.slug) } }`
 
-### Common pitfalls and fixes (from real errors)
+### 404 on Valid Slugs
+- **Causes:**
+  - Document not published in correct dataset
+  - Slug contains leading slash or prefix
+  - `getStaticPaths()` not returning the slug
+- **Solutions:**
+  - Verify document is published
+  - Store plain slugs (e.g., `about`, not `/about`)
+  - Debug `fetchAllPages()` output
 
-- Invalid getStaticPaths route parameter:
+### Home Page Conflicts
+- **Issue:** Root dynamic route conflicts with `index.astro`
+- **Solution:** Filter home slugs in `getStaticPaths()` as shown above
 
-  - Symptom: `Invalid getStaticPaths route parameter for slug. Expected undefined, a string or a number, received object (/[ROUTE_PREFIX]/[slug])`
-  - Cause: Returning an array/object for `params.slug` in `getStaticPaths()`.
-  - Fix: Return a string: `({ params: { slug: String(item.slug) } })`. See Astro docs.
-
-- 404: No matching static path found:
-
-  - Symptom: `A getStaticPaths() route pattern was matched, but no matching static path was found for requested path`.
-  - Causes:
-    - `getStaticPaths()` didn’t return that slug.
-    - Sanity document not published or in a different dataset.
-    - Slug stored with a leading slash or route prefix (`/rule29`, `[ROUTE_PREFIX]/rule29`) causing mismatches.
-  - Fixes:
-    - Verify `fetchAll[DocTypePlural]()` returns the slug you expect.
-    - Ensure slug is plain like `rule29`.
-    - Confirm env vars (`SANITY_STUDIO_PROJECT_ID`, `SANITY_STUDIO_DATASET`).
-
-- Slug formatting mismatch:
-
-  - Symptom: Pages don’t resolve or link paths double-up (e.g., `/[ROUTE_PREFIX]/[ROUTE_PREFIX]/rule29`).
-  - Cause: Storing slugs with a leading slash or route prefix.
-  - Fix: Store plain segment-only slugs in Sanity (e.g., `rule29`).
-
-- Stale content during builds:
-  - Cause: `useCdn: true` may return cached content during build.
-  - Fix: Set `useCdn: false` in build environments if you depend on rebuilds for freshness.
+### Stale Content During Builds
+- **Cause:** `useCdn: true` returns cached content
+- **Solution:** Set `useCdn: false` in build environments
 
 ---
 
-### Example: posts/ with `post` schema
+## Example: Pages with Root-Level Routing
 
-Use these concrete values:
+Concrete implementation for a `page` schema with root-level routing:
 
-- `[ROUTE_PREFIX]` → `posts`
-- `[DOC_TYPE]` → `post`
-- `[DOC_TYPE_UPPER]` → `POST`
-- `[DocType]` → `Post`
-- `[DocTypePlural]` → `Posts`
+### Files Structure:
+```
+studio/schema-types/page.ts
+frontend/src/data/sanity/
+├── index.ts (types)
+├── groq.ts (queries)  
+└── fetch.ts (functions)
+frontend/src/pages/
+├── index.astro (home page)
+└── [...slug].astro (dynamic pages)
+```
 
-Files:
-
-1. `studio/schema-types/post.ts` – define slug field as above.
-
-2. `frontend/src/data/sanity/groq.ts`:
-
+### 1. Schema (`studio/schema-types/page.ts`):
 ```ts
-export const POST_LIST_FIELDS = `
-  _id,
-  title,
-  "slug": slug.current
-`;
+export const page = defineType({
+  name: "page",
+  title: "Pages",
+  type: "document",
+  fields: [
+    defineField({
+      name: "title",
+      title: "Title", 
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "slug",
+      title: "Slug",
+      type: "slug",
+      options: { source: "title", maxLength: 96 },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "sections",
+      title: "Sections",
+      type: "array",
+      of: [
+        { type: "hero1" },
+        { type: "feature1" },
+        { type: "contactForm" },
+      ],
+    }),
+  ],
+});
+```
 
-export const POST_DETAIL_FIELDS = `
-  _id,
-  title,
-  "slug": slug.current
-`;
+### 2. Types (`frontend/src/data/sanity/index.ts`):
+```ts
+export type PageListItem = {
+  _id: string;
+  title: string;
+  slug: string;
+};
 
-export const POST_LIST_QUERY = `
-  *[_type == "post"] | order(title asc) {
-    ${POST_LIST_FIELDS}
+export type PageDetail = {
+  _id: string;
+  title: string;
+  slug: string;
+  sections?: Section[];
+};
+```
+
+### 3. Queries (`frontend/src/data/sanity/groq.ts`):
+```ts
+export const PAGE_LIST_QUERY = `
+  *[_type == "page"] | order(title asc) {
+    _id,
+    title,
+    "slug": slug.current
   }
 `;
 
-export const POST_BY_SLUG_QUERY = `
-  *[_type == "post" && slug.current == $slug][0] {
-    ${POST_DETAIL_FIELDS}
+export const PAGE_BY_SLUG_QUERY = `
+  *[_type == "page" && slug.current == $slug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    sections[] {
+      _type,
+      // Include all section fields
+    }
   }
 `;
 ```
 
-3. `frontend/src/data/sanity/fetch.ts`:
-
+### 4. Functions (`frontend/src/data/sanity/fetch.ts`):
 ```ts
-import { POST_LIST_QUERY, POST_BY_SLUG_QUERY } from "./groq";
-
-export type PostListItem = { _id: string; title: string; slug: string };
-export type PostDetail = { _id: string; title: string; slug: string };
-
-export async function fetchAllPosts(): Promise<PostListItem[]> {
-  const result = await sanityClient.fetch<PostListItem[]>(POST_LIST_QUERY);
+export async function fetchAllPages(): Promise<PageListItem[]> {
+  const result = await sanityClient.fetch<PageListItem[]>(PAGE_LIST_QUERY);
   return Array.isArray(result) ? result : [];
 }
 
-export async function fetchPostBySlug(
-  slug: string
-): Promise<PostDetail | null> {
-  const result = await sanityClient.fetch<PostDetail>(POST_BY_SLUG_QUERY, {
-    slug,
-  });
+export async function fetchPageBySlug(slug: string): Promise<PageDetail | null> {
+  const result = await sanityClient.fetch<PageDetail | null>(
+    PAGE_BY_SLUG_QUERY,
+    { slug }
+  );
   return result ?? null;
 }
 ```
 
-4. `frontend/src/pages/posts/[...slug].astro`:
-
+### 5. Dynamic Route (`frontend/src/pages/[...slug].astro`):
 ```astro
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { fetchAllPosts, fetchPostBySlug } from "@/data/sanity/fetch";
+import { fetchAllPages, fetchPageBySlug } from "@/data/sanity/fetch";
+import Hero1 from "@/components/headers/Hero1.astro";
+import Feature1 from "@/components/features/Feature1.astro";
+import ContactForm from "@/components/forms/ContactForm.astro";
 
 export async function getStaticPaths() {
-  const items = await fetchAllPosts();
-  return items.map((item) => ({ params: { slug: String(item.slug) } }));
+  const pages = await fetchAllPages();
+  const HOME_SLUGS = new Set(["", "/", "home", "index", "root"]);
+  
+  return pages
+    .filter((p) => !HOME_SLUGS.has(String(p?.slug ?? "")))
+    .map((p) => ({ params: { slug: String(p.slug) } }));
 }
 
-const slugParam = Astro.params.slug;
-const slug = Array.isArray(slugParam) ? slugParam.join("/") : slugParam || "";
-const post = await fetchPostBySlug(slug);
+const { slug } = Astro.params;
+const page = await fetchPageBySlug(String(slug));
+
+if (!page) {
+  return Astro.redirect("/404");
+}
 ---
 
 <BaseLayout>
-  {post ? (
-    <article>
-      <h1>{post.title}</h1>
-    </article>
-  ) : (
-    <div>Not found</div>
-  )}
-</BaseLayout>
-```
-
-5. Optional list page `frontend/src/pages/posts.astro`:
-
-```astro
----
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import { fetchAllPosts } from "@/data/sanity/fetch";
-const items = await fetchAllPosts();
----
-
-<BaseLayout>
-  <ul>
-    {items.map((i) => (
-      <li><a href={`/posts/${i.slug}`}>{i.title}</a></li>
-    ))}
-  </ul>
+  {page.sections?.map((section) => {
+    if (section._type === "hero1") {
+      return <Hero1 feature={section} />;
+    }
+    if (section._type === "feature1") {
+      return <Feature1 feature={section} />;
+    }
+    if (section._type === "contactForm") {
+      return <ContactForm feature={section} />;
+    }
+    return null;
+  })}
 </BaseLayout>
 ```
 
 ---
 
-### Quick checklist
+## Quick Checklist
 
-- [ ] Slug in Sanity is a plain segment (e.g., `my-post`).
-- [ ] `getStaticPaths()` returns `{ params: { slug: String(item.slug) } }`.
-- [ ] Env vars set: `SANITY_STUDIO_PROJECT_ID`, `SANITY_STUDIO_DATASET`.
-- [ ] Queries return expected items before running a build.
-- [ ] For nested paths, you can store slugs like `category/my-post` and the route will render at `/[ROUTE_PREFIX]/category/my-post`.
+- [ ] Slug in Sanity is a plain segment (e.g., `about`)
+- [ ] `getStaticPaths()` returns `{ params: { slug: String(item.slug) } }`
+- [ ] Environment variables set: `SANITY_STUDIO_PROJECT_ID`, `SANITY_STUDIO_DATASET`
+- [ ] Queries return expected items before build
+- [ ] Hydrated components rendered explicitly, not through variables
+- [ ] Home slugs filtered out for root-level routing
+- [ ] Documents published in correct dataset
+
+---
+
+## Advanced: Nested Paths
+
+For nested paths like `/category/subcategory/page`, store the full path in the slug field:
+
+```ts
+// In Sanity: slug.current = "category/subcategory/page"
+// Renders at: /category/subcategory/page
+```
+
+The `[...slug].astro` route automatically handles nested segments.
