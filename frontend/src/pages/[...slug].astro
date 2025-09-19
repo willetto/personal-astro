@@ -16,23 +16,23 @@ import ContactForm from "@/components/forms/ContactForm.astro";
 export async function getStaticPaths() {
   const pages = await fetchAllPages();
 
-  // Add a path for the home page (empty slug)
-  const homePagePath = { params: { slug: undefined } }; // Astro treats undefined as root
+  // Exclude home slugs so the root-level index.astro handles "/"
+  const HOME_SLUGS = new Set(["", "/", "home", "index", "root"]);
 
-  const paths = pages.map((page) => {
-    const slug = page.slug === "/" ? undefined : page.slug; // Handle root slug for home page
-    return { params: { slug: slug } };
-  });
+  const paths = pages
+    .filter((p) => {
+      const s = String(p?.slug ?? "");
+      return !HOME_SLUGS.has(s);
+    })
+    .map((p) => ({ params: { slug: String(p.slug) } }));
 
-  return [...paths, homePagePath];
+  return paths;
 }
 
 const { slug } = Astro.params;
 
-// Handle home page slugs
-const isHomePage = !slug || ["home", "index", "root"].includes(String(slug));
-const pageSlug = isHomePage ? "" : String(slug);
-
+// For dynamic pages, fetch by slug
+const pageSlug = String(slug);
 const page: PageDetail | null = await fetchPageBySlug(pageSlug);
 
 if (!page) {
@@ -41,8 +41,6 @@ if (!page) {
 
 // Map Sanity section types to Astro/Svelte components
 const sectionComponents = {
-  homeHeroSvelte: HeroHome,
-  fruitLabelSkills: Skills,
   hero1: Hero1,
   hero2: Hero2,
   feature1: Feature1,
@@ -56,18 +54,41 @@ const sectionComponents = {
   {page.sections && page.sections.length > 0 ? (
     <>
       {page.sections.map((section: Section) => {
-        const Component = sectionComponents[section._type as keyof typeof sectionComponents];
-        if (Component) {
-          // Special handling for Svelte components
-          if (section._type === "homeHeroSvelte" || section._type === "fruitLabelSkills") {
-            return (
-              <Wrapper variant="carousel">
-                <Component client:load />
-              </Wrapper>
-            );
-          }
-          // Pass the entire section object as a prop to Astro components
-          return <Component feature={section} />;
+        // Explicit handling for Svelte sections to avoid dynamic hydrated imports
+        if (section._type === "homeHeroSvelte") {
+          return (
+            <Wrapper variant="carousel">
+              <HeroHome client:load />
+            </Wrapper>
+          );
+        }
+        if (section._type === "fruitLabelSkills") {
+          return (
+            <Wrapper variant="carousel">
+              <Skills client:load />
+            </Wrapper>
+          );
+        }
+
+        // Explicitly render each Astro component with correct typing
+        if (section._type === "hero1") {
+          return <Hero1 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section._type === "hero2") {
+          return <Hero2 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section._type === "feature1") {
+          return <Feature1 feature={section as import("@/data/sanity").Feature1Section} />;
+        }
+        if (section._type === "caseStudyListings") {
+          return (
+            <CaseStudyListings
+              section={section as import("@/data/sanity").CaseStudyListingsSection}
+            />
+          );
+        }
+        if (section._type === "contactForm") {
+          return <ContactForm feature={section as import("@/data/sanity").ContactFormSection} />;
         }
         return null;
       })}

@@ -1,5 +1,77 @@
 ---
-// This page redirects to the dynamic home page handled by [...slug].astro
-// The dynamic route handles the actual content rendering for the home page (slug: "")
-return Astro.redirect("/");
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Wrapper from "@/components/foundations/containers/Wrapper.astro";
+import { fetchHomeSections } from "@/data/sanity/fetch";
+import type { Section } from "@/data/sanity";
+
+// Import all section components
+import HeroHome from "../components/svelte_components/hero-home.svelte";
+import Skills from "../components/svelte_components/skills.svelte";
+import Hero1 from "@/components/headers/Hero1.astro";
+import Hero2 from "@/components/headers/Hero2.astro";
+import Feature1 from "@/components/features/Feature1.astro";
+import CaseStudyListings from "@/components/case-studies/CaseStudyListings.astro";
+import ContactForm from "@/components/forms/ContactForm.astro";
+
+const sections = await fetchHomeSections();
+
+// Map Sanity section types to Astro/Svelte components
+const sectionComponents = {
+  hero1: Hero1,
+  hero2: Hero2,
+  feature1: Feature1,
+  caseStudyListings: CaseStudyListings,
+  contactForm: ContactForm,
+} as const;
 ---
+
+<BaseLayout>
+  {sections && sections.length > 0 ? (
+    <>
+      {sections.map((section: Section) => {
+        // Explicit handling for Svelte sections to avoid dynamic hydrated imports
+        if (section._type === "homeHeroSvelte") {
+          return (
+            <Wrapper variant="carousel">
+              <HeroHome client:load />
+            </Wrapper>
+          );
+        }
+        if (section._type === "fruitLabelSkills") {
+          return (
+            <Wrapper variant="carousel">
+              <Skills client:load />
+            </Wrapper>
+          );
+        }
+
+        // Explicitly render each Astro component with correct typing/props
+        if (section._type === "hero1") {
+          return <Hero1 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section._type === "hero2") {
+          return <Hero2 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section._type === "feature1") {
+          return <Feature1 feature={section as import("@/data/sanity").Feature1Section} />;
+        }
+        if (section._type === "caseStudyListings") {
+          return (
+            <CaseStudyListings
+              section={section as import("@/data/sanity").CaseStudyListingsSection}
+            />
+          );
+        }
+        if (section._type === "contactForm") {
+          return <ContactForm feature={section as import("@/data/sanity").ContactFormSection} />;
+        }
+        return null;
+      })}
+    </>
+  ) : (
+    <div class="wrapper py-16 text-center">
+      <h1 class="text-4xl font-bold">No content found for the home page.</h1>
+      <p class="mt-4 text-lg">Please add sections for the home page in Sanity Studio.</p>
+    </div>
+  )}
+</BaseLayout>
