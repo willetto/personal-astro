@@ -14,10 +14,12 @@ export const FEATURE1_FIELDS = `
   _type,
   header,
   subheading,
-  primaryCtaLabel,
-  primaryCtaHref,
-  secondaryCtaLabel,
-  secondaryCtaHref,
+  ctas[] {
+    label,
+    href,
+    target,
+    variant
+  },
   features[] {
     icon,
     category,
@@ -50,10 +52,25 @@ export const CASE_STUDY_LISTINGS_FIELDS = `
   viewAllButtonUrl
 `;
 
+export const CONTACT_FORM_FIELDS = `
+  _type,
+  headline,
+  description,
+  tagline,
+  taglineIcon,
+  supportLinks[] {
+    label,
+    icon,
+    href,
+    action
+  }
+`;
+
 export const ALL_SECTION_FIELDS = `
   ${HERO_FIELDS},
   ${FEATURE1_FIELDS},
-  ${CASE_STUDY_LISTINGS_FIELDS}
+  ${CASE_STUDY_LISTINGS_FIELDS},
+  ${CONTACT_FORM_FIELDS} // Add the new contact form fields
 `;
 
 export const PAGE_BY_SLUG_QUERY = `
@@ -162,5 +179,23 @@ export const CASE_STUDY_SLUGS_QUERY = `
 export const SITE_SETTINGS_FAVICON_QUERY = `
   *[_type == "siteSettings"][0] {
     ${SITE_SETTINGS_FAVICON_FIELDS}
+  }
+`;
+
+// Navigation (Site Settings)
+export const SITE_SETTINGS_NAVIGATION_FIELDS = `
+  navigation[] {
+    label,
+    style,
+    page->{
+      title,
+      "slug": slug.current
+    }
+  }
+`;
+
+export const SITE_SETTINGS_NAVIGATION_QUERY = `
+  *[_type == "siteSettings"][0] {
+    ${SITE_SETTINGS_NAVIGATION_FIELDS}
   }
 `;

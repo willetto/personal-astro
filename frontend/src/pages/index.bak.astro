@@ -1,0 +1,88 @@
+---
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Wrapper from "@/components/foundations/containers/Wrapper.astro";
+// Sections
+import Hero1 from "@/components/headers/Hero1.astro";
+import Feature1 from "@/components/features/Feature1.astro";
+import LogoCloud from "@/components/assets/LogoCloud.astro";
+import Feature2 from "@/components/features/Feature2.astro";
+import Feature3 from "@/components/features/Feature3.astro";
+import Feature4 from "@/components/features/Feature4.astro";
+import Feature5 from "@/components/features/Feature5.astro";
+import Testimonial1 from "@/components/testimonials/Testimonial1.astro";
+import Pricing1 from "@/components/pricing/Pricing1.astro";
+import Hero2 from "@/components/headers/Hero2.astro";
+import CaseStudyListings from "@/components/case-studies/CaseStudyListings.astro";
+import { fetchHomeSections } from "@/data/sanity/fetch";
+// Svelte component
+import HeroHome from "@svelte_components/hero-home.svelte";
+import Skills from "@svelte_components/skills.svelte";
+
+const sections = await fetchHomeSections();
+const sectionComponents = {
+  hero1: Hero1,
+  hero2: Hero2,
+  feature1: Feature1,
+} as const;
+---
+
+<BaseLayout>
+<!-- Svelte Components now rendered via Sanity sections order -->
+
+
+  <!-- Sanity Sections here -->
+  {sections && sections.length > 0 && (
+    <>
+      {sections.map((section) => {
+        if (section?._type === "homeHeroSvelte") {
+          return (
+            <Wrapper variant="carousel">
+              <HeroHome />
+            </Wrapper>
+          );
+        }
+        if (section?._type === "fruitLabelSkills") {
+          return (
+            <Wrapper variant="carousel">
+              <Skills />
+            </Wrapper>
+          );
+        }
+        if (section?._type === "hero1") {
+          return <Hero1 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section?._type === "hero2") {
+          return <Hero2 feature={section as import("@/data/sanity").Hero} />;
+        }
+        if (section?._type === "feature1") {
+          return (
+            <Feature1 feature={section as import("@/data/sanity").Feature1Section} />
+          );
+        }
+        if (section?._type === "caseStudyListings") {
+          return (
+            <CaseStudyListings section={section as import("@/data/sanity").CaseStudyListingsSection} />
+          );
+        }
+        return null;
+      })}
+    </>
+  )}
+  <!-- End Sanity Sections -->
+  <Hero1 />
+  <section>
+    <Wrapper class="overflow-hidden border-t border-base-200">
+      <LogoCloud
+        class="py-6 grid grid-cols-2 lg:-mx-8 sm:grid-cols-3 md:grid-cols-6"
+      />
+    </Wrapper>
+  </section>
+  <Feature1 />
+  <Feature2 />
+  <Feature3 />
+  <Feature4 />
+  <Feature5 />
+  <Testimonial1 />
+  <Pricing1 />
+</BaseLayout>

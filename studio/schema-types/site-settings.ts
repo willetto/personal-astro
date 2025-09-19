@@ -35,5 +35,16 @@ export const siteSettings = defineType({
       description: "Title used for <title> and basic SEO defaults.",
       validation: (rule) => rule.required(),
     }),
+    defineField({
+      name: "navigation",
+      title: "Navigation",
+      description:
+        "Add links to pages and choose their style. Drag to reorder for display order.",
+      type: "array",
+      of: [{ type: "navItem" }],
+      options: {
+        sortable: true,
+      },
+    }),
   ],
 });

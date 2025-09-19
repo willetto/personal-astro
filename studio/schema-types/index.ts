@@ -8,16 +8,24 @@ import { feature1 } from "./sections/feature1";
 import { homeHeroSvelte } from "./sections/homeHeroSvelte";
 import { fruitLabelSkills } from "./sections/fruitLabelSkills";
 import { caseStudyListings } from "./sections/caseStudyListings";
+import { cta } from "./elements/cta";
+import { navItem } from "./elements/navItem";
+import { contactForm } from "./sections/contactForm"; // Import the new contactForm schema
 
 export const schemaTypes = [
   page,
   portableText,
   siteSettings,
   caseStudy,
+  // Elements
+  cta,
+  navItem,
+  // Sections
   hero1,
   hero2,
   feature1,
   homeHeroSvelte,
   fruitLabelSkills,
   caseStudyListings,
+  contactForm, // Add the new contactForm schema
 ];

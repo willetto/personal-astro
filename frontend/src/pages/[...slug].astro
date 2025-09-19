@@ -1,0 +1,81 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { fetchAllPages, fetchPageBySlug } from "@/data/sanity/fetch";
+import type { PageDetail, Section } from "@/data/sanity";
+import Wrapper from "@/components/foundations/containers/Wrapper.astro"; // Import Wrapper
+
+// Import all section components
+import HeroHome from "@svelte_components/hero-home.svelte";
+import Skills from "@svelte_components/skills.svelte";
+import Hero1 from "@/components/headers/Hero1.astro";
+import Hero2 from "@/components/headers/Hero2.astro";
+import Feature1 from "@/components/features/Feature1.astro";
+import CaseStudyListings from "@/components/case-studies/CaseStudyListings.astro";
+import ContactForm from "@/components/forms/ContactForm.astro";
+
+export async function getStaticPaths() {
+  const pages = await fetchAllPages();
+
+  // Add a path for the home page (empty slug)
+  const homePagePath = { params: { slug: undefined } }; // Astro treats undefined as root
+
+  const paths = pages.map((page) => {
+    const slug = page.slug === "/" ? undefined : page.slug; // Handle root slug for home page
+    return { params: { slug: slug } };
+  });
+
+  return [...paths, homePagePath];
+}
+
+const { slug } = Astro.params;
+
+// Handle home page slugs
+const isHomePage = !slug || ["home", "index", "root"].includes(String(slug));
+const pageSlug = isHomePage ? "" : String(slug);
+
+const page: PageDetail | null = await fetchPageBySlug(pageSlug);
+
+if (!page) {
+  return Astro.redirect("/404");
+}
+
+// Map Sanity section types to Astro/Svelte components
+const sectionComponents = {
+  homeHeroSvelte: HeroHome,
+  fruitLabelSkills: Skills,
+  hero1: Hero1,
+  hero2: Hero2,
+  feature1: Feature1,
+  caseStudyListings: CaseStudyListings,
+  contactForm: ContactForm,
+} as const;
+
+---
+
+<BaseLayout>
+  {page.sections && page.sections.length > 0 ? (
+    <>
+      {page.sections.map((section: Section) => {
+        const Component = sectionComponents[section._type as keyof typeof sectionComponents];
+        if (Component) {
+          // Special handling for Svelte components
+          if (section._type === "homeHeroSvelte" || section._type === "fruitLabelSkills") {
+            return (
+              <Wrapper variant="carousel">
+                <Component client:load />
+              </Wrapper>
+            );
+          }
+          // Pass the entire section object as a prop to Astro components
+          return <Component feature={section} />;
+        }
+        return null;
+      })}
+    </>
+  ) : (
+    <div class="wrapper py-16 text-center">
+      <h1 class="text-4xl font-bold">No content found for this page.</h1>
+      <p class="mt-4 text-lg">Please add sections in Sanity Studio.</p>
+    </div>
+  )}
+</BaseLayout>

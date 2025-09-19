@@ -1,0 +1,53 @@
+---
+// Import all Lucide icons that might be used dynamically
+import {
+  Mail,
+  Brain,
+  Clock,
+  Info, // Changed from InfoCircle to Info as per Lucide naming
+  GitBranch,
+  Linkedin,
+  HelpCircle, // Using HelpCircle as a fallback icon
+  // Add more Lucide icons here as needed
+} from '@lucide/astro';
+
+interface Props {
+  name: string; // Kebab-case Lucide icon name from Sanity
+  size?: "xs" | "sm" | "base" | "md" | "lg" | "xl";
+  class?: string;
+}
+
+const { name, size = "base", class: className, ...rest } = Astro.props;
+
+const iconMap: Record<string, any> = {
+  "mail": Mail,
+  "brain": Brain,
+  "clock": Clock,
+  "info": Info, // Use "info" for InfoCircle
+  "git-branch": GitBranch,
+  "linkedin": Linkedin,
+  // Add more mappings here as needed
+};
+
+const IconComponent = iconMap[name] || HelpCircle; // Fallback to HelpCircle
+
+const sizeClasses = {
+  xs: "size-3",
+  sm: "size-4",
+  base: "size-5",
+  md: "size-6",
+  lg: "size-7",
+  xl: "size-8",
+};
+
+const currentSizeClass = sizeClasses[size];
+---
+
+<IconComponent
+  class:list={[
+    "lucide-icon",
+    currentSizeClass,
+    className,
+  ]}
+  {...rest}
+/>

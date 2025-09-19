@@ -1,5 +1,5 @@
 import { createClient } from "@sanity/client";
-import type { Section, SiteHead } from ".";
+import type { Section, SiteHead, NavItem, PageDetail, PageListItem } from ".";
 import {
   PAGE_BY_SLUG_QUERY,
   HOME_PAGE_WITH_SECTIONS_QUERY,
@@ -7,6 +7,7 @@ import {
   PAGE_LIST_QUERY,
   SITE_SETTINGS_HEAD_QUERY,
   SITE_SETTINGS_FAVICON_QUERY,
+  SITE_SETTINGS_NAVIGATION_QUERY,
 } from "./groq";
 
 const projectId = import.meta.env.SANITY_STUDIO_PROJECT_ID;
@@ -72,6 +73,42 @@ export async function fetchHomeSections(): Promise<Section[]> {
   }
 }
 
+export async function fetchAllPages(): Promise<PageListItem[]> {
+  try {
+    debugLog("Attempt to fetch all pages", { projectId, dataset });
+    const result = await sanityClient.fetch<PageListItem[]>(PAGE_LIST_QUERY);
+    debugLog("Found all pages", { count: result.length });
+    return Array.isArray(result) ? result : [];
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    errorLog("fetchAllPages failed", { message });
+    return [];
+  }
+}
+
+export async function fetchPageBySlug(slug: string): Promise<PageDetail | null> {
+  try {
+    debugLog("Attempt to fetch page by slug", { slug, projectId, dataset });
+    const page = await sanityClient.fetch<PageDetail | null>(
+      PAGE_BY_SLUG_QUERY,
+      { slug }
+    );
+    if (page?.sections && Array.isArray(page.sections)) {
+      debugLog("Found page by slug with sections", {
+        slug,
+        count: page.sections.length,
+      });
+      return page;
+    }
+    debugLog("No page found for slug", { slug });
+    return null;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    errorLog("fetchPageBySlug failed", { message });
+    return null;
+  }
+}
+
 export async function fetchSiteHead(): Promise<SiteHead | null> {
   try {
     debugLog("Fetch site settings (title + favicon)");
@@ -105,5 +142,36 @@ export async function fetchSiteFavicon(): Promise<SiteFavicon | null> {
     return result ?? null;
   } catch {
     return null;
+  }
+}
+
+export async function fetchSiteNavigation(): Promise<NavItem[]> {
+  try {
+    const result = await sanityClient.fetch<
+      | {
+          navigation?: Array<{
+            label?: string;
+            style?: "primary" | "secondary";
+            page?: { title?: string; slug?: string };
+          }>;
+        }
+      | null
+    >(SITE_SETTINGS_NAVIGATION_QUERY);
+
+    const items: NavItem[] = (result?.navigation ?? [])
+      .map((entry) => {
+        const slug = entry?.page?.slug ?? "";
+        const isHome = ["", "home", "index", "root"].includes(slug);
+        const href = isHome ? "/" : `/${slug}`;
+        const label = entry?.label || entry?.page?.title || "Untitled";
+        const style: "primary" | "secondary" =
+          entry?.style === "primary" ? "primary" : "secondary";
+        return { label, href, style };
+      })
+      .filter((i) => Boolean(i.href));
+
+    return items;
+  } catch {
+    return [];
   }
 }

@@ -1,0 +1,183 @@
+---
+import Wrapper from "@/components/foundations/containers/Wrapper.astro";
+import Text from "@/components/foundations/elements/Text.astro";
+import Button from "@/components/foundations/elements/Button.astro";
+import LucideIcon from "@/components/foundations/icons/LucideIcon.astro";
+import type { ContactFormSection } from "@/data/sanity";
+
+interface Props { feature?: ContactFormSection }
+const { feature } = Astro.props as Props;
+
+if (!feature) {
+  console.error("ContactForm component received no feature data.");
+  // Render a fallback or throw an error if no feature data is provided
+  // For now, we'll just return, which means nothing will render.
+  // In a real application, you might want a more user-friendly fallback.
+  // return Astro.redirect("/404"); // Or render a default message
+}
+
+const contactForm = feature;
+---
+
+{contactForm && (
+  <section class="overflow-hidden relative">
+    <Wrapper variant="standard" class="py-12 lg:py-32 relative lg:h-dvh">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+        <div class="lg:text-balance text-center lg:text-left">
+          {contactForm.tagline && (
+            <Text
+              class="span"
+              variant="textXS"
+              data-aos="fade-down"
+              data-aos-duration="1000"
+              class="flex items-center font-medium uppercase text-base-600 gap-2"
+            >
+              {contactForm.taglineIcon && (
+                <LucideIcon name={contactForm.taglineIcon} size="sm" class="text-yellow-600" />
+              )}
+              {contactForm.tagline}
+            </Text>
+          )}
+          {contactForm.headline && (
+            <Text
+              variant="displayXL"
+              data-aos="fade-up"
+              data-aos-duration="1000"
+              class="font-semibold tracking-tighter text-base-800 lg:text-balance mt-8"
+            >
+              {contactForm.headline}
+            </Text>
+          )}
+          {contactForm.description && (
+            <Text
+              tag="p"
+              variant="textBase"
+              data-aos="fade-up"
+              data-aos-duration="1500"
+              class="mt-4 font-medium text-base-500 md:text-balance"
+            >
+              {contactForm.description}
+            </Text>
+          )}
+          {contactForm.supportLinks && contactForm.supportLinks.length > 0 && (
+            <div
+              data-aos="fade-up"
+              data-aos-duration="2000"
+              class="flex flex-col mt-12 gap-2"
+            >
+              {contactForm.supportLinks.map((link) => (
+                link.href ? (
+                  <Text
+                    tag="p"
+                    variant="muted"
+                    href={link.href}
+                    class="text-base-600 hover:text-base-800 duration-300 flex items-center gap-2"
+                  >
+                    <LucideIcon name={link.icon} size="sm" class="text-teal-600" />
+                    {link.label}
+                  </Text>
+                ) : (
+                  <button
+                    id={link.action}
+                    class="text-base-600 hover:text-base-800 duration-300 flex items-center gap-2"
+                  >
+                    <LucideIcon name={link.icon} size="sm" class="text-teal-600" />
+                    {link.label}
+                  </button>
+                )
+              ))}
+            </div>
+          )}
+        </div>
+        <form name="contact" method="POST" data-netlify="true" action="#">
+          <input type="hidden" name="form-name" value="contact" />
+          <div class="flex flex-col gap-y-4">
+            <div>
+              <label class="text-sm leading-normal text-base-500 font-medium">
+                Name
+              </label>
+              <div class="mt-2.5">
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  required
+                  placeholder="Your name"
+                  class="block w-full h-10 px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="text-sm leading-normal text-base-500 font-medium">
+                Work Email
+              </label>
+              <div class="mt-2.5">
+                <input
+                  type="email"
+                  name="work-email"
+                  id="work-email"
+                  required
+                  placeholder="Your work email"
+                  class="block w-full h-10 px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="text-sm leading-normal text-base-500 font-medium">
+                Phone Number
+              </label>
+              <div class="mt-2.5">
+                <input
+                  type="tel"
+                  name="phone"
+                  id="phone"
+                  required
+                  placeholder="Your phone number"
+                  class="block w-full h-10 px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="text-sm leading-normal text-base-500 font-medium">
+                Company Site
+              </label>
+              <div class="mt-2.5">
+                <input
+                  type="url"
+                  name="company-site"
+                  id="company-site"
+                  required
+                  placeholder="https://yourcompany.com"
+                  class="block w-full h-10 px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="text-sm leading-normal text-base-500 font-medium">
+                Message
+              </label>
+              <div class="mt-2.5">
+                <textarea
+                  name="message"
+                  id="message"
+                  rows="5"
+                  required
+                  placeholder="Your message..."
+                  class="block w-full px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200 resize-y"
+                ></textarea>
+              </div>
+            </div>
+
+            <Button type="submit" size="lg" variant="default" class="w-full">
+              Submit
+            </Button>
+          </div>
+        </form>
+      </div>
+    </Wrapper>
+  </section>
+)}

@@ -23,15 +23,20 @@ const subheading =
   feature?.subheading ||
   "Instantly open accounts, connect directly to payment networks, and build with flexible, future-ready tools—no outdated systems holding you back.";
 
-const primaryLabel = feature?.primaryCtaLabel || "Get started";
-const primaryHref = feature?.primaryCtaHref || "/forms/sign-up";
-const primaryTarget = feature?.primaryCtaTarget || "";
-const primaryRel = primaryTarget === "_blank" ? "noopener noreferrer" : undefined;
+const ctas = (feature?.ctas && Array.isArray(feature.ctas) && feature.ctas.length > 0
+  ? feature.ctas
+  : [
+    { label: "Get started", href: "/forms/sign-up", target: "", variant: "default" },
+    { label: "Contact sales", href: "/forms/contact", target: "", variant: "muted" },
+  ]) as Array<import("@/data/sanity").Cta>;
 
-const secondaryLabel = feature?.secondaryCtaLabel || "Contact sales";
-const secondaryHref = feature?.secondaryCtaHref || "/forms/contact";
-const secondaryTarget = feature?.secondaryCtaTarget || "";
-const secondaryRel = secondaryTarget === "_blank" ? "noopener noreferrer" : undefined;
+const normalizedCtas = ctas.map((cta, idx) => ({
+  label: cta?.label ?? (idx === 0 ? "Get started" : "Contact sales"),
+  href: cta?.href ?? (idx === 0 ? "/forms/sign-up" : "/forms/contact"),
+  target: cta?.target ?? "",
+  rel: (cta?.target ?? "") === "_blank" ? "noopener noreferrer" : undefined,
+  variant: cta?.variant ?? (idx === 0 ? "default" : "muted"),
+}));
 
 const data = (feature?.features || [
   {
@@ -117,36 +122,25 @@ const data = (feature?.features || [
         data-aos-duration="2000"
         class="flex items-center mt-8 space-x-2"
       >
-        <Link
-          size="base"
-          variant="default"
-          href={primaryHref}
-          target={primaryTarget}
-          rel={primaryRel}
-          gap="xs"
-          class="group"
-        >
-          {primaryLabel}
-          <ChevronRight
-            size="sm"
-            class="duration-300 easy-out-in group-hover:translate-x-2"
-          />
-        </Link>
-        <Link
-          size="base"
-          variant="muted"
-          href={secondaryHref}
-          target={secondaryTarget}
-          rel={secondaryRel}
-          gap="xs"
-          class="group"
-        >
-          {secondaryLabel}
-          <ChevronRight
-            size="sm"
-            class="duration-300 easy-out-in group-hover:translate-x-2"
-          />
-        </Link>
+        {
+          normalizedCtas.slice(0, 2).map((cta) => (
+            <Link
+              size="base"
+              variant={cta.variant}
+              href={cta.href}
+              target={cta.target}
+              rel={cta.rel}
+              gap="xs"
+              class="group"
+            >
+              {cta.label}
+              <ChevronRight
+                size="sm"
+                class="duration-300 easy-out-in group-hover:translate-x-2"
+              />
+            </Link>
+          ))
+        }
       </div>
     </div>
     <ul

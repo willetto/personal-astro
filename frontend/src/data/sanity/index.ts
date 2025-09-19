@@ -1,5 +1,12 @@
 export type LinkTarget = "" | "_blank" | "_self" | "_parent" | "_top";
 
+export type Cta = {
+  label?: string;
+  href?: string;
+  target?: LinkTarget;
+  variant?: "default" | "muted";
+};
+
 export type Hero = {
   _type: "hero1" | "hero2";
   header?: string;
@@ -22,10 +29,7 @@ export type Feature1Section = {
   _type: "feature1";
   header?: string;
   subheading?: string;
-  primaryCtaLabel?: string;
-  primaryCtaHref?: string;
-  secondaryCtaLabel?: string;
-  secondaryCtaHref?: string;
+  ctas?: Cta[];
   features?: Feature1Item[];
 };
 
@@ -74,12 +78,40 @@ export type CaseStudyListingsSection = {
   viewAllButtonUrl?: string;
 };
 
+export type ContactFormSection = {
+  _type: "contactForm";
+  headline?: string;
+  description?: string;
+  tagline?: string;
+  taglineIcon?: string;
+  supportLinks?: Array<{
+    label: string;
+    icon: string;
+    href?: string;
+    action?: string;
+  }>;
+};
+
 export type Section =
   | Hero
   | Feature1Section
   | HomeHeroSvelteSection
   | FruitLabelSkillsSection
-  | CaseStudyListingsSection;
+  | CaseStudyListingsSection
+  | ContactFormSection; // Add the new ContactFormSection
+
+export type PageListItem = {
+  _id: string;
+  title: string;
+  slug: string;
+};
+
+export type PageDetail = {
+  _id: string;
+  title: string;
+  slug: string;
+  sections?: Section[];
+};
 
 export type SiteHead = {
   title?: string;
@@ -90,4 +122,17 @@ export type SiteHead = {
     assetExt?: string;
     alt?: string;
   };
+};
+
+// Navigation types
+export type NavStyle = "primary" | "secondary";
+
+export type NavItem = {
+  label: string;
+  href: string;
+  style: NavStyle;
+};
+
+export type SiteNavigation = {
+  navigation?: NavItem[];
 };
