@@ -1,0 +1,127 @@
+---
+// Foundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/foundations/elements/Text.astro";
+import Wrapper from "@/components/foundations/containers/Wrapper.astro";
+// Components
+import CaseStudyCard from "@/components/case-studies/CaseStudyCard.astro";
+// Data
+import { sanityClient } from "@/data/sanity/fetch";
+import { CASE_STUDY_LIST_QUERY } from "@/data/sanity/groq";
+import type { CaseStudy } from "@/data/sanity/index";
+
+const allCaseStudies: CaseStudy[] = await sanityClient.fetch(CASE_STUDY_LIST_QUERY);
+
+// Get unique tags for filtering
+const allTags = [...new Set(allCaseStudies.flatMap(cs => cs.tags || []))];
+---
+
+<BaseLayout>
+  <section>
+    <Wrapper variant="standard" class="pt-32 pb-12">
+      <div class="text-center">
+        <Text
+          tag="h1"
+          variant="display2XL"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          class="font-semibold tracking-tighter text-base-800 lg:text-balance"
+        >
+          Case Studies
+        </Text>
+        <Text
+          tag="p"
+          variant="textLG"
+          data-aos="fade-up"
+          data-aos-duration="1500"
+          class="max-w-2xl mt-4 font-medium text-base-600 mx-auto md:text-balance"
+        >
+          Explore our portfolio of successful projects and the solutions we've delivered for our clients.
+        </Text>
+      </div>
+    </Wrapper>
+  </section>
+
+  {allTags.length > 0 && (
+    <section>
+      <Wrapper variant="standard" class="border-t">
+        <div class="py-4">
+          <Text tag="p" variant="textSM" class="font-medium text-base-800 mb-3">
+            Filter by category:
+          </Text>
+          <div class="flex flex-wrap gap-2">
+            <button
+              class="filter-btn active px-3 py-1.5 text-sm font-medium rounded-full border transition-colors duration-200 bg-teal-100 text-teal-800 border-teal-200"
+              data-filter="all"
+            >
+              All
+            </button>
+            {allTags.map((tag) => (
+              <button
+                class="filter-btn px-3 py-1.5 text-sm font-medium rounded-full border transition-colors duration-200 bg-base-100 text-base-700 border-base-200 hover:bg-base-200"
+                data-filter={tag.toLowerCase().replace(/\s+/g, '-')}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      </Wrapper>
+    </section>
+  )}
+
+  <section>
+    <Wrapper variant="standard" class="py-8 border-t">
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3" id="case-studies-grid">
+        {allCaseStudies.map((caseStudy, index) => (
+          <div
+            class="case-study-item"
+            data-tags={caseStudy.tags?.map(tag => tag.toLowerCase().replace(/\s+/g, '-')).join(' ') || ''}
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-delay={index * 100}
+          >
+            <CaseStudyCard caseStudy={caseStudy} />
+          </div>
+        ))}
+      </div>
+
+      {allCaseStudies.length === 0 && (
+        <div class="text-center py-12">
+          <Text tag="p" variant="textLG" class="text-base-500">
+            No case studies available yet. Check back soon!
+          </Text>
+        </div>
+      )}
+    </Wrapper>
+  </section>
+</BaseLayout>
+
+<script>
+  // Simple filtering functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const caseStudyItems = document.querySelectorAll('.case-study-item');
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const filter = this.getAttribute('data-filter');
+        
+        // Update active button
+        filterButtons.forEach(btn => btn.classList.remove('active', 'bg-teal-100', 'text-teal-800', 'border-teal-200'));
+        filterButtons.forEach(btn => btn.classList.add('bg-base-100', 'text-base-700', 'border-base-200'));
+        
+        this.classList.add('active', 'bg-teal-100', 'text-teal-800', 'border-teal-200');
+        this.classList.remove('bg-base-100', 'text-base-700', 'border-base-200');
+
+        // Filter items
+        caseStudyItems.forEach((item) => {
+          const tags = item.getAttribute('data-tags') || '';
+          if (item instanceof HTMLElement) {
+            item.style.display = (filter === 'all' || tags.includes(filter)) ? 'block' : 'none';
+          }
+        });
+      });
+    });
+  });
+</script>

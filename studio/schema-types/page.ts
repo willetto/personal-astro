@@ -31,9 +31,10 @@ export const page = defineType({
         { type: "hero1" },
         { type: "hero2" },
         { type: "feature1" },
+        { type: "caseStudyListings" },
       ],
       description:
-        "Structured sections that render on the frontend. Add hero sections and Feature 1 here.",
+        "Structured sections that render on the frontend. Add hero sections, features, and case study listings here.",
     }),
   ],
   preview: {

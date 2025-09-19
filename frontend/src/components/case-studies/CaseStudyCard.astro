@@ -1,0 +1,95 @@
+---
+import Text from "@/components/foundations/elements/Text.astro";
+import { sanityImageUrl } from "@/utils/sanity-image";
+// Icons
+import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
+
+// Content
+const { caseStudy } = Astro.props;
+const url = "/case-studies/" + caseStudy.slug;
+const projectDate = caseStudy.projectDate
+  ? new Date(caseStudy.projectDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+    })
+  : null;
+const imageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 600, 400);
+---
+
+<div
+  class="CaseStudyCard relative overflow-hidden group flex h-full justify-between flex-col gap-6 bg-white group transition-all md:min-h-[400px] cursor-pointer hover:shadow-xl shadow rounded-2xl p-6 outline outline-base-200 duration-500"
+>
+  <a href={url} title={caseStudy.title} class="absolute inset-0 z-10"></a>
+  
+  <div>
+    <img
+      src={imageUrl}
+      alt={caseStudy.featuredImage.alt}
+      width="600"
+      height="400"
+      class="object-cover object-center aspect-4/3 rounded-xl w-full"
+      loading="lazy"
+    />
+    
+    <div class="mt-4">
+      {projectDate && (
+        <Text tag="p" variant="textXS" class="uppercase text-base-400 mb-2">
+          {projectDate}
+        </Text>
+      )}
+      
+      <Text tag="h3" variant="textLG" class="font-semibold text-base-900 mb-2">
+        {caseStudy.title}
+      </Text>
+      
+      {caseStudy.clientName && (
+        <Text tag="p" variant="textSM" class="text-teal-600 font-medium mb-2">
+          {caseStudy.clientName}
+        </Text>
+      )}
+      
+      {caseStudy.description && (
+        <Text
+          tag="p"
+          variant="textSM"
+          class="text-base-600 text-balance line-clamp-3 leading-relaxed"
+        >
+          {caseStudy.description}
+        </Text>
+      )}
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    {/* Technologies */}
+    {caseStudy.technologies && caseStudy.technologies.length > 0 && (
+      <div class="flex flex-wrap gap-1.5">
+        {caseStudy.technologies.slice(0, 4).map((tech) => (
+          <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-base-100 text-base-700 border border-base-200">
+            {tech}
+          </span>
+        ))}
+        {caseStudy.technologies.length > 4 && (
+          <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-base-100 text-base-500">
+            +{caseStudy.technologies.length - 4} more
+          </span>
+        )}
+      </div>
+    )}
+
+    {/* CTA */}
+    <div class="pt-2">
+      <Text
+        tag="p"
+        variant="textSM"
+        class="flex items-center font-medium gap-2 text-base-800"
+      >
+        View Case Study
+        <ChevronRight
+          size="sm"
+          class="duration-300 ease-out group-hover:translate-x-2"
+        />
+      </Text>
+    </div>
+  </div>
+</div>

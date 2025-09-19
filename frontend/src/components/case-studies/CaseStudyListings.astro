@@ -1,0 +1,70 @@
+---
+// Foundations
+import Text from "@/components/foundations/elements/Text.astro";
+import Button from "@/components/foundations/elements/Button.astro";
+import Wrapper from "@/components/foundations/containers/Wrapper.astro";
+// Components
+import CaseStudyCard from "@/components/case-studies/CaseStudyCard.astro";
+
+// Content
+const { section } = Astro.props;
+const { header, subheading, selectedCaseStudies, showViewAllButton, viewAllButtonText, viewAllButtonUrl } = section;
+---
+
+<section>
+  <Wrapper variant="standard" class="py-16">
+    {(header || subheading) && (
+      <div class="text-center mb-12">
+        {header && (
+          <Text
+            tag="h2"
+            variant="display2XL"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            class="font-semibold tracking-tighter text-base-800 lg:text-balance"
+          >
+            {header}
+          </Text>
+        )}
+        {subheading && (
+          <Text
+            tag="p"
+            variant="textLG"
+            data-aos="fade-up"
+            data-aos-duration="1500"
+            class="mt-4 text-base-600 max-w-2xl mx-auto"
+          >
+            {subheading}
+          </Text>
+        )}
+      </div>
+    )}
+
+    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {selectedCaseStudies?.map((item, index) => (
+        <div
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay={index * 100}
+        >
+          <CaseStudyCard caseStudy={item.caseStudy} />
+        </div>
+      ))}
+    </div>
+
+    {showViewAllButton && viewAllButtonUrl && (
+      <div class="text-center mt-12">
+        <Button
+          href={viewAllButtonUrl}
+          variant="default"
+          size="lg"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+        >
+          {viewAllButtonText || "View All Case Studies"}
+        </Button>
+      </div>
+    )}
+  </Wrapper>
+</section>

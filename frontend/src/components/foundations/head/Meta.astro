@@ -1,8 +1,8 @@
 ---
 import { fetchSiteHead } from "@/data/sanity/fetch";
 
-const head: any = await fetchSiteHead();
-const siteTitle = (head && (head as any).siteTitle) || "Your Website Title";
+const head = (await fetchSiteHead()) as (import("@/data/sanity").SiteHead | null);
+const siteTitle = head?.title || "Your Website Title";
 ---
 
 <!-- Meta Tags -->
@@ -19,16 +19,4 @@ const siteTitle = (head && (head as any).siteTitle) || "Your Website Title";
 <!-- For IE -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<script>
-  (() => {
-    try {
-      const __siteTitle = JSON.parse(`{JSON.stringify(siteTitle)}`);
-      console.debug('[Head] siteTitle (Sanity)', __siteTitle);
-      requestAnimationFrame(() => {
-        console.debug('[Head] document.title (after frame)', document.title);
-      });
-    } catch (e) {
-      console.error('[Head] siteTitle debug failed', e);
-    }
-  })();
-  </script>
+<!-- Debug script removed to prevent inline JS parse issues -->

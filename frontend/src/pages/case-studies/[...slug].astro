@@ -1,0 +1,31 @@
+---
+import CaseStudyLayout from "@/layouts/CaseStudyLayout.astro";
+import { sanityClient } from "@/data/sanity/fetch";
+import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from "@/data/sanity/groq";
+import type { CaseStudy } from "@/data/sanity/index";
+
+export async function getStaticPaths() {
+  const slugs = await sanityClient.fetch(CASE_STUDY_SLUGS_QUERY);
+  
+  return slugs.map((item: { slug: string }) => ({
+    params: { slug: item.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect("/404");
+}
+
+const caseStudy: CaseStudy = await sanityClient.fetch(CASE_STUDY_BY_SLUG_QUERY, { slug });
+
+if (!caseStudy) {
+  return Astro.redirect("/404");
+}
+---
+
+<CaseStudyLayout caseStudy={caseStudy}>
+  <!-- Additional content can be added here if needed -->
+  <!-- The main case study content is handled by the layout -->
+</CaseStudyLayout>

@@ -13,6 +13,7 @@ import Feature5 from "@/components/features/Feature5.astro";
 import Testimonial1 from "@/components/testimonials/Testimonial1.astro";
 import Pricing1 from "@/components/pricing/Pricing1.astro";
 import Hero2 from "@/components/headers/Hero2.astro";
+import CaseStudyListings from "@/components/case-studies/CaseStudyListings.astro";
 import { fetchHomeSections } from "@/data/sanity/fetch";
 // Svelte component
 import HeroHome from "@svelte_components/hero-home.svelte";
@@ -57,6 +58,11 @@ const sectionComponents = {
         if (section?._type === "feature1") {
           return (
             <Feature1 feature={section as import("@/data/sanity").Feature1Section} />
+          );
+        }
+        if (section?._type === "caseStudyListings") {
+          return (
+            <CaseStudyListings section={section as import("@/data/sanity").CaseStudyListingsSection} />
           );
         }
         return null;
