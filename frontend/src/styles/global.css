@@ -169,6 +169,11 @@
     --tw-shadow-color: var(--color-tw-yellow-o5);
   }
 
+  *::selection {
+    background-color: var(--color-tw-blue-o8);
+    color: var(--color-tw-white);
+  }
+
   /* Shiki code style */
   /* base Tokens */
   --astro-code-foreground: var(--color-base-200);
