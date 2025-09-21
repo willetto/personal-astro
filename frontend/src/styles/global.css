@@ -168,7 +168,9 @@
   .shadow-tw-yellow-o5 {
     --tw-shadow-color: var(--color-tw-yellow-o5);
   }
-
+  .brand-background-color {
+    background-color: light-dark(var(--color-tw-white), var(--color-base-800));
+  }
   *::selection {
     background-color: var(--color-tw-blue-o8);
     color: var(--color-tw-white);

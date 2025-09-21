@@ -1,0 +1,28 @@
+---
+// LogoLink Component - A reusable logo link component with proper accessibility
+// Props:
+// - class: Additional CSS classes to apply to the link element
+// - href: The URL to link to (defaults to "/")
+// - ...rest: Any other valid attributes for an <a> element
+
+const { 
+  class: className = "", 
+  href = "/",
+  ...rest 
+} = Astro.props;
+---
+
+<a href={href} class={className} {...rest}>
+  <span class="sr-only">Go to homepage</span>
+  <p class="name font-display uppercase text-4xl">Trey Willetto</p>
+</a>
+
+<style>
+  .name {
+    color: light-dark(var(--color-base-700), var(--color-tw-yellow));
+    transition: color 0.3s ease-in-out;
+  }
+  .name:hover, .name:focus-visible {
+    color: var(--color-tw-green);
+  }
+</style>
