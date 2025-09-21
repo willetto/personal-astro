@@ -20,7 +20,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
         variant="display2XL"
         data-aos="fade-up"
         data-aos-duration="1000"
-        class="font-semibold tracking-tighter text-base-800 lg:text-balance"
+        class="font-semibold tracking-tighter brand-heading-color lg:text-balance"
       >
         {caseStudy.title}
       </Text>
@@ -30,7 +30,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
           variant="textLG"
           data-aos="fade-up"
           data-aos-duration="1500"
-          class="mt-4 text-base text-base-600 max-w-2xl"
+          class="mt-4 text-base brand-text-color max-w-2xl"
         >
           {caseStudy.description}
         </Text>
@@ -51,10 +51,10 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
             
             {caseStudy.challenge && (
               <div class="mt-8">
-                <Text tag="h2" variant="displayMD" class="font-semibold text-base-800 mb-4">
+                <Text tag="h2" variant="displayMD" class="font-semibold brand-heading-color mb-4">
                   Challenge
                 </Text>
-                <Text tag="p" variant="textBase" class="text-base-600 leading-relaxed">
+                <Text tag="p" variant="textBase" class="brand-text-color leading-relaxed">
                   {caseStudy.challenge}
                 </Text>
               </div>
@@ -62,10 +62,10 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
 
             {caseStudy.solution && (
               <div class="mt-8">
-                <Text tag="h2" variant="displayMD" class="font-semibold text-base-800 mb-4">
+                <Text tag="h2" variant="displayMD" class="font-semibold brand-heading-color mb-4">
                   Solution
                 </Text>
-                <Text tag="p" variant="textBase" class="text-base-600 leading-relaxed">
+                <Text tag="p" variant="textBase" class="brand-text-color leading-relaxed">
                   {caseStudy.solution}
                 </Text>
               </div>
@@ -73,10 +73,10 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
 
             {caseStudy.results && (
               <div class="mt-8">
-                <Text tag="h2" variant="displayMD" class="font-semibold text-base-800 mb-4">
+                <Text tag="h2" variant="displayMD" class="font-semibold brand-heading-color mb-4">
                   Results
                 </Text>
-                <Text tag="p" variant="textBase" class="text-base-600 leading-relaxed">
+                <Text tag="p" variant="textBase" class="brand-text-color leading-relaxed">
                   {caseStudy.results}
                 </Text>
               </div>
@@ -84,7 +84,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
 
             {caseStudy.galleryImages && caseStudy.galleryImages.length > 0 && (
               <div class="mt-12">
-                <Text tag="h2" variant="displayMD" class="font-semibold text-base-800 mb-6">
+                <Text tag="h2" variant="displayMD" class="font-semibold brand-heading-color mb-6">
                   Gallery
                 </Text>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -98,7 +98,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
                         class="w-full h-auto object-cover rounded-lg"
                       />
                       {image.caption && (
-                        <Text tag="p" variant="textSM" class="mt-2 text-base-500 italic">
+                        <Text tag="p" variant="textSM" class="mt-2 brand-text-color italic">
                           {image.caption}
                         </Text>
                       )}
@@ -113,16 +113,16 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
         <div class="space-y-6">
           {/* Project Details */}
           <div>
-            <Text tag="h3" variant="textLG" class="font-semibold text-base-800 mb-4">
+            <Text tag="h3" variant="textLG" class="font-semibold brand-heading-color mb-4">
               Project Details
             </Text>
             <div class="space-y-3">
               {caseStudy.clientName && (
                 <div>
-                  <Text tag="p" variant="textSM" class="font-medium text-base-800">
+                  <Text tag="p" variant="textSM" class="font-medium brand-heading-color">
                     Client
                   </Text>
-                  <Text tag="p" variant="textSM" class="text-base-600">
+                  <Text tag="p" variant="textSM" class="brand-text-color">
                     {caseStudy.clientName}
                   </Text>
                 </div>
@@ -130,10 +130,10 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
               
               {caseStudy.projectDate && (
                 <div>
-                  <Text tag="p" variant="textSM" class="font-medium text-base-800">
+                  <Text tag="p" variant="textSM" class="font-medium brand-heading-color">
                     Date
                   </Text>
-                  <Text tag="p" variant="textSM" class="text-base-600">
+                  <Text tag="p" variant="textSM" class="brand-text-color">
                     {new Date(caseStudy.projectDate).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
@@ -144,7 +144,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
 
               {caseStudy.websiteUrl && (
                 <div>
-                  <Text tag="p" variant="textSM" class="font-medium text-base-800">
+                  <Text tag="p" variant="textSM" class="font-medium brand-heading-color">
                     Website
                   </Text>
                   <Link
@@ -153,7 +153,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
                     rel="noopener noreferrer"
                     variant="link"
                     size="sm"
-                    class="text-teal-600 hover:text-teal-700"
+                    class="brand-text-color"
                   >
                     View Live Site
                   </Link>
@@ -162,7 +162,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
 
               {caseStudy.githubUrl && (
                 <div>
-                  <Text tag="p" variant="textSM" class="font-medium text-base-800">
+                  <Text tag="p" variant="textSM" class="font-medium brand-heading-color">
                     Repository
                   </Text>
                   <Link
@@ -171,7 +171,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
                     rel="noopener noreferrer"
                     variant="link"
                     size="sm"
-                    class="text-teal-600 hover:text-teal-700"
+                    class="brand-text-color"
                   >
                     View on GitHub
                   </Link>
@@ -183,12 +183,12 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
           {/* Technologies */}
           {caseStudy.technologies && caseStudy.technologies.length > 0 && (
             <div class="pt-6 border-t border-base-200">
-              <Text tag="p" variant="textSM" class="text-base-800 font-medium mb-3">
+              <Text tag="p" variant="textSM" class="brand-heading-color font-medium mb-3">
                 Technologies:
               </Text>
               <div class="flex flex-wrap gap-2">
                 {caseStudy.technologies.map((tech) => (
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-base-100 brand-text-color border brand-border-color">
                     {tech}
                   </span>
                 ))}
@@ -199,12 +199,12 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
           {/* Tags */}
           {caseStudy.tags && caseStudy.tags.length > 0 && (
             <div class="pt-6 border-t border-base-200">
-              <Text tag="p" variant="textSM" class="text-base-800 font-medium mb-3">
+              <Text tag="p" variant="textSM" class="brand-heading-color font-medium mb-3">
                 Tags:
               </Text>
               <div class="flex flex-wrap gap-2">
                 {caseStudy.tags.map((tag) => (
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-base-100 text-base-700 border border-base-200">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-base-100 brand-text-color border brand-border-color">
                     {tag}
                   </span>
                 ))}
@@ -216,3 +216,8 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
     </Wrapper>
   </section>
 </BaseLayout>
+<style>
+  .prose a:hover {
+    color: var(--heading-text-color);
+  }
+</style>

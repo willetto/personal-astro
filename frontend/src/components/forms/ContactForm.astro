@@ -21,19 +21,18 @@ const contactForm = feature;
 
 {contactForm && (
   <section class="overflow-hidden relative">
-    <Wrapper variant="standard" class="py-12 lg:py-32 relative lg:h-dvh">
+    <Wrapper variant="standard" class="py-12 lg:py-24 relative">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
         <div class="lg:text-balance text-center lg:text-left">
           {contactForm.tagline && (
             <Text
-              class="span"
               variant="textXS"
               data-aos="fade-down"
               data-aos-duration="1000"
-              class="flex items-center font-medium uppercase text-base-600 gap-2"
+              class="flex items-center font-medium uppercase brand-text-color gap-2"
             >
               {contactForm.taglineIcon && (
-                <LucideIcon name={contactForm.taglineIcon} size="sm" class="text-yellow-600" />
+                <LucideIcon name={contactForm.taglineIcon} size="sm" class="orange" />
               )}
               {contactForm.tagline}
             </Text>
@@ -43,7 +42,7 @@ const contactForm = feature;
               variant="displayXL"
               data-aos="fade-up"
               data-aos-duration="1000"
-              class="font-semibold tracking-tighter text-base-800 lg:text-balance mt-8"
+              class="font-semibold uppercase font-display brand-heading-color lg:text-balance mt-8"
             >
               {contactForm.headline}
             </Text>
@@ -54,7 +53,7 @@ const contactForm = feature;
               variant="textBase"
               data-aos="fade-up"
               data-aos-duration="1500"
-              class="mt-4 font-medium text-base-500 md:text-balance"
+              class="mt-4 font-medium brand-text-color md:text-balance"
             >
               {contactForm.description}
             </Text>
@@ -66,25 +65,16 @@ const contactForm = feature;
               class="flex flex-col mt-12 gap-2"
             >
               {contactForm.supportLinks.map((link) => (
-                link.href ? (
-                  <Text
-                    tag="p"
-                    variant="muted"
-                    href={link.href}
-                    class="text-base-600 hover:text-base-800 duration-300 flex items-center gap-2"
-                  >
-                    <LucideIcon name={link.icon} size="sm" class="text-teal-600" />
-                    {link.label}
-                  </Text>
-                ) : (
-                  <button
-                    id={link.action}
-                    class="text-base-600 hover:text-base-800 duration-300 flex items-center gap-2"
-                  >
-                    <LucideIcon name={link.icon} size="sm" class="text-teal-600" />
-                    {link.label}
-                  </button>
-                )
+                <Text
+                  tag="a"
+                  variant="muted"
+                  href={link.href || "#"}
+                  target={link.href ? "_blank" : "_self"}
+                  class="brand-text-color duration-300 flex items-center gap-2"
+                >
+                  <LucideIcon name={link.icon} size="sm" class="orange"/>
+                  {link.label}
+                </Text>
               ))}
             </div>
           )}
@@ -93,7 +83,7 @@ const contactForm = feature;
           <input type="hidden" name="form-name" value="contact" />
           <div class="flex flex-col gap-y-4">
             <div>
-              <label class="text-sm leading-normal text-base-500 font-medium">
+              <label class="text-sm leading-normal brand-text-color font-medium">
                 Name
               </label>
               <div class="mt-2.5">
@@ -103,29 +93,29 @@ const contactForm = feature;
                   id="name"
                   required
                   placeholder="Your name"
-                  class="block w-full h-10 px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
+                  class="block w-full h-10 px-4 py-2 text-sm brand-text-color border brand-border-color rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-base-100 focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
                 />
               </div>
             </div>
 
             <div>
-              <label class="text-sm leading-normal text-base-500 font-medium">
-                Work Email
+              <label class="text-sm leading-normal brand-text-color font-medium">
+                Email
               </label>
               <div class="mt-2.5">
                 <input
                   type="email"
-                  name="work-email"
-                  id="work-email"
+                  name="email"
+                  id="email"
                   required
-                  placeholder="Your work email"
-                  class="block w-full h-10 px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
+                  placeholder="Your email"
+                  class="block w-full h-10 px-4 py-2 text-sm brand-text-color border brand-border-color rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-base-100 focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
                 />
               </div>
             </div>
 
             <div>
-              <label class="text-sm leading-normal text-base-500 font-medium">
+              <label class="text-sm leading-normal brand-text-color font-medium">
                 Phone Number
               </label>
               <div class="mt-2.5">
@@ -133,15 +123,14 @@ const contactForm = feature;
                   type="tel"
                   name="phone"
                   id="phone"
-                  required
                   placeholder="Your phone number"
-                  class="block w-full h-10 px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
+                  class="block w-full h-10 px-4 py-2 text-sm brand-text-color border brand-border-color rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-base-100 focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
                 />
               </div>
             </div>
 
             <div>
-              <label class="text-sm leading-normal text-base-500 font-medium">
+              <label class="text-sm leading-normal brand-text-color font-medium">
                 Company Site
               </label>
               <div class="mt-2.5">
@@ -149,15 +138,14 @@ const contactForm = feature;
                   type="url"
                   name="company-site"
                   id="company-site"
-                  required
                   placeholder="https://yourcompany.com"
-                  class="block w-full h-10 px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
+                  class="block w-full h-10 px-4 py-2 text-sm brand-text-color border brand-border-color rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-base-100 focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200"
                 />
               </div>
             </div>
 
             <div>
-              <label class="text-sm leading-normal text-base-500 font-medium">
+              <label class="text-sm leading-normal brand-text-color font-medium">
                 Message
               </label>
               <div class="mt-2.5">
@@ -167,12 +155,12 @@ const contactForm = feature;
                   rows="5"
                   required
                   placeholder="Your message..."
-                  class="block w-full px-4 py-2 text-sm text-teal-700 border border-transparent rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-transparent focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200 resize-y"
+                  class="block w-full px-4 py-2 text-sm brand-text-color border brand-border-color rounded-lg appearance-none duration-300 bg-base-100 placeholder-base-400 focus:bg-base-100 focus:outline-none focus:ring-teal-500 focus:ring-offset-2 focus:ring-2 focus:ring-offset-base-200 resize-none"
                 ></textarea>
               </div>
             </div>
 
-            <Button type="submit" size="lg" variant="default" class="w-full">
+            <Button type="submit" size="lg" variant="default" class="w-full cursor-pointer">
               Submit
             </Button>
           </div>
@@ -181,3 +169,8 @@ const contactForm = feature;
     </Wrapper>
   </section>
 )}
+<style>
+  .support-links a:hover {
+    color: var(--heading-text-color);
+  }
+</style>

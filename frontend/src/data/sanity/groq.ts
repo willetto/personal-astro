@@ -61,8 +61,7 @@ export const CONTACT_FORM_FIELDS = `
   supportLinks[] {
     label,
     icon,
-    href,
-    action
+    href
   }
 `;
 

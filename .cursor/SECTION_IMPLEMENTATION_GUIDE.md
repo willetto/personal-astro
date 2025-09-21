@@ -2,17 +2,115 @@
 
 This guide transforms static Astro sections into dynamic, CMS-managed sections using Sanity. Instead of following a template, this guide asks strategic questions to help you make the right schema design decisions during migration.
 
-## 🎯 Migration Philosophy
+## Migration Philosophy
 
 **Ask First, Build Second**: Every hardcoded element should prompt a question about how it should be managed in the CMS. This guide helps you identify these elements and make informed decisions.
 
 ---
 
-## 🔍 Step 1: Section Analysis & Discovery
+## Light/Dark Mode Implementation Guide
+
+This project uses a brand token system for consistent light/dark mode support across all components. All text colors, borders, and interactive elements should use these standardized tokens instead of direct Tailwind utility classes.
+
+### Brand Color Tokens
+
+The following CSS classes are defined in [`frontend/src/styles/global.css`](frontend/src/styles/global.css) and should be used throughout the project:
+
+- `.brand-heading-color` - For headings, titles, and primary text elements
+- `.brand-text-color` - For body text, descriptions, and secondary text elements
+- `.brand-border-color` - For borders, dividers, and outline elements
+
+These classes automatically adapt to light/dark mode using CSS `light-dark()` functions:
+
+```css
+.brand-heading-color {
+  color: var(--heading-text-color);
+}
+.brand-text-color {
+  color: var(--body-text-color);
+}
+.brand-border-color {
+  border-color: light-dark(var(--color-base-200), var(--color-base-700));
+}
+```
+
+### Implementation Strategy
+
+**Replace Tailwind Color Utilities:**
+
+Instead of using direct Tailwind color classes, use brand tokens:
+
+```astro
+<!-- Before: Direct Tailwind classes -->
+<h1 class="text-base-800 dark:text-base-50">Title</h1>
+<p class="text-base-600 dark:text-base-300">Description</p>
+<div class="border-base-200 dark:border-base-700">Content</div>
+
+<!-- After: Brand tokens -->
+<h1 class="brand-heading-color">Title</h1>
+<p class="brand-text-color">Description</p>
+<div class="border brand-border-color">Content</div>
+```
+
+**Surface Colors:**
+
+For backgrounds that should remain light but slightly darker than pure white:
+- Use `bg-base-100` for cards, inputs, and content surfaces
+- This provides a subtle contrast while maintaining readability in both modes
+
+**Hover States:**
+
+Since Tailwind doesn't generate hover variants for custom classes, use scoped CSS for hover effects:
+
+```astro
+<style>
+  .component-name a:hover {
+    color: var(--heading-text-color);
+  }
+</style>
+```
+
+### Component Conversion Checklist
+
+When updating components for light/dark mode:
+
+1. **Text Elements:**
+   - Replace `text-base-800`, `text-base-900` with `brand-heading-color`
+   - Replace `text-base-600`, `text-base-500` with `brand-text-color`
+
+2. **Interactive Elements:**
+   - Replace hover color utilities with scoped CSS using CSS variables
+   - Ensure focus states work in both modes
+
+3. **Borders and Dividers:**
+   - Replace `border-base-200`, `outline-base-200` with `border brand-border-color`
+   - Ensure border width classes (`border`, `border-2`, etc.) are preserved
+
+4. **Form Elements:**
+   - Use `bg-base-100` for input backgrounds
+   - Replace `focus:bg-transparent` with `focus:bg-base-100` to prevent transparency issues
+   - Apply `brand-text-color` to input text and labels
+
+5. **Cards and Surfaces:**
+   - Replace `bg-white` with `bg-base-100` for subtle contrast
+   - Maintain existing shadow and radius classes
+
+### Testing Light/Dark Mode
+
+Always test components in both light and dark modes:
+
+1. Verify text contrast and readability
+2. Check that interactive elements (buttons, links) have proper hover states
+3. Ensure form inputs remain usable and visible
+4. Confirm borders and dividers are visible but not overwhelming
+
+---
+
+## Step 1: Section Analysis & Discovery
 
 Before touching any code, analyze the existing section to understand its structure and content patterns.
 
-### 🤔 Discovery Questions to Ask
+### Discovery Questions to Ask
 
 **Start by examining the Astro component file:**
 
@@ -33,7 +131,7 @@ Before touching any code, analyze the existing section to understand its structu
    - Feature lists that evolve
    - Contact information or links
 
-### 🔍 Hardcoded Data Pattern Detection
+### Hardcoded Data Pattern Detection
 
 **When you find hardcoded arrays or objects, ask:**
 
@@ -55,7 +153,7 @@ const data = [
 - **"Do items need different layouts or types?"** → Union types vs single object type
 - **"Should items be reusable across sections?"** → References vs embedded objects
 
-### 🎨 Icon Handling Decision Tree
+### Icon Handling Decision Tree
 
 **When you encounter icon references:**
 
@@ -113,9 +211,9 @@ defineField({
 
 ---
 
-## 🏗️ Step 2: Interactive Schema Design
+## Step 2: Interactive Schema Design
 
-### 🤔 Content Structure Questions
+### Content Structure Questions
 
 **For each content element, ask:**
 
@@ -132,7 +230,7 @@ defineField({
    - Critical content: Add `validation: (rule) => rule.required()`
    - Optional enhancements: Leave optional with good defaults
 
-### 🔄 Repeating Content Patterns
+### Repeating Content Patterns
 
 **When you find repeating elements (like feature cards), ask:**
 
@@ -148,7 +246,7 @@ defineField({
 3. **"Do items need ordering controls?"**
    - Arrays are naturally orderable in Sanity Studio
 
-### 🎯 CTA (Call-to-Action) Strategy
+### CTA (Call-to-Action) Strategy
 
 **The project standard is two CTAs (primary + secondary). Ask:**
 
@@ -165,7 +263,7 @@ defineField({
    - Internal navigation: Usually same window
    - Provide target options: `["", "_blank", "_self", "_parent", "_top"]`
 
-### 📐 Layout & Alignment Decisions
+### Layout & Alignment Decisions
 
 **When the original design has specific alignment:**
 
@@ -180,26 +278,26 @@ defineField({
 
 ---
 
-## 🛠️ Step 3: Implementation Workflow
+## Step 3: Implementation Workflow
 
 ### Schema Creation Checklist
 
 ```typescript
 // Template with decision prompts
 export const yourSection = defineType({
-  name: "yourSection", // ❓ Does this match your component name?
-  title: "Your Section", // ❓ Is this clear for content creators?
+  name: "yourSection", // Does this match your component name?
+  title: "Your Section", // Is this clear for content creators?
   type: "object",
   fields: [
-    // ❓ What's the main heading?
+    // What's the main heading?
     defineField({
       name: "header",
       title: "Header",
       type: "string",
-      validation: (rule) => rule.required(), // ❓ Is this required?
+      validation: (rule) => rule.required(), // Is this required?
     }),
     
-    // ❓ Is subheading simple text or rich content?
+    // Is subheading simple text or rich content?
     defineField({
       name: "subheading", 
       title: "Text",
@@ -207,7 +305,7 @@ export const yourSection = defineType({
       rows: 3,
     }),
 
-    // ❓ Does original design support alignment options?
+    // Does original design support alignment options?
     defineField({
       name: "alignment",
       title: "Alignment", 
@@ -220,10 +318,10 @@ export const yourSection = defineType({
         layout: "radio",
         direction: "horizontal",
       },
-      initialValue: "left", // ❓ What's the default?
+      initialValue: "left", // What's the default?
     }),
 
-    // ❓ Are there hardcoded arrays that need to become dynamic?
+    // Are there hardcoded arrays that need to become dynamic?
     defineField({
       name: "items", // Replace with your array name
       title: "Items",
@@ -234,21 +332,21 @@ export const yourSection = defineType({
           title: "Item", 
           type: "object",
           fields: [
-            // ❓ Icon library or custom upload?
+            // Icon library or custom upload?
             defineField({
               name: "icon",
               title: "Icon",
               type: "string", // or "image" for uploads
               options: {
                 list: [
-                  // ❓ Which icons from /icons/ are relevant?
+                  // Which icons from /icons/ are relevant?
                   { title: "Filters", value: "Filters" },
                   { title: "Wave Square", value: "WaveSquare" },
                   // Add relevant icons
                 ]
               }
             }),
-            // ❓ What other fields does each item need?
+            // What other fields does each item need?
             defineField({
               name: "title",
               title: "Title",
@@ -273,7 +371,7 @@ export const yourSection = defineType({
           },
         }),
       ],
-      validation: (rule) => rule.min(1).max(8), // ❓ What are sensible limits?
+      validation: (rule) => rule.min(1).max(8), // What are sensible limits?
     }),
 
     // Standard CTA fields (project requirement: always include both)
@@ -357,9 +455,9 @@ export const yourSection = defineType({
 
 ---
 
-## 🎨 Step 4: Component Conversion Strategy
+## Step 4: Component Conversion Strategy
 
-### 🤔 Component Analysis Questions
+### Component Analysis Questions
 
 **Before modifying the Astro component:**
 
@@ -380,16 +478,16 @@ export const yourSection = defineType({
 
 ```astro
 ---
-// ❓ What type should this component accept?
+// What type should this component accept?
 interface Props { feature?: import("@/data/sanity").YourSectionType }
 const { feature } = Astro.props as Props;
 
-// ❓ What are sensible defaults from the original hardcoded values?
+// What are sensible defaults from the original hardcoded values?
 const header = feature?.header || "Default Header";
 const subheading = feature?.subheading || "Default description";
 const isCenter = (feature?.alignment || "left") === "center";
 
-// ❓ How should CTAs be handled?
+// How should CTAs be handled?
 const primaryLabel = feature?.primaryCtaLabel || "";
 const primaryHref = feature?.primaryCtaHref || "#_";
 const primaryTarget = feature?.primaryCtaTarget || "";
@@ -400,7 +498,7 @@ const secondaryHref = feature?.secondaryCtaHref || "#_";
 const secondaryTarget = feature?.secondaryCtaTarget || "";
 const secondaryRel = secondaryTarget === "_blank" ? "noopener noreferrer" : undefined;
 
-// ❓ How should hardcoded arrays be replaced?
+// How should hardcoded arrays be replaced?
 const items = feature?.items || [
   // Provide sensible defaults from original hardcoded data
   {
@@ -425,7 +523,7 @@ const items = feature?.items || [
         </Text>
       )}
 
-      <!-- ❓ Should CTAs be grouped or separate? -->
+      <!-- Should CTAs be grouped or separate? -->
       <div class={`flex gap-3 mt-6 ${isCenter ? "justify-center" : ""}`}>
         {primaryLabel && (
           <Link href={primaryHref} variant="default" size="sm" gap="sm" target={primaryTarget} rel={primaryRel}>
@@ -439,12 +537,12 @@ const items = feature?.items || [
         )}
       </div>
 
-      <!-- ❓ How should dynamic arrays be rendered? -->
+      <!-- How should dynamic arrays be rendered? -->
       {items && items.length > 0 && (
         <ul class="mt-12 grid gap-px bg-base-200 rounded-xl sm:grid-cols-2 md:grid-cols-3">
           {items.map((item) => (
             <li class="bg-white p-6 rounded-xl">
-              <!-- ❓ Icon library or uploaded image? -->
+              <!-- Icon library or uploaded image? -->
               {item.icon && (
                 <div class="flex p-2 bg-yellow-400 rounded-lg w-fit">
                   <!-- Dynamic icon rendering based on your icon strategy -->
@@ -471,7 +569,7 @@ const items = feature?.items || [
 
 ---
 
-## 🔗 Step 5: Integration & Registration
+## Step 5: Integration & Registration
 
 ### Registration Checklist
 
@@ -545,9 +643,9 @@ const items = feature?.items || [
 
 ---
 
-## ✅ Step 6: Quality Assurance Checklist
+## Step 6: Quality Assurance Checklist
 
-### 🧪 Testing Questions
+### Testing Questions
 
 **Before considering migration complete:**
 
@@ -574,7 +672,7 @@ const items = feature?.items || [
    - No type errors in development
    - No runtime JavaScript errors
 
-### 🎯 Content Creator Experience
+### Content Creator Experience
 
 **Test these scenarios in Sanity Studio:**
 
@@ -587,9 +685,9 @@ const items = feature?.items || [
 
 ---
 
-## 🚨 Common Migration Pitfalls & Solutions
+## Common Migration Pitfalls & Solutions
 
-### ❌ Schema Design Mistakes
+### Schema Design Mistakes
 
 1. **Over-engineering schemas**
    - **Problem**: Adding fields that will never be used
@@ -603,7 +701,7 @@ const items = feature?.items || [
    - **Problem**: Schema field names don't match component props
    - **Solution**: Use consistent naming across schema, GROQ, types, and components
 
-### ❌ Component Conversion Mistakes
+### Component Conversion Mistakes
 
 1. **Poor default handling**
    - **Problem**: Component breaks when CMS data is missing
@@ -617,7 +715,7 @@ const items = feature?.items || [
    - **Problem**: Dynamic classes break responsive layouts
    - **Solution**: Test all responsive breakpoints with various content lengths
 
-### ❌ Integration Mistakes
+### Integration Mistakes
 
 1. **GROQ field mismatches**
    - **Problem**: Component expects fields not included in GROQ query
@@ -629,7 +727,7 @@ const items = feature?.items || [
 
 ---
 
-## 📚 Decision Reference Guide
+## Decision Reference Guide
 
 ### Icon Strategy Decision Matrix
 
@@ -661,16 +759,16 @@ const items = feature?.items || [
 
 ---
 
-## 🎯 Success Metrics
+## Success Metrics
 
 **A successful migration should achieve:**
 
-- ✅ **Zero hardcoded content** in the component
-- ✅ **Intuitive content authoring** experience in Sanity Studio  
-- ✅ **Robust error handling** with graceful defaults
-- ✅ **Type safety** throughout the data flow
-- ✅ **Responsive design** maintained across all content variations
-- ✅ **Accessibility** preserved or improved
-- ✅ **Performance** equivalent to or better than static version
+- **Zero hardcoded content** in the component
+- **Intuitive content authoring** experience in Sanity Studio
+- **Robust error handling** with graceful defaults
+- **Type safety** throughout the data flow
+- **Responsive design** maintained across all content variations
+- **Accessibility** preserved or improved
+- **Performance** equivalent to or better than static version
 
 **Remember**: The goal is not just to make content editable, but to create a sustainable, user-friendly content management experience that empowers content creators while maintaining technical excellence.

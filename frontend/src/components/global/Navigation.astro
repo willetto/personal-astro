@@ -1,9 +1,8 @@
 ---
 // Assets
 import { Image } from "astro:assets";
-import LimeStripe from "@/images/assets/LimeStripe.png";
+import LimeStripe from "@/components/assets/LimeStripeSvg.astro";
 // Foundations
-import Logo from "@/components/assets/Logo.astro";
 import Link from "@/components/foundations/elements/Link.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
 import { fetchSiteNavigation } from "@/data/sanity/fetch";
@@ -12,8 +11,8 @@ import type { NavItem } from "@/data/sanity";
 const navigationLinks: NavItem[] = await fetchSiteNavigation();
 ---
 
-<div id="nav-wrapper" class="mx-auto fixed top-0 w-full inset-x-0 z-50">
-  <Wrapper id="second-wrapper" class="standard" class="border-b">
+<div id="nav-wrapper" class="mx-auto fixed top-0 w-full inset-x-0 z-5">
+  <Wrapper id="second-wrapper" class="standard border-b brand-border-color">
     <div
       id="navigation-wrapper"
       class="relative flex flex-col md:items-center md:justify-between md:flex-row"
@@ -26,7 +25,7 @@ const navigationLinks: NavItem[] = await fetchSiteNavigation();
 
         <button
           id="menu-toggle"
-          class="inline-flex items-center justify-center p-2 text-base-600 hover:text-base-800 focus:outline-none focus:text-base-500 md:hidden"
+          class="inline-flex items-center justify-center p-2 brand-text-color focus:outline-none md:hidden"
         >
           <svg
             class="size-6"
@@ -53,20 +52,16 @@ const navigationLinks: NavItem[] = await fetchSiteNavigation();
       </div>
       <nav
         id="navigation-menu"
-        class="fixed inset-0 bg-white bg-stripes md:bg-none md:bg-transparent flex flex-col py-24 lg:p-0 h-full justify-between md:p-0 transform transition-all duration-300 ease-in-out opacity-0 -translate-y-4 pointer-events-none md:relative md:inset-auto md:opacity-100 md:pointer-events-auto md:translate-y-0"
+        class="fixed inset-0 bg-stripes md:bg-none md:bg-transparent flex flex-col py-24 lg:p-0 h-full justify-between md:p-0 transform transition-all duration-300 ease-in-out opacity-0 -translate-y-4 pointer-events-none md:relative md:inset-auto md:opacity-100 md:pointer-events-auto md:translate-y-0"
       >
         <div
-          class="absolute inset-0 pointer-events-none bg-white border-x border-base-200 mx-2 md:hidden"
+          class="mobile-menu-background absolute inset-0 pointer-events-none border-x brand-border-color mx-2 md:hidden"
         >
         </div>
-        <Image
-          src={LimeStripe}
-          alt="Lime Stripe"
-          class="absolute inset-0 size-full pointer-events-none scale-180 top-100 md:hidden"
-        />
+        <LimeStripe class="absolute inset-0 size-full pointer-events-none scale-150 top-100 md:hidden" />
         <button
           id="menu-close"
-          class="absolute top-4 right-4 md:hidden focus:outline-none text-base-800"
+          class="absolute top-4 right-4 md:hidden focus:outline-none brand-text-color"
           aria-label="Close menu"
         >
           <svg
@@ -83,12 +78,13 @@ const navigationLinks: NavItem[] = await fetchSiteNavigation();
           </svg>
         </button>
         <div
-          class="list-none md:ml-auto w-full flex flex-col h-full justify-between items-start px-8 md:px-0 md:flex-row md:items-center md:justify-center md:text-left gap-2 md:gap-4 relative"
+          class="list-none md:ml-auto w-full flex flex-col h-full justify-start items-start px-8 md:px-0 md:flex-row md:items-center md:justify-center md:text-left gap-4 md:gap-4 relative"
         >
           <a href="/" class="md:hidden">
-            <Logo class="h-4 text-base-800" />
+              <span class="sr-only">Go to homepage</span>
+              <p class="brand-heading-color font-display uppercase text-4xl">Trey Willetto</p>
           </a>
-          <div class="flex flex-col gap-4 md:flex-row">
+          <div class="flex flex-col gap-4 md:flex-row items-center">
             {
               navigationLinks.map((link) =>
                 link.style === "primary" ? (
@@ -103,7 +99,7 @@ const navigationLinks: NavItem[] = await fetchSiteNavigation();
                 ) : (
                   <a
                     href={link.href}
-                    class="hover:text-base-600 text-base-800 tracking-tighter md:tracking-normal font-semibold md:font-medium text-6xl md:text-base"
+                    class="heading-text-color md:tracking-normal font-semibold md:font-medium text-3xl md:text-base"
                   >
                     {link.label}
                   </a>
@@ -152,3 +148,12 @@ const navigationLinks: NavItem[] = await fetchSiteNavigation();
     menuClose.addEventListener("click", () => toggleMenu(false));
   });
 </script>
+<style>
+#navigation-menu, .mobile-menu-background {
+  background-color: light-dark(var(--color-tw-white)
+  , var(--color-base-900));
+}
+#navigation-menu a:hover {
+    color: var(--heading-text-color);
+  }
+</style>

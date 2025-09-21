@@ -55,13 +55,7 @@ export const contactForm = defineType({
               name: "href",
               title: "URL",
               type: "url",
-              description: "Optional: URL for the link.",
-            }),
-            defineField({
-              name: "action",
-              title: "Action (e.g., 'chat-toggle')",
-              type: "string",
-              description: "Optional: Custom action for the link (e.g., 'chat-toggle' for live chat).",
+              description: "URL for the link.",
             }),
           ],
           preview: {

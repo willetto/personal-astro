@@ -48,15 +48,15 @@ const links = [
       class="grid grid-cols-1 gap-y-24 sm:grid-cols-2 rounded--4xl lg:grid-cols-4"
     >
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 gap-y-8 lg:grid-cols-4 text-base-600 text-xs lg:col-span-4"
+        class="grid grid-cols-1 sm:grid-cols-2 gap-y-8 lg:grid-cols-4 brand-text-color text-xs lg:col-span-4"
       >
         <div class="lg:pr-8">
-          <Logo class="h-6 text-base-800" />
+          <Logo class="h-6 brand-heading-color" />
           <Text
             id="year"
             tag="p"
             variant="textXS"
-            class="text-base-800 font-medium mt-2"
+            class="brand-heading-color font-medium mt-2"
           >
             © Spazio Bianco
           </Text>
@@ -68,7 +68,7 @@ const links = [
                 <Text
                   tag="h3"
                   variant="textBase"
-                  class="text-base-900 font-medium"
+                  class="brand-heading-color font-medium"
                 >
                   {section.title}
                 </Text>
@@ -82,7 +82,7 @@ const links = [
                           title={`link to ${link.label}`}
                           aria-label={link.label}
                           href={link.href}
-                          class="hover:text-teal-600 font-medium"
+                          class="brand-text-color font-medium"
                         >
                           {link.label}
                         </Text>
@@ -107,3 +107,8 @@ const links = [
     yearElement.textContent = `© ${currentYear} Spazio Bianco`;
   });
 </script>
+<style>
+  footer a:hover {
+    color: var(--heading-text-color);
+  }
+</style>

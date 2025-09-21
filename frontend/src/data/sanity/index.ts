@@ -88,7 +88,6 @@ export type ContactFormSection = {
     label: string;
     icon: string;
     href?: string;
-    action?: string;
   }>;
 };
 
