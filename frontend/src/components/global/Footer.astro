@@ -4,42 +4,6 @@ import LogoLink from "@/components/assets/LogoLink.astro";
 // Fundations
 import Text from "@/components/foundations/elements/Text.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
-const links = [
-  {
-    title: "Navigation",
-    links: [
-      { label: "Overview", href: "/system/overview" },
-      { label: "Colors", href: "/system/colors" },
-      { label: "Links", href: "/system/links" },
-      { label: "Buttons", href: "/system/buttons" },
-      { label: "Typography", href: "/system/typography" },
-    ],
-  },
-  {
-    title: "More Themes",
-    links: [
-      { label: "Lexington Themes", href: "https://www.lexingtonthemes.com" },
-      { label: "Oxbow UI", href: "https://www.oxbowui.com" },
-    ],
-  },
-  {
-    title: "Stay updated",
-    links: [
-      {
-        label: "License",
-        href: "https://www.lexingtonthemes.com/legal/license",
-      },
-      {
-        label: "Changelog",
-        href: "https://lexingtonthemes.com/changelog/",
-      },
-      {
-        label: "Documentation",
-        href: "https://www.lexingtonthemes.com/documentation/quick-start",
-      },
-    ],
-  },
-];
 ---
 
 <footer class="overflow-hidden relative">
@@ -58,55 +22,15 @@ const links = [
             variant="textXS"
             class="brand-heading-color font-medium mt-2"
           >
-            © Spazio Bianco
+            © Trey Willetto {new Date().getFullYear()}
           </Text>
         </div>
-        {
-          links.map((section) => (
-            <div class="before:bg-white">
-              <div>
-                <Text
-                  tag="h3"
-                  variant="textBase"
-                  class="brand-heading-color font-medium"
-                >
-                  {section.title}
-                </Text>
-                <nav role="navigation" class="mt-4">
-                  <ul role="list" class=" space-y-2">
-                    {section.links.map((link) => (
-                      <li>
-                        <Text
-                          tag="a"
-                          variant="textSM"
-                          title={`link to ${link.label}`}
-                          aria-label={link.label}
-                          href={link.href}
-                          class="brand-text-color font-medium"
-                        >
-                          {link.label}
-                        </Text>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </div>
-            </div>
-          ))
-        }
       </div>
     </div>
     <div class="mt-14"></div>
   </Wrapper>
 </footer>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const yearElement = document.getElementById("year");
-    const currentYear = new Date().getFullYear();
-    yearElement.textContent = `© ${currentYear} Spazio Bianco`;
-  });
-</script>
 <style>
   footer a:hover {
     color: var(--heading-text-color);
