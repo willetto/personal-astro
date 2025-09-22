@@ -25,7 +25,7 @@ export const sanityClient = createClient({
 const debugLog: (message: string, detail?: unknown) => void = (msg, detail) => {
   try {
     // eslint-disable-next-line no-console
-    console.debug(`[Sanity] ${msg}`, detail ?? "");
+    // console.debug(`[Sanity] ${msg}`, detail ?? "");
   } catch {}
 };
 const errorLog: (message: string, detail?: unknown) => void = (msg, detail) => {

@@ -12,7 +12,7 @@ import type { NavItem } from "@/data/sanity";
 const navigationLinks: NavItem[] = await fetchSiteNavigation();
 ---
 
-<div id="nav-wrapper" class="mx-auto fixed top-0 w-full inset-x-0 z-5">
+<div id="nav-wrapper" class="mx-auto fixed top-0 w-full inset-x-0 z-5 max-w-6xl 2xl:max-w-[1400px]">
   <Wrapper id="second-wrapper" class="standard border-b brand-border-color">
     <div
       id="navigation-wrapper"
@@ -127,7 +127,7 @@ const navigationLinks: NavItem[] = await fetchSiteNavigation();
     window.addEventListener("resize", updateNavHeight);
     // Toggle mobile menu
     function toggleMenu(open) {
-      console.log(`Toggling menu. Open: ${open}`); // Debug log to check the state of the toggle
+      // console.log(`Toggling menu. Open: ${open}`); // Debug log to check the state of the toggle
       navigationMenu.classList.toggle("opacity-100", open);
       navigationMenu.classList.toggle("translate-y-0", open);
       navigationMenu.classList.toggle("pointer-events-auto", open);
