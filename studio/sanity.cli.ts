@@ -15,5 +15,6 @@ export default defineCliConfig({
     projectId,
     dataset,
   },
+  studioHost: "willetto",
   autoUpdates: true,
 });
