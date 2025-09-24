@@ -26,10 +26,10 @@ const gradientFromColor = feature?.gradientFromColor || "oklch(90.07% 0.21 98.27
 const gradientToColor = feature?.gradientToColor || "oklch(66.98% 0.2236 43.225)";
 ---
 
-<section class="hero-1 relative overflow-hidden">
+<section class="hero-1 relative">
   <Wrapper
     variant="standard"
-    class="relative z-20 py-32 lg:pb-80 overflow-hidden"
+    class="relative py-32"
   >
     <LimeStripeSvg
       fromColor={gradientFromColor}
@@ -42,7 +42,7 @@ const gradientToColor = feature?.gradientToColor || "oklch(66.98% 0.2236 43.225)
         variant="display2XL"
         data-aos="fade-up"
         data-aos-duration="1000"
-        class="font-semibold tracking-tighter brand-heading-color lg:text-balance"
+        class="font-semibold tracking-tighter brand-heading-color text-balance"
       >
         {header}
       </Text>
@@ -91,14 +91,14 @@ const gradientToColor = feature?.gradientToColor || "oklch(66.98% 0.2236 43.225)
   </Wrapper>
 </section>
 <section>
-  <Wrapper variant="standard" class="pt-24">
+  <Wrapper variant="standard" class="py-24">
     <div
-      class="z-40 items-start -mt-40 grid grid-cols-1 gap-12 lg:-mt-80 lg:grid-cols-2 lg:gap-24"
+      class="items-start -mt-40 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-24"
     >
       <Code
         data-aos="fade-up"
         data-aos-duration="2000"
-        class="z-40 h-full p-8 text-xs scrollbar-hide rounded-xl shadow-xl"
+        class="h-full p-8 text-xs scrollbar-hide rounded-xl shadow-xl"
         code={`await payments.transfer.create({
 amount: 25075,
 currency: "USD",
@@ -121,7 +121,7 @@ status: "Pending",
       <VisualAsset1
         data-aos="fade-up"
         data-aos-duration="2500"
-        class="z-40 h-full p-8 overflow-hidden bg-base-100 rounded-xl border brand-border-color shadow-xl"
+        class="h-full p-8  bg-base-100 rounded-xl border brand-border-color shadow-xl"
       />
     </div>
   </Wrapper>
