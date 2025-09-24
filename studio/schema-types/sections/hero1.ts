@@ -51,6 +51,27 @@ export const hero1 = defineType({
       description:
         "Ending color for the background gradient (hex format, e.g., #FFF042)",
     }),
+
+    // New: Optional, orderable image array (front end uses up to first two)
+    defineField({
+      name: "heroImages",
+      title: "Hero Images",
+      type: "array",
+      of: [
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            {
+              name: "alt",
+              title: "Alt text",
+              type: "string",
+            },
+          ],
+        },
+      ],
+      options: { layout: "grid" },
+    }),
   ],
   preview: {
     select: { title: "header" },

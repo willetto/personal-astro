@@ -17,6 +17,11 @@ export type Hero = {
   secondaryCtaHref?: string;
   gradientFromColor?: string;
   gradientToColor?: string;
+  heroImages?: Array<{
+    asset?: { _ref?: string };
+    alt?: string;
+    assetUrl?: string;
+  }>;
 };
 
 export type Feature1Item = {

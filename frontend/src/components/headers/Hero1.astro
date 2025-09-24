@@ -31,18 +31,18 @@ const gradientToColor = feature?.gradientToColor || "oklch(66.98% 0.2236 43.225)
     variant="standard"
     class="relative py-32"
   >
-    <LimeStripeSvg
-      fromColor={gradientFromColor}
-      toColor={gradientToColor}
-      customClasses="absolute inset-0 size-full pointer-events-none scale-180 top-50 rotate-x-300"
-    />
-    <div class="relative">
+  <LimeStripeSvg
+    fromColor={gradientFromColor}
+    toColor={gradientToColor}
+    customClasses="absolute inset-0 size-full pointer-events-none scale-100 top-1/2 rotate-x-200 z-0"
+  />
+  <div class="relative">
       <Text
         tag="h1"
         variant="display2XL"
         data-aos="fade-up"
         data-aos-duration="1000"
-        class="font-semibold tracking-tighter brand-heading-color text-balance"
+        class="font-semibold font-display brand-heading-color text-balance uppercase"
       >
         {header}
       </Text>
@@ -89,40 +89,17 @@ const gradientToColor = feature?.gradientToColor || "oklch(66.98% 0.2236 43.225)
       </div>
     </div>
   </Wrapper>
-</section>
-<section>
   <Wrapper variant="standard" class="py-24">
     <div
       class="items-start -mt-40 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-24"
     >
-      <Code
-        data-aos="fade-up"
-        data-aos-duration="2000"
-        class="h-full p-8 text-xs scrollbar-hide rounded-xl shadow-xl"
-        code={`await payments.transfer.create({
-amount: 25075,
-currency: "USD",
-from_account: {
-  id: "acct_everbank_112233445",
-  bank: "EverBank",
-  type: "Business Checking",
-},
-to_account: {
-  id: "acct_chase_556677889",
-  bank: "Chase",
-  type: "Savings",
-},
-initiated_at: "2025-03-14T14:32:00Z",
-status: "Pending",
-});`}
-        lang="js"
-        theme="css-variables"
-      />
-      <VisualAsset1
-        data-aos="fade-up"
-        data-aos-duration="2500"
-        class="h-full p-8  bg-base-100 rounded-xl border brand-border-color shadow-xl"
-      />
+    {feature?.heroImages?.[0]?.assetUrl && (
+      <img src={feature?.heroImages?.[0]?.assetUrl} alt={feature?.heroImages?.[0]?.alt || ""} class="h-full rounded-xl border-0 shadow-xl aspect-[5/3] object-cover z-1" data-aos="fade-up" data-aos-duration="1500" />
+    )}
+    {feature?.heroImages?.[1]?.assetUrl && (
+      <img src={feature?.heroImages?.[1]?.assetUrl} alt={feature?.heroImages?.[1]?.alt || ""} class="h-full rounded-xl border-0 shadow-xl aspect-[5/3] object-cover z-1" data-aos="fade-up" data-aos-duration="2500" />
+    )}
+
     </div>
   </Wrapper>
 </section>

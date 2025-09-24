@@ -7,7 +7,12 @@ export const HERO_FIELDS = `
   secondaryCtaLabel,
   secondaryCtaHref,
   gradientFromColor,
-  gradientToColor
+  gradientToColor,
+  heroImages[] {
+    asset,
+    alt,
+    "assetUrl": asset->url
+  }
 `;
 
 export const FEATURE1_FIELDS = `
