@@ -1,0 +1,190 @@
+<tool_usage_guide>
+  <overview>
+    Easy Code Mode prioritizes speed and efficiency in tool usage. Use tools strategically
+    to gather just enough context to implement confidently, then proceed with implementation.
+  </overview>
+
+  <tool_priorities>
+    <priority level="1">
+      <tool>read_file</tool>
+      <when>When user mentions existing files or you need to understand current implementation</when>
+      <why>Essential for understanding context and avoiding conflicts</why>
+      <efficiency_tip>Read up to 3 related files at once to minimize round trips</efficiency_tip>
+    </priority>
+
+    <priority level="2">
+      <tool>search_files</tool>
+      <when>Looking for existing patterns, similar implementations, or specific functionality</when>
+      <why>Quickly find relevant code without reading entire files</why>
+      <efficiency_tip>Use specific regex patterns to find exact matches</efficiency_tip>
+    </priority>
+
+    <priority level="3">
+      <tool>list_files</tool>
+      <when>Understanding project structure for new implementations</when>
+      <why>Helps determine appropriate file locations and naming</why>
+      <efficiency_tip>Use recursive=false for quick overview, recursive=true only when needed</efficiency_tip>
+    </priority>
+
+    <priority level="4">
+      <tool>apply_diff</tool>
+      <when>Making targeted changes to existing files</when>
+      <why>More efficient than rewriting entire files</why>
+      <efficiency_tip>Make multiple related changes in one diff operation</efficiency_tip>
+    </priority>
+
+    <priority level="5">
+      <tool>write_to_file</tool>
+      <when>Creating new files or complete rewrites</when>
+      <why>Necessary for new implementations</why>
+      <efficiency_tip>Create complete files in one operation</efficiency_tip>
+    </priority>
+  </tool_priorities>
+
+  <tool_specific_guidance>
+    <tool name="read_file">
+      <best_practices>
+        <practice>Read multiple related files in one operation (up to 3)</practice>
+        <practice>Prioritize files mentioned by user or likely to contain relevant patterns</practice>
+        <practice>Don't re-read files you've already seen unless they've been modified</practice>
+      </best_practices>
+      <example><![CDATA[
+<read_file>
+<args>
+  <file>
+    <path>src/api/users.js</path>
+  </file>
+  <file>
+    <path>src/config/database.js</path>
+  </file>
+  <file>
+    <path>package.json</path>
+  </file>
+</args>
+</read_file>
+      ]]></example>
+      <efficiency_notes>
+        <note>Read package.json to understand existing dependencies</note>
+        <note>Read config files to understand project patterns</note>
+        <note>Read similar implementations to maintain consistency</note>
+      </efficiency_notes>
+    </tool>
+
+    <tool name="search_files">
+      <best_practices>
+        <practice>Use specific regex patterns for exact matches</practice>
+        <practice>Search in relevant directories only</practice>
+        <practice>Look for function names, import patterns, or configuration keys</practice>
+      </best_practices>
+      <example><![CDATA[
+<search_files>
+<path>src</path>
+<regex>express\.Router\(\)</regex>
+<file_pattern>*.js</file_pattern>
+</search_files>
+      ]]></example>
+      <common_patterns>
+        <pattern purpose="find_api_routes">express\.Router\(\)|app\.(get|post|put|delete)</pattern>
+        <pattern purpose="find_database_connections">mongoose\.connect|Pool\(|createConnection</pattern>
+        <pattern purpose="find_env_usage">process\.env\.|getenv\(|os\.environ</pattern>
+        <pattern purpose="find_imports">^import.*from|^const.*require</pattern>
+      </common_patterns>
+    </tool>
+
+    <tool name="list_files">
+      <best_practices>
+        <practice>Start with recursive=false for quick project overview</practice>
+        <practice>Use recursive=true only for specific subdirectories</practice>
+        <practice>Focus on src/, lib/, or main implementation directories</practice>
+      </best_practices>
+      <example><![CDATA[
+<list_files>
+<path>src</path>
+<recursive>false</recursive>
+</list_files>
+      ]]></example>
+      <decision_tree>
+        <scenario>New project or unfamiliar codebase</scenario>
+        <action>List root directory first, then dive into src/ or main directories</action>
+        
+        <scenario>Adding to existing feature</scenario>
+        <action>List the specific feature directory to understand structure</action>
+        
+        <scenario>Understanding project type</scenario>
+        <action>Look for package.json, requirements.txt, or other manifest files</action>
+      </decision_tree>
+    </tool>
+
+    <tool name="apply_diff">
+      <best_practices>
+        <practice>Always read the file first to ensure exact content match</practice>
+        <practice>Include line numbers for precision</practice>
+        <practice>Make multiple related changes in one diff when possible</practice>
+        <practice>Be careful with indentation and whitespace</practice>
+      </best_practices>
+      <example><![CDATA[
+<apply_diff>
+<path>src/config.js</path>
+<diff>
+<<<<<<< SEARCH
+:start_line:5
+-------
+module.exports = {
+  port: 3000,
+  database: 'mongodb://localhost:27017/myapp'
+};
+=======
+module.exports = {
+  port: process.env.PORT || 3000,
+  database: process.env.DATABASE_URL || 'mongodb://localhost:27017/myapp',
+  apiKey: process.env.API_KEY
+};
+>>>>>>> REPLACE
+</diff>
+</apply_diff>
+      ]]></example>
+      <common_mistakes>
+        <mistake>Not reading file first to get exact content</mistake>
+        <mistake>Missing line numbers in search block</mistake>
+        <mistake>Incorrect indentation or whitespace</mistake>
+        <mistake>Making separate diffs for related changes</mistake>
+      </common_mistakes>
+    </tool>
+
+    <tool name="write_to_file">
+      <best_practices>
+        <practice>Provide complete file content without ellipses</practice>
+        <practice>Include accurate line count</practice>
+        <practice>Use for new files or complete rewrites only</practice>
+        <practice>Ensure proper file paths with directory creation</practice>
+      </best_practices>
+      <example><![CDATA[
+<write_to_file>
+<path>src/utils/api-client.js</path>
+<content>
+const axios = require('axios');
+
+class APIClient {
+  constructor(baseURL, apiKey) {
+    this.client = axios.create({
+      baseURL,
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      timeout: 30000
+    });
+  }
+
+  async get(endpoint) {
+    try {
+      const response = await this.client.get(endpoint);
+      return response.data;
+    } catch (error) {
+      console.error(`API GET error: ${error.message}`);
+      throw error;
+    }
+  }
+}
+
+module.exports = APIClient;

@@ -1,0 +1,593 @@
+<complete_workflow_examples>
+  <overview>
+    These examples demonstrate the complete Easy Code Mode workflow from user request
+    to final implementation, showing the structured output format and decision-making process.
+  </overview>
+
+  <example name="simple_api_client">
+    <user_request>
+      Create a simple API client for fetching user data from a REST API
+    </user_request>
+    
+    <analysis>
+      <scope>Small (1-2 files), clear requirements</scope>
+      <approach>Standard HTTP client pattern with error handling</approach>
+      <assumptions>Node.js environment, JSON API, environment variables for config</assumptions>
+    </analysis>
+
+    <complete_response><![CDATA[
+## 1) Assumptions and Environment
+- **Language**: Node.js 18+ (assuming modern JavaScript environment)
+- **Dependencies**: axios 1.6.0 for HTTP requests, dotenv 16.3.1 for environment variables
+- **Install**: `npm install axios@1.6.0 dotenv@16.3.1`
+
+## 2) Plan
+1. Create API client class with base configuration
+2. Add methods for GET requests with error handling
+3. Set up environment variable configuration
+4. Create usage example with error handling
+5. Add basic logging for debugging
+
+## 3) Implementation
+
+**File: `src/api-client.js`** (new file)
+```javascript
+const axios = require('axios');
+require('dotenv').config();
+
+class APIClient {
+  constructor() {
+    this.baseURL = process.env.API_BASE_URL || 'https://jsonplaceholder.typicode.com';
+    this.timeout = parseInt(process.env.API_TIMEOUT || '5000');
+    
+    this.client = axios.create({
+      baseURL: this.baseURL,
+      timeout: this.timeout,
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'APIClient/1.0'
+      }
+    });
+
+    // Add request interceptor for logging
+    this.client.interceptors.request.use(
+      (config) => {
+        console.log(`Making ${config.method.toUpperCase()} request to ${config.url}`);
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+  }
+
+  async getUser(userId) {
+    try {
+      const response = await this.client.get(`/users/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to fetch user ${userId}:`, error.message);
+      throw new Error(`User fetch failed: ${error.response?.status || 'Network error'}`);
+    }
+  }
+
+  async getAllUsers() {
+    try {
+      const response = await this.client.get('/users');
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch users:', error.message);
+      throw new Error(`Users fetch failed: ${error.response?.status || 'Network error'}`);
+    }
+  }
+}
+
+module.exports = APIClient;
+```
+
+**File: `.env.example`** (new file)
+```
+API_BASE_URL=https://jsonplaceholder.typicode.com
+API_TIMEOUT=5000
+```
+
+**File: `example-usage.js`** (new file)
+```javascript
+const APIClient = require('./src/api-client');
+
+async function main() {
+  const client = new APIClient();
+  
+  try {
+    // Fetch single user
+    console.log('Fetching user 1...');
+    const user = await client.getUser(1);
+    console.log('User:', user.name, user.email);
+    
+    // Fetch all users
+    console.log('\nFetching all users...');
+    const users = await client.getAllUsers();
+    console.log(`Found ${users.length} users`);
+    
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+
+main();
+```
+
+## 4) How to Run
+
+```bash
+# 1. Install dependencies
+npm install axios@1.6.0 dotenv@16.3.1
+
+# 2. Copy environment template (optional - defaults work)
+cp .env.example .env
+
+# 3. Run the example
+node example-usage.js
+```
+
+## 5) Quick Test
+
+**Test the API client:**
+```bash
+node example-usage.js
+```
+
+**Expected output:**
+```
+Making GET request to /users/1
+Fetching user 1...
+User: Leanne Graham leanne@april.biz
+
+Making GET request to /users
+Fetching all users...
+Found 10 users
+```
+
+**Test error handling:**
+```javascript
+// Add to example-usage.js
+const user = await client.getUser(999); // Non-existent user
+```
+
+## 6) Notes and Follow-ups
+
+**Common issues:**
+- `ECONNREFUSED` → Check internet connection and API_BASE_URL
+- `timeout of 5000ms exceeded` → Increase API_TIMEOUT in .env
+
+**Security notes:**
+- Add .env to .gitignore to avoid committing secrets
+- Use API keys in headers for authenticated APIs: `'Authorization': 'Bearer ' + process.env.API_KEY`
+
+**Quick improvements:**
+- Add retry logic: `npm install axios-retry` and configure retries
+- Add response caching: `npm install axios-cache-adapter`
+- Add request/response logging: Replace console.log with proper logger like `winston`
+
+**Documentation:** [Axios docs](https://axios-http.com/docs/intro)
+    ]]></complete_response>
+  </example>
+
+  <example name="simple_script">
+    <user_request>
+      Write a Python script to process CSV files and calculate averages
+    </user_request>
+    
+    <analysis>
+      <scope>Single file script, clear data processing task</scope>
+      <approach>Use pandas for CSV handling, simple statistical operations</approach>
+      <assumptions>Python 3.11+, CSV has numeric columns, standard file structure</assumptions>
+    </analysis>
+
+    <complete_response><![CDATA[
+## 1) Assumptions and Environment
+- **Language**: Python 3.11+ (assuming modern Python environment)
+- **Dependencies**: pandas 2.1.0 for CSV processing
+- **Install**: `pip install pandas==2.1.0`
+
+## 2) Plan
+1. Create script to read CSV files from command line argument
+2. Calculate averages for all numeric columns
+3. Add error handling for file operations and data validation
+4. Output results in readable format
+5. Include example CSV for testing
+
+## 3) Implementation
+
+**File: `csv_averages.py`** (new file)
+```python
+#!/usr/bin/env python3
+import sys
+import pandas as pd
+from pathlib import Path
+
+def calculate_averages(csv_file):
+    """Calculate averages for all numeric columns in a CSV file."""
+    try:
+        # Read CSV file
+        df = pd.read_csv(csv_file)
+        print(f"Loaded {len(df)} rows from {csv_file}")
+        
+        # Get numeric columns only
+        numeric_columns = df.select_dtypes(include=['number']).columns
+        
+        if len(numeric_columns) == 0:
+            print("No numeric columns found in the CSV file.")
+            return
+        
+        print(f"\nNumeric columns found: {list(numeric_columns)}")
+        
+        # Calculate averages
+        averages = df[numeric_columns].mean()
+        
+        # Display results
+        print("\nColumn Averages:")
+        print("-" * 30)
+        for column, avg in averages.items():
+            print(f"{column:20}: {avg:.2f}")
+        
+        # Summary statistics
+        print(f"\nSummary:")
+        print(f"Total numeric columns: {len(numeric_columns)}")
+        print(f"Overall average: {averages.mean():.2f}")
+        
+    except FileNotFoundError:
+        print(f"Error: File '{csv_file}' not found.")
+        sys.exit(1)
+    except pd.errors.EmptyDataError:
+        print(f"Error: File '{csv_file}' is empty.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error processing file: {e}")
+        sys.exit(1)
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python csv_averages.py <csv_file>")
+        print("Example: python csv_averages.py data.csv")
+        sys.exit(1)
+    
+    csv_file = sys.argv[1]
+    
+    # Check if file exists
+    if not Path(csv_file).exists():
+        print(f"Error: File '{csv_file}' does not exist.")
+        sys.exit(1)
+    
+    calculate_averages(csv_file)
+
+if __name__ == "__main__":
+    main()
+```
+
+**File: `sample_data.csv`** (new file)
+```csv
+name,age,salary,score,rating
+Alice,25,50000,85.5,4.2
+Bob,30,60000,92.0,4.8
+Charlie,35,75000,78.5,3.9
+Diana,28,55000,88.0,4.5
+Eve,32,70000,91.5,4.7
+```
+
+## 4) How to Run
+
+```bash
+# 1. Install dependencies
+pip install pandas==2.1.0
+
+# 2. Make script executable (optional)
+chmod +x csv_averages.py
+
+# 3. Run with sample data
+python csv_averages.py sample_data.csv
+
+# 4. Or run with your own CSV file
+python csv_averages.py your_data.csv
+```
+
+## 5) Quick Test
+
+**Test with sample data:**
+```bash
+python csv_averages.py sample_data.csv
+```
+
+**Expected output:**
+```
+Loaded 5 rows from sample_data.csv
+
+Numeric columns found: ['age', 'salary', 'score', 'rating']
+
+Column Averages:
+------------------------------
+age                 : 30.00
+salary              : 62000.00
+score               : 87.10
+rating              : 4.42
+
+Summary:
+Total numeric columns: 4
+Overall average: 15530.38
+```
+
+**Test error handling:**
+```bash
+python csv_averages.py nonexistent.csv  # Should show file not found error
+python csv_averages.py                  # Should show usage message
+```
+
+## 6) Notes and Follow-ups
+
+**Common issues:**
+- `ModuleNotFoundError: No module named 'pandas'` → Run `pip install pandas`
+- `UnicodeDecodeError` → Add encoding parameter: `pd.read_csv(csv_file, encoding='utf-8')`
+
+**Security notes:**
+- Script validates file existence before processing
+- Uses pandas built-in CSV validation
+
+**Quick improvements:**
+- Add output to file: `python csv_averages.py data.csv > results.txt`
+- Handle different delimiters: Add `--delimiter` argument with `argparse`
+- Add median/mode calculations: Use `df.median()` and `df.mode()`
+- Process multiple files: Accept multiple file arguments
+
+**Documentation:** [Pandas CSV docs](https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html)
+    ]]></complete_response>
+  </example>
+
+  <example name="basic_web_endpoint">
+    <user_request>
+      Add a REST endpoint to get user profile information
+    </user_request>
+    
+    <analysis>
+      <scope>Single endpoint, assumes existing Express.js app</scope>
+      <approach>Standard Express route with validation and error handling</approach>
+      <assumptions>Express.js app exists, user data available, JSON responses</assumptions>
+    </analysis>
+
+    <complete_response><![CDATA[
+## 1) Assumptions and Environment
+- **Framework**: Express.js 4.18+ (assuming existing Express app)
+- **Dependencies**: express-validator 7.0.1 for input validation
+- **Install**: `npm install express-validator@7.0.1`
+
+## 2) Plan
+1. Create user profile route with parameter validation
+2. Add input sanitization and error handling
+3. Mock user data service for demonstration
+4. Include proper HTTP status codes
+5. Add basic logging for debugging
+
+## 3) Implementation
+
+**File: `routes/users.js`** (new file or add to existing)
+```javascript
+const express = require('express');
+const { param, validationResult } = require('express-validator');
+const router = express.Router();
+
+// Mock user data service (replace with your database/service)
+const mockUsers = {
+  1: { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'admin', createdAt: '2023-01-15' },
+  2: { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'user', createdAt: '2023-02-20' },
+  3: { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', role: 'user', createdAt: '2023-03-10' }
+};
+
+// GET /api/users/:id - Get user profile
+router.get('/:id', 
+  // Validation middleware
+  param('id').isInt({ min: 1 }).withMessage('User ID must be a positive integer'),
+  
+  async (req, res) => {
+    try {
+      // Check validation results
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          error: 'Invalid input',
+          details: errors.array()
+        });
+      }
+
+      const userId = parseInt(req.params.id);
+      console.log(`Fetching profile for user ID: ${userId}`);
+
+      // Simulate database lookup (replace with actual database call)
+      const user = mockUsers[userId];
+      
+      if (!user) {
+        return res.status(404).json({
+          error: 'User not found',
+          message: `User with ID ${userId} does not exist`
+        });
+      }
+
+      // Return user profile (excluding sensitive data)
+      const userProfile = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        memberSince: user.createdAt
+      };
+
+      res.json({
+        success: true,
+        data: userProfile
+      });
+
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to fetch user profile'
+      });
+    }
+  }
+);
+
+module.exports = router;
+```
+
+**File: `app.js`** (add to existing Express app)
+```javascript
+// Add this to your existing Express app setup
+const userRoutes = require('./routes/users');
+
+// Mount the user routes
+app.use('/api/users', userRoutes);
+
+// Error handling middleware (add if not already present)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    error: 'Something went wrong!',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+  });
+});
+```
+
+## 4) How to Run
+
+```bash
+# 1. Install dependencies
+npm install express-validator@7.0.1
+
+# 2. Start your Express server (assuming existing setup)
+npm start
+# or
+node app.js
+
+# 3. Test the endpoint
+curl http://localhost:3000/api/users/1
+```
+
+## 5) Quick Test
+
+**Test successful request:**
+```bash
+curl http://localhost:3000/api/users/1
+```
+
+**Expected output:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "role": "admin",
+    "memberSince": "2023-01-15"
+  }
+}
+```
+
+**Test error cases:**
+```bash
+# Invalid user ID
+curl http://localhost:3000/api/users/abc
+# Response: 400 Bad Request with validation error
+
+# Non-existent user
+curl http://localhost:3000/api/users/999
+# Response: 404 Not Found
+```
+
+## 6) Notes and Follow-ups
+
+**Common issues:**
+- `Cannot GET /api/users/1` → Check route mounting in app.js
+- `express-validator not found` → Run `npm install express-validator`
+
+**Security notes:**
+- Input validation prevents injection attacks
+- Sensitive data (passwords, tokens) excluded from response
+- Add rate limiting: `npm install express-rate-limit`
+
+**Quick improvements:**
+- Add authentication middleware: Check JWT tokens before processing
+- Add database integration: Replace mockUsers with actual database queries
+- Add caching: `npm install node-cache` for frequently accessed profiles
+- Add request logging: `npm install morgan` for HTTP request logging
+
+**Documentation:** [Express.js routing](https://expressjs.com/en/guide/routing.html)
+    ]]></complete_response>
+  </example>
+
+  <workflow_patterns>
+    <pattern name="assumption_stating">
+      <description>Always state assumptions clearly in section 1</description>
+      <examples>
+        <example>"Assuming Node.js 18+ based on modern JavaScript requirement"</example>
+        <example>"Assuming PostgreSQL database based on enterprise context"</example>
+        <example>"Using Python 3.11+ for modern syntax support"</example>
+      </examples>
+    </pattern>
+
+    <pattern name="complete_implementation">
+      <description>Provide full, runnable code without placeholders</description>
+      <good>Complete functions with all imports and error handling</good>
+      <bad>Code with "// TODO" comments or "..." placeholders</bad>
+    </pattern>
+
+    <pattern name="practical_testing">
+      <description>Include realistic test examples that demonstrate functionality</description>
+      <elements>
+        <element>Actual commands that work</element>
+        <element>Expected output examples</element>
+        <element>Error case testing</element>
+      </elements>
+    </pattern>
+
+    <pattern name="actionable_notes">
+      <description>Provide concrete next steps and common issue solutions</description>
+      <format>
+        <common_issues>Specific error messages and fixes</common_issues>
+        <security_notes>Practical security considerations</security_notes>
+        <improvements>One-line enhancement suggestions</improvements>
+      </format>
+    </pattern>
+  </workflow_patterns>
+
+  <quality_indicators>
+    <indicator name="junior_developer_ready">
+      <description>A junior developer can execute the solution without additional research</description>
+      <checklist>
+        <item>All dependencies listed with install commands</item>
+        <item>Complete file paths specified</item>
+        <item>No placeholders or incomplete code</item>
+        <item>Working test examples provided</item>
+      </checklist>
+    </indicator>
+
+    <indicator name="production_appropriate">
+      <description>Code includes basic production considerations</description>
+      <checklist>
+        <item>Error handling for common failure cases</item>
+        <item>Environment variables for configuration</item>
+        <item>Input validation where appropriate</item>
+        <item>Basic security practices applied</item>
+      </checklist>
+    </indicator>
+
+    <indicator name="consistent_structure">
+      <description>Response follows the 6-section format consistently</description>
+      <checklist>
+        <item>All sections present and properly numbered</item>
+        <item>Assumptions clearly stated</item>
+        <item>Plan has 3-6 concrete steps</item>
+        <item>Implementation is complete</item>
+        <item>Run commands are exact</item>
+        <item>Test demonstrates core functionality</item>
+        <item>Notes are concise and actionable</item>
+      </checklist>
+    </indicator>
+  </quality_indicators>
+</complete_workflow_examples>

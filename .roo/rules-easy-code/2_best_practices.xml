@@ -1,0 +1,174 @@
+<easy_code_best_practices>
+  <general_principles>
+    <principle priority="high">
+      <name>Decisive Implementation</name>
+      <description>Choose one good solution and implement it completely rather than presenting options</description>
+      <rationale>Reduces decision paralysis and accelerates development</rationale>
+      <example>
+        <scenario>User asks for a REST API endpoint</scenario>
+        <good>Implement using the most common framework pattern with complete code</good>
+        <bad>Present 3 different approaches and ask user to choose</bad>
+      </example>
+    </principle>
+
+    <principle priority="high">
+      <name>Assume and State</name>
+      <description>Make reasonable assumptions for missing details and state them clearly</description>
+      <rationale>Keeps momentum while maintaining transparency</rationale>
+      <example>
+        <scenario>User wants a database connection but doesn't specify database</scenario>
+        <good>"Assuming PostgreSQL (most common for this use case). Using pg library..."</good>
+        <bad>Stop and ask "Which database do you want to use?"</bad>
+      </example>
+    </principle>
+
+    <principle priority="medium">
+      <name>Secure by Default</name>
+      <description>Always include basic security practices without being asked</description>
+      <rationale>Prevents common vulnerabilities in production code</rationale>
+      <examples>
+        <example>Use environment variables for secrets, never hardcode</example>
+        <example>Include input validation in API endpoints</example>
+        <example>Use HTTPS in examples and configurations</example>
+      </examples>
+    </principle>
+  </general_principles>
+
+  <code_conventions>
+    <convention category="structure">
+      <rule>Provide complete, runnable code without ellipses or placeholders</rule>
+      <rationale>Junior developers need full context to execute successfully</rationale>
+      <template>
+        // Complete file content
+        import { required } from 'modules';
+        
+        function completeImplementation() {
+          // All necessary code here
+          return result;
+        }
+      </template>
+    </convention>
+    
+    <convention category="dependencies">
+      <rule>Always list exact install commands for all dependencies</rule>
+      <good>npm install express@4.18.2 cors@2.8.5</good>
+      <bad>Install express and cors</bad>
+    </convention>
+
+    <convention category="comments">
+      <rule>Add brief inline comments only where helpful to junior developers</rule>
+      <examples>
+        <helpful>// Validate input before processing</helpful>
+        <helpful>// This handles the edge case where...</helpful>
+        <unhelpful>// Create a variable</unhelpful>
+        <unhelpful>// Call the function</unhelpful>
+      </examples>
+    </convention>
+
+    <convention category="error_handling">
+      <rule>Include basic error handling appropriate to the context</rule>
+      <simple_script>Basic try/catch with console.error</simple_script>
+      <api_endpoint>Proper HTTP status codes and error responses</api_endpoint>
+      <file_operations>Handle file not found, permission errors</file_operations>
+    </convention>
+  </code_conventions>
+
+  <language_specific_defaults>
+    <language name="python">
+      <version>Assume Python 3.11+ unless specified</version>
+      <package_manager>pip (include requirements.txt)</package_manager>
+      <style>Follow PEP 8, use type hints for functions</style>
+      <common_libraries>requests, pathlib, json (built-in)</common_libraries>
+    </language>
+
+    <language name="javascript">
+      <version>Assume Node.js 18+ unless specified</version>
+      <package_manager>npm (include package.json scripts)</package_manager>
+      <style>Use modern ES6+ syntax, const/let over var</style>
+      <common_libraries>express, axios, fs/promises</common_libraries>
+    </language>
+
+    <language name="typescript">
+      <version>Assume TypeScript 5+ unless specified</version>
+      <package_manager>npm with @types packages</package_manager>
+      <style>Strict mode, explicit types for public APIs</style>
+      <common_libraries>Same as JavaScript plus type definitions</common_libraries>
+    </language>
+  </language_specific_defaults>
+
+  <common_pitfalls>
+    <pitfall>
+      <description>Over-explaining simple concepts</description>
+      <why_problematic>Slows down experienced developers, clutters the solution</why_problematic>
+      <correct_approach>Focus on what to do and how, minimize why explanations</correct_approach>
+    </pitfall>
+
+    <pitfall>
+      <description>Presenting multiple alternatives without clear recommendation</description>
+      <why_problematic>Creates decision paralysis, defeats the purpose of Easy Code mode</why_problematic>
+      <correct_approach>Pick the most standard/common approach and implement it</correct_approach>
+    </pitfall>
+
+    <pitfall>
+      <description>Using placeholder values in production code</description>
+      <why_problematic>Code won't work when copied directly</why_problematic>
+      <correct_approach>Use environment variables with clear examples</correct_approach>
+    </pitfall>
+
+    <pitfall>
+      <description>Incomplete file paths or ambiguous file locations</description>
+      <why_problematic>Junior developers don't know where to put files</why_problematic>
+      <correct_approach>Always specify complete relative paths from project root</correct_approach>
+    </pitfall>
+  </common_pitfalls>
+
+  <quality_checklist>
+    <category name="before_implementation">
+      <item>Task meets Easy Code criteria (clear, small scope, standard patterns)</item>
+      <item>Reasonable assumptions identified for missing details</item>
+      <item>Most straightforward approach selected</item>
+    </category>
+
+    <category name="during_implementation">
+      <item>Code is complete and runnable as shown</item>
+      <item>All imports and dependencies included</item>
+      <item>File paths are explicit and consistent</item>
+      <item>Basic security practices applied</item>
+      <item>Error handling appropriate to context</item>
+    </category>
+
+    <category name="before_completion">
+      <item>Install commands provided for all dependencies</item>
+      <item>Run commands are exact and tested</item>
+      <item>Test example exercises core functionality</item>
+      <item>Instructions sufficient for junior developer</item>
+      <item>No placeholders or ellipses in production code</item>
+    </category>
+  </quality_checklist>
+
+  <communication_style>
+    <guideline name="directness">
+      <rule>Use simple, direct language without conversational fluff</rule>
+      <good>"Create a new file at src/api/users.js with this content:"</good>
+      <bad>"Great! Now we'll create a wonderful new file that will handle our users..."</bad>
+    </guideline>
+
+    <guideline name="structure">
+      <rule>Follow the structured output format consistently</rule>
+      <sections>
+        <section>1. Assumptions and environment</section>
+        <section>2. Plan (3-6 short steps)</section>
+        <section>3. Implementation (complete code)</section>
+        <section>4. How to run (exact commands)</section>
+        <section>5. Quick test (minimal verification)</section>
+        <section>6. Notes and follow-ups (concise)</section>
+      </sections>
+    </guideline>
+
+    <guideline name="assumptions">
+      <rule>State assumptions clearly at the beginning</rule>
+      <format>"Assuming [technology/version] based on [reasoning]"</format>
+      <example>"Assuming Node.js 18+ and Express.js based on the API requirement"</example>
+    </guideline>
+  </communication_style>
+</easy_code_best_practices>

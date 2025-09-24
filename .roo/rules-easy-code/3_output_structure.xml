@@ -1,0 +1,257 @@
+<output_structure_guide>
+  <overview>
+    Easy Code Mode follows a consistent 6-section output structure that provides everything
+    a junior developer needs to successfully implement the solution without additional guidance.
+  </overview>
+
+  <mandatory_structure>
+    <section number="1" name="assumptions_and_environment">
+      <purpose>Establish the technical context and any assumptions made</purpose>
+      <required_elements>
+        <element>Programming language and version assumptions</element>
+        <element>Framework or runtime environment</element>
+        <element>Required dependencies with exact versions when possible</element>
+        <element>Install commands for all dependencies</element>
+      </required_elements>
+      <template><![CDATA[
+## 1) Assumptions and Environment
+- **Language**: Python 3.11+ (assuming modern Python environment)
+- **Dependencies**: requests 2.31.0, python-dotenv 1.0.0
+- **Install**: `pip install requests==2.31.0 python-dotenv==1.0.0`
+      ]]></template>
+      <guidelines>
+        <guideline>State assumptions clearly with reasoning</guideline>
+        <guideline>Provide exact install commands that work immediately</guideline>
+        <guideline>Include version numbers for critical dependencies</guideline>
+      </guidelines>
+    </section>
+
+    <section number="2" name="plan">
+      <purpose>Outline the implementation approach in 3-6 concise steps</purpose>
+      <required_elements>
+        <element>3-6 short, actionable steps</element>
+        <element>Logical sequence from start to finish</element>
+        <element>Focus on what will be done, not detailed how</element>
+      </required_elements>
+      <template><![CDATA[
+## 2) Plan
+1. Create configuration file for API settings
+2. Implement main API client class with error handling
+3. Add authentication method using environment variables
+4. Create example usage script
+5. Add basic logging for debugging
+      ]]></template>
+      <guidelines>
+        <guideline>Keep steps high-level but specific</guideline>
+        <guideline>Number steps for clarity</guideline>
+        <guideline>Avoid implementation details in the plan</guideline>
+      </guidelines>
+    </section>
+
+    <section number="3" name="implementation">
+      <purpose>Provide complete, runnable code with all necessary details</purpose>
+      <required_elements>
+        <element>Complete file contents without ellipses</element>
+        <element>All necessary imports and includes</element>
+        <element>Explicit file paths relative to project root</element>
+        <element>Brief inline comments where helpful</element>
+        <element>Proper error handling for the context</element>
+      </required_elements>
+      <template><![CDATA[
+## 3) Implementation
+
+**File: `src/api_client.py`** (new file)
+```python
+import os
+import requests
+from typing import Dict, Any
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+class APIClient:
+    def __init__(self):
+        self.base_url = os.getenv('API_BASE_URL', 'https://api.example.com')
+        self.api_key = os.getenv('API_KEY')
+        if not self.api_key:
+            raise ValueError("API_KEY environment variable is required")
+    
+    def get_data(self, endpoint: str) -> Dict[str, Any]:
+        """Fetch data from the specified endpoint."""
+        try:
+            response = requests.get(
+                f"{self.base_url}/{endpoint}",
+                headers={'Authorization': f'Bearer {self.api_key}'},
+                timeout=30
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            print(f"API request failed: {e}")
+            raise
+```
+
+**File: `.env.example`** (new file)
+```
+API_BASE_URL=https://api.example.com
+API_KEY=your_api_key_here
+```
+      ]]></template>
+      <guidelines>
+        <guideline>Always specify whether files are new or modified</guideline>
+        <guideline>Include complete file paths from project root</guideline>
+        <guideline>Never use ellipses or "rest of code unchanged"</guideline>
+        <guideline>Add comments only where they help junior developers</guideline>
+        <guideline>Use secure defaults (environment variables, not hardcoded secrets)</guideline>
+      </guidelines>
+    </section>
+
+    <section number="4" name="how_to_run">
+      <purpose>Provide exact commands to build, run, and test the implementation</purpose>
+      <required_elements>
+        <element>Exact commands that work from project root</element>
+        <element>Commands for different operating systems when relevant</element>
+        <element>Any setup steps required before running</element>
+      </required_elements>
+      <template><![CDATA[
+## 4) How to Run
+
+```bash
+# 1. Install dependencies
+pip install requests==2.31.0 python-dotenv==1.0.0
+
+# 2. Copy environment template and add your API key
+cp .env.example .env
+# Edit .env and add your actual API_KEY
+
+# 3. Run the example
+python src/example_usage.py
+```
+
+**Windows users**: Use `copy .env.example .env` instead of `cp`
+      ]]></template>
+      <guidelines>
+        <guideline>Commands must work exactly as shown</guideline>
+        <guideline>Include setup steps in logical order</guideline>
+        <guideline>Mention OS-specific differences when relevant</guideline>
+        <guideline>Use relative paths from project root</guideline>
+      </guidelines>
+    </section>
+
+    <section number="5" name="quick_test">
+      <purpose>Provide a minimal way to verify the implementation works</purpose>
+      <required_elements>
+        <element>Simple test that exercises core functionality</element>
+        <element>Expected output or behavior</element>
+        <element>Can be a unit test, usage example, or manual verification</element>
+      </required_elements>
+      <template><![CDATA[
+## 5) Quick Test
+
+**Test the API client:**
+```python
+# Create test file: test_api.py
+from src.api_client import APIClient
+
+client = APIClient()
+try:
+    data = client.get_data('users/1')
+    print(f"Success: {data}")
+except Exception as e:
+    print(f"Error: {e}")
+```
+
+**Expected output:**
+```
+Success: {'id': 1, 'name': 'John Doe', 'email': 'john@example.com'}
+```
+
+**Or test with curl:**
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" https://api.example.com/users/1
+```
+      ]]></template>
+      <guidelines>
+        <guideline>Test should be simple and quick to run</guideline>
+        <guideline>Show expected output when possible</guideline>
+        <guideline>Include alternative testing methods when helpful</guideline>
+        <guideline>Test should verify the main functionality works</guideline>
+      </guidelines>
+    </section>
+
+    <section number="6" name="notes_and_followups">
+      <purpose>Provide concise additional information and potential improvements</purpose>
+      <required_elements>
+        <element>Common errors and their fixes (if applicable)</element>
+        <element>Security considerations or best practices</element>
+        <element>Simple improvements or extensions (one-liners)</element>
+        <element>Relevant documentation links (sparingly)</element>
+      </required_elements>
+      <template><![CDATA[
+## 6) Notes and Follow-ups
+
+**Common issues:**
+- `ValueError: API_KEY environment variable is required` → Add API_KEY to your .env file
+- `requests.exceptions.ConnectionError` → Check your internet connection and API_BASE_URL
+
+**Security notes:**
+- Never commit .env files to version control (add .env to .gitignore)
+- Use different API keys for development and production
+
+**Quick improvements:**
+- Add retry logic: `pip install tenacity` and wrap requests with @retry decorator
+- Add response caching: `pip install requests-cache` for better performance
+- Add logging: `import logging` and replace print statements
+
+**Documentation:** [Requests library docs](https://docs.python-requests.org/)
+      ]]></template>
+      <guidelines>
+        <guideline>Keep all items concise and actionable</guideline>
+        <guideline>Focus on practical issues junior developers might face</guideline>
+        <guideline>Suggest improvements as one-liners, not detailed explanations</guideline>
+        <guideline>Include only essential documentation links</guideline>
+      </guidelines>
+    </section>
+  </mandatory_structure>
+
+  <formatting_rules>
+    <rule name="headers">Use ## for section headers with numbers and names</rule>
+    <rule name="code_blocks">Always specify language for syntax highlighting</rule>
+    <rule name="file_paths">Use backticks for file paths and make them relative to project root</rule>
+    <rule name="commands">Use bash code blocks for terminal commands</rule>
+    <rule name="emphasis">Use **bold** for important terms, `backticks` for code elements</rule>
+  </formatting_rules>
+
+  <consistency_checklist>
+    <item>All 6 sections present in correct order</item>
+    <item>Section headers numbered and named correctly</item>
+    <item>File paths are explicit and consistent</item>
+    <item>Install commands work exactly as shown</item>
+    <item>Code is complete without ellipses</item>
+    <item>Test example exercises main functionality</item>
+    <item>Notes section is concise and practical</item>
+  </consistency_checklist>
+
+  <adaptation_guidelines>
+    <guideline name="simple_scripts">
+      <description>For single-file scripts, combine implementation and usage in section 3</description>
+      <example>Show the script and how to run it in the same code block</example>
+    </guideline>
+
+    <guideline name="api_integrations">
+      <description>Always include authentication and error handling examples</description>
+      <example>Show both successful and error cases in the quick test</example>
+    </guideline>
+
+    <guideline name="web_applications">
+      <description>Include both development and production run commands</description>
+      <example>Show how to run locally and mention deployment considerations</example>
+    </guideline>
+
+    <guideline name="configuration_heavy_tasks">
+      <description>Provide complete config files with explanatory comments</description>
+      <example>Include both minimal and production-ready configurations</example>
+    </guideline>
+  </adaptation_guidelines>
+</output_structure_guide>

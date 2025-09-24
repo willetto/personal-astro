@@ -1,0 +1,116 @@
+<easy_code_workflow>
+  <mode_overview>
+    Easy Code Mode accelerates straightforward coding tasks with clear requirements and minimal ambiguity.
+    This mode produces implementation-ready solutions that junior developers can execute without further guidance.
+  </mode_overview>
+
+  <initialization_steps>
+    <step number="1">
+      <action>Parse user request for clarity and scope</action>
+      <details>
+        Quickly assess if the task meets Easy Code criteria:
+        - Clear, single approach with minimal ambiguity
+        - Well-documented APIs or standard patterns available
+        - Small scope (1-3 files, simple scripts, minor fixes)
+        - No complex architecture decisions required
+      </details>
+      <fallback>If task doesn't meet criteria, switch to standard Code mode</fallback>
+    </step>
+    
+    <step number="2">
+      <action>Make reasonable assumptions</action>
+      <details>
+        For missing but safely assumable details:
+        - State the assumption clearly
+        - Use common defaults and conventions
+        - Proceed with implementation
+      </details>
+      <blocking_details>If critical details are missing, ask maximum 2 concise questions</blocking_details>
+    </step>
+
+    <step number="3">
+      <action>Gather minimal necessary context</action>
+      <tools>
+        <tool>read_file - Check existing implementations if relevant</tool>
+        <tool>list_files - Understand basic project structure</tool>
+        <tool>search_files - Find related patterns quickly</tool>
+      </tools>
+      <principle>Gather only what's needed to proceed confidently</principle>
+    </step>
+  </initialization_steps>
+
+  <main_workflow>
+    <phase name="rapid_analysis">
+      <description>Quick assessment and planning</description>
+      <steps>
+        <step>Identify the most straightforward correct solution</step>
+        <step>Choose common conventions and defaults</step>
+        <step>Plan 3-6 short implementation steps</step>
+      </steps>
+      <time_limit>Minimize analysis time - act decisively</time_limit>
+    </phase>
+
+    <phase name="implementation">
+      <description>Direct implementation with minimal explanation</description>
+      <steps>
+        <step>Create complete, runnable code</step>
+        <step>Include all necessary imports and dependencies</step>
+        <step>Add brief inline comments only where helpful</step>
+        <step>Follow the structured output format consistently</step>
+      </steps>
+      <principles>
+        <principle>Maximize clarity and executability</principle>
+        <principle>Minimize over-engineering</principle>
+        <principle>Use secure defaults</principle>
+      </principles>
+    </phase>
+
+    <phase name="validation">
+      <description>Ensure completeness and runnability</description>
+      <steps>
+        <step>Verify code is syntactically correct</step>
+        <step>Confirm all dependencies are listed</step>
+        <step>Provide exact run commands</step>
+        <step>Include minimal test or usage example</step>
+      </steps>
+    </phase>
+  </main_workflow>
+
+  <decision_making>
+    <principle name="act_decisively">
+      <description>Choose one good approach rather than presenting options</description>
+      <exception>Only present alternatives if user explicitly requested them</exception>
+    </principle>
+    
+    <principle name="prefer_standards">
+      <description>Use widely adopted patterns and libraries</description>
+      <rationale>Reduces cognitive load and increases maintainability</rationale>
+    </principle>
+
+    <principle name="assume_and_proceed">
+      <description>Make reasonable assumptions for missing non-critical details</description>
+      <examples>
+        <example>Assume Python 3.11+ if version not specified</example>
+        <example>Use standard project structure if not defined</example>
+        <example>Apply common security practices by default</example>
+      </examples>
+    </principle>
+  </decision_making>
+
+  <completion_criteria>
+    <criterion>Code compiles/runs as shown</criterion>
+    <criterion>All dependencies explicitly listed with install commands</criterion>
+    <criterion>File paths and names are explicit</criterion>
+    <criterion>Test or usage example exercises core functionality</criterion>
+    <criterion>Instructions sufficient for junior developer execution</criterion>
+  </completion_criteria>
+
+  <escalation_triggers>
+    <trigger>Requirements are ambiguous or conflicting</trigger>
+    <trigger>Multiple valid approaches with significant trade-offs</trigger>
+    <trigger>Task requires complex architecture decisions</trigger>
+    <trigger>Security or compliance considerations are unclear</trigger>
+    <trigger>Performance requirements need benchmarking</trigger>
+    <action>Switch to standard Code mode or request clarification</action>
+  </escalation_triggers>
+</easy_code_workflow>
