@@ -1,5 +1,6 @@
 import { defineField, defineType } from "sanity";
 import { CaseIcon } from "@sanity/icons";
+import { mediaAssetSource } from "sanity-plugin-media";
 
 export const caseStudy = defineType({
   name: "caseStudy",
@@ -85,6 +86,7 @@ export const caseStudy = defineType({
       type: "image",
       options: {
         hotspot: true,
+        sources: [mediaAssetSource],
       },
       fields: [
         defineField({
@@ -107,6 +109,7 @@ export const caseStudy = defineType({
           type: "image",
           options: {
             hotspot: true,
+            sources: [mediaAssetSource],
           },
           fields: [
             defineField({

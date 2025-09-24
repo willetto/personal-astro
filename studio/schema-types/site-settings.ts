@@ -1,5 +1,6 @@
 import { defineField, defineType } from "sanity";
 import { EarthGlobeIcon } from "@sanity/icons";
+import { mediaAssetSource } from "sanity-plugin-media";
 
 export const siteSettings = defineType({
   name: "siteSettings",
@@ -26,6 +27,7 @@ export const siteSettings = defineType({
       type: "image",
       options: {
         accept: "image/svg+xml,image/png",
+        sources: [mediaAssetSource],
       },
     }),
     defineField({
