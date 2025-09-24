@@ -19,7 +19,20 @@ export default defineConfig({
   // Workspace icon shown in the Studio UI (sidebar/workspace selector)
   icon: StudioIcon,
 
-  plugins: [structureTool(), visionTool(), media()],
+  plugins: [
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title("Content")
+          .items(
+            S.documentTypeListItems().filter(
+              (listItem) => listItem.getId() !== "media.tag"
+            )
+          ),
+    }),
+    visionTool(),
+    media(),
+  ],
   schema: {
     types: schemaTypes,
   },

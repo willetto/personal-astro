@@ -13,9 +13,9 @@ import { navItem } from "./elements/navItem";
 import { contactForm } from "./sections/contactForm"; // Import the new contactForm schema
 
 export const schemaTypes = [
+  siteSettings,
   page,
   portableText,
-  siteSettings,
   caseStudy,
   // Elements
   cta,
