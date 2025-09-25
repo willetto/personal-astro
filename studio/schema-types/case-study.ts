@@ -129,27 +129,115 @@ export const caseStudy = defineType({
       group: "projectDetails",
     }),
     defineField({
-      name: "challenge",
-      title: "Challenge",
-      type: "text",
-      rows: 4,
-      description: "What problem or challenge did this project solve?",
-      group: "content",
-    }),
-    defineField({
-      name: "solution",
-      title: "Solution",
-      type: "text",
-      rows: 4,
-      description: "How did you solve the challenge?",
-      group: "content",
-    }),
-    defineField({
-      name: "results",
-      title: "Results",
-      type: "text",
-      rows: 4,
-      description: "What were the outcomes and results?",
+      name: "sections",
+      title: "Content Sections",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          name: "textSection",
+          title: "Text Section",
+          fields: [
+            defineField({
+              name: "title",
+              title: "Section Title",
+              type: "string",
+              description: "Optional title for this section (e.g., 'Challenge', 'Solution', 'Results')",
+            }),
+            defineField({
+              name: "content",
+              title: "Content",
+              type: "array",
+              of: [
+                {
+                  type: "block",
+                  title: "Block",
+                  styles: [
+                    { title: "Normal", value: "normal" },
+                    { title: "H2", value: "h2" },
+                    { title: "H3", value: "h3" },
+                    { title: "Quote", value: "blockquote" },
+                  ],
+                  lists: [
+                    { title: "Bullet", value: "bullet" },
+                    { title: "Number", value: "number" },
+                  ],
+                  marks: {
+                    decorators: [
+                      { title: "Strong", value: "strong" },
+                      { title: "Emphasis", value: "em" },
+                      { title: "Code", value: "code" },
+                      { title: "Strike", value: "strike-through" },
+                    ],
+                    annotations: [
+                      {
+                        name: "link",
+                        type: "object",
+                        title: "URL",
+                        fields: [
+                          {
+                            title: "URL",
+                            name: "href",
+                            type: "url",
+                            validation: (rule) =>
+                              rule.uri({
+                                scheme: ["http", "https", "mailto", "tel"],
+                              }),
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              ],
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: {
+              title: "title",
+              content: "content",
+            },
+            prepare({ title, content }) {
+              // Get first text block for preview
+              const firstBlock = content?.find((block: any) => block._type === 'block');
+              const preview = firstBlock?.children
+                ?.map((child: any) => child.text)
+                ?.join('') || '';
+              
+              return {
+                title: title || "Text Section",
+                subtitle: preview.length > 60 ? `${preview.substring(0, 60)}...` : preview,
+              };
+            },
+          },
+        },
+        {
+          type: "image",
+          name: "imageSection",
+          title: "Image",
+          options: {
+            hotspot: true,
+            sources: [mediaAssetSource],
+          },
+          preview: {
+            select: {
+              media: "asset",
+              globalAlt: "asset->altText",
+              filename: "asset->originalFilename",
+            },
+            prepare({ media, globalAlt, filename }) {
+              const displayText = globalAlt || filename || "Image";
+              return {
+                title: "Image",
+                subtitle: displayText,
+                media,
+              };
+            },
+          },
+        },
+      ],
+      description: "Rich content sections that can include text with formatting or images",
       group: "content",
     }),
     defineField({

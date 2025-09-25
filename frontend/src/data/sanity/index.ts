@@ -46,6 +46,35 @@ export type FruitLabelSkillsSection = {
   _type: "fruitLabelSkills";
 };
 
+export type CaseStudyTextSection = {
+  _type: "textSection";
+  title?: string;
+  content: Array<{
+    _type: "block";
+    children: Array<{
+      text: string;
+      marks?: string[];
+    }>;
+    markDefs?: Array<{
+      _key: string;
+      _type: string;
+      href?: string;
+    }>;
+    style?: string;
+  }>;
+};
+
+export type CaseStudyImageSection = {
+  _type: "imageSection";
+  asset: {
+    _id: string;
+    url: string;
+    altText?: string;
+  };
+};
+
+export type CaseStudySection = CaseStudyTextSection | CaseStudyImageSection;
+
 export type CaseStudy = {
   _id: string;
   title: string;
@@ -62,9 +91,7 @@ export type CaseStudy = {
     alt: string;
     caption?: string;
   }>;
-  challenge?: string;
-  solution?: string;
-  results?: string;
+  sections?: Array<CaseStudySection>;
   technologies?: string[];
   tags?: string[];
   websiteUrl?: string;

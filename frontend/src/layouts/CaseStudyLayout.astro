@@ -6,6 +6,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/foundations/elements/Text.astro";
 import Link from "@/components/foundations/elements/Link.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
+import PortableText from "@/components/foundations/elements/PortableText.astro";
 import { sanityImageUrl } from "@/utils/sanity-image";
 // Content
 const { caseStudy } = Astro.props;
@@ -14,13 +15,13 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
 
 <BaseLayout>
   <section>
-    <Wrapper variant="standard" class="py-32">
+    <Wrapper variant="standard" class="">
       <Text
         tag="h1"
         variant="display2XL"
         data-aos="fade-up"
         data-aos-duration="1000"
-        class="font-semibold tracking-tighter brand-heading-color lg:text-balance"
+        class="font-semibold font-display brand-heading-color lg:text-balance uppercase"
       >
         {caseStudy.title}
       </Text>
@@ -35,50 +36,49 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
           {caseStudy.description}
         </Text>
       )}
-
-      <Image
+        <Image
         width={1200}
         height={600}
         alt={caseStudy.featuredImage.alt}
         src={featuredImageUrl}
-        class="size-full object-cover object-center max-h-96 mt-8 rounded-2xl"
-      />
+        class="size-full object-cover object-center max-h-96 mt-4 rounded-2xl"
+       />
 
-      <div class="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3 items-start">
+      <div class="mt-6 lg:mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3 items-start">
         <div class="lg:col-span-2">
-          <div class="prose prose-lg max-w-none">
+          <div class="max-w-none">
             <slot />
             
-            {caseStudy.challenge && (
-              <div class="mt-8">
-                <Text tag="h2" variant="displayMD" class="font-semibold brand-heading-color mb-4">
-                  Challenge
-                </Text>
-                <Text tag="p" variant="textBase" class="brand-text-color leading-relaxed">
-                  {caseStudy.challenge}
-                </Text>
-              </div>
-            )}
-
-            {caseStudy.solution && (
-              <div class="mt-8">
-                <Text tag="h2" variant="displayMD" class="font-semibold brand-heading-color mb-4">
-                  Solution
-                </Text>
-                <Text tag="p" variant="textBase" class="brand-text-color leading-relaxed">
-                  {caseStudy.solution}
-                </Text>
-              </div>
-            )}
-
-            {caseStudy.results && (
-              <div class="mt-8">
-                <Text tag="h2" variant="displayMD" class="font-semibold brand-heading-color mb-4">
-                  Results
-                </Text>
-                <Text tag="p" variant="textBase" class="brand-text-color leading-relaxed">
-                  {caseStudy.results}
-                </Text>
+            {caseStudy.sections && caseStudy.sections.length > 0 && (
+              <div class="space-y-8">
+                {caseStudy.sections.map((section, index) => (
+                  <div class={index > 0 ? "mt-8" : ""}>
+                    {section._type === "textSection" && (
+                      <div>
+                        {section.title && (
+                          <Text tag="h2" variant="displayMD" class="font-semibold brand-heading-color mb-4">
+                            {section.title}
+                          </Text>
+                        )}
+                        <div class="brand-text-color prose prose-lg max-w-none">
+                          <PortableText value={section.content} />
+                        </div>
+                      </div>
+                    )}
+                    
+                    {section._type === "imageSection" && (
+                      <div>
+                        <Image
+                          width={800}
+                          height={500}
+                          alt={section.asset.altText || "Image"}
+                          src={section.asset.url}
+                          class="w-full h-auto object-cover rounded-lg"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
 
@@ -151,9 +151,9 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
                     href={caseStudy.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    variant="link"
+                    variant="muted"
                     size="sm"
-                    class="brand-text-color"
+                    class="brand-text-color mt-4"
                   >
                     View Live Site
                   </Link>
@@ -188,7 +188,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
               </Text>
               <div class="flex flex-wrap gap-2">
                 {caseStudy.technologies.map((tech) => (
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-base-100 brand-text-color border brand-border-color">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium bg-teal-100 brand-text-color border border-teal-500">
                     {tech}
                   </span>
                 ))}

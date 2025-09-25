@@ -153,9 +153,16 @@ export const CASE_STUDY_DETAIL_FIELDS = `
     alt,
     caption
   },
-  challenge,
-  solution,
-  results,
+  sections[] {
+    _type,
+    title,
+    content,
+    asset->{
+      _id,
+      url,
+      altText
+    }
+  },
   technologies,
   tags,
   websiteUrl,

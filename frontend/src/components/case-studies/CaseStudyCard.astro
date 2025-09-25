@@ -17,21 +17,21 @@ const imageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 600, 400);
 ---
 
 <div
-  class="CaseStudyCard relative overflow-hidden group flex h-full justify-between flex-col gap-6 bg-white group transition-all md:min-h-[400px] cursor-pointer hover:shadow-xl shadow rounded-2xl p-6 outline outline-base-200 duration-500"
+  class="CaseStudyCard relative overflow-hidden group flex h-full justify-between flex-col gap-6 bg-white group transition-all md:min-h-[400px] cursor-pointer hover:shadow-xl shadow rounded-2xl p-2 outline outline-base-200 duration-500"
 >
-  <a href={url} title={caseStudy.title} class="absolute inset-0 z-10"></a>
+  <a href={url} title={caseStudy.title} class="card-link absolute inset-0 z-10"></a>
   
-  <div>
+  <div class="card-img-container overflow-hidden rounded-lg">
     <img
       src={imageUrl}
       alt={caseStudy.featuredImage.alt}
       width="600"
       height="400"
-      class="object-cover object-center aspect-4/3 rounded-xl w-full"
+      class="card-img object-cover object-center aspect-5/3 rounded-lg w-full"
       loading="lazy"
     />
     
-    <div class="mt-4">
+    <div class="mt-4 p-2">
       {projectDate && (
         <Text tag="p" variant="textXS" class="uppercase text-base-400 mb-2">
           {projectDate}
@@ -51,8 +51,8 @@ const imageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 600, 400);
       {caseStudy.description && (
         <Text
           tag="p"
-          variant="textSM"
-          class="text-base-600 text-balance line-clamp-3 leading-relaxed"
+          variant="textMD"
+          class="text-base-600 text-pretty line-clamp-3 leading-relaxed"
         >
           {caseStudy.description}
         </Text>
@@ -60,7 +60,7 @@ const imageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 600, 400);
     </div>
   </div>
 
-  <div class="space-y-4">
+  <div class="space-y-4 p-2">
     {/* Technologies */}
     {caseStudy.technologies && caseStudy.technologies.length > 0 && (
       <div class="flex flex-wrap gap-1.5">
@@ -78,7 +78,7 @@ const imageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 600, 400);
     )}
 
     {/* CTA */}
-    <div class="pt-2">
+    <div class="p-2">
       <Text
         tag="p"
         variant="textSM"
@@ -93,3 +93,19 @@ const imageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 600, 400);
     </div>
   </div>
 </div>
+
+<style>
+.CaseStudyCard .card-img {
+  transition: scale 0.2s ease-in-out, filter 0.2s ease-in-out, outline 0.2s ease-in-out;
+}
+
+.CaseStudyCard:focus-visible, .CaseStudyCard:focus-within{
+  outline: 2px solid var(--color-neutral-800);
+  outline-offset: 2px;
+}
+
+.CaseStudyCard:hover .card-img, .CaseStudyCard:focus-visible .card-img, .CaseStudyCard:focus-within .card-img {
+    scale: 1.05;
+    filter: brightness(1.1);
+}
+</style>
