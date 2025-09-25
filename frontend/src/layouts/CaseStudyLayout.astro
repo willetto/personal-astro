@@ -8,6 +8,7 @@ import Link from "@/components/foundations/elements/Link.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
 import PortableText from "@/components/foundations/elements/PortableText.astro";
 import { sanityImageUrl } from "@/utils/sanity-image";
+import SvelteComponentRenderer from "@/components/SvelteComponentRenderer.astro";
 // Content
 const { caseStudy } = Astro.props;
 const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200, 600);
@@ -75,6 +76,12 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
                           src={section.asset.url}
                           class="w-full h-auto object-cover rounded-lg"
                         />
+                      </div>
+                    )}
+                    
+                    {section._type === "svelteComponent" && (
+                      <div>
+                        <SvelteComponentRenderer componentType={section.componentType} />
                       </div>
                     )}
                   </div>

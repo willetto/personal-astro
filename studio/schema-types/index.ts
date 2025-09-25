@@ -11,6 +11,7 @@ import { caseStudyListings } from "./sections/caseStudyListings";
 import { cta } from "./elements/cta";
 import { navItem } from "./elements/navItem";
 import { contactForm } from "./sections/contactForm"; // Import the new contactForm schema
+import { svelteComponent } from "./sections/svelteComponent";
 
 export const schemaTypes = [
   siteSettings,
@@ -28,4 +29,5 @@ export const schemaTypes = [
   fruitLabelSkills,
   caseStudyListings,
   contactForm, // Add the new contactForm schema
+  svelteComponent,
 ];

@@ -73,7 +73,12 @@ export type CaseStudyImageSection = {
   };
 };
 
-export type CaseStudySection = CaseStudyTextSection | CaseStudyImageSection;
+export type CaseStudySvelteSection = {
+  _type: "svelteComponent";
+  componentType: string;
+};
+
+export type CaseStudySection = CaseStudyTextSection | CaseStudyImageSection | CaseStudySvelteSection;
 
 export type CaseStudy = {
   _id: string;

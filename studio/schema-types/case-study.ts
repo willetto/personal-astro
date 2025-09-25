@@ -1,6 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { CaseIcon } from "@sanity/icons";
 import { mediaAssetSource } from "sanity-plugin-media";
+import { svelteComponent } from "./sections/svelteComponent";
 
 export const caseStudy = defineType({
   name: "caseStudy",
@@ -236,8 +237,10 @@ export const caseStudy = defineType({
             },
           },
         },
+        // Reference the svelteComponent schema
+        { type: svelteComponent.name },
       ],
-      description: "Rich content sections that can include text with formatting or images",
+      description: "Rich content sections that can include text with formatting, images, or interactive Svelte components",
       group: "content",
     }),
     defineField({

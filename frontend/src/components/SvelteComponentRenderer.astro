@@ -1,0 +1,42 @@
+---
+import { getSvelteComponentConfig } from "@/config/svelte-components";
+
+// Import all available Svelte components
+import HeroHome from "@/components/svelte_components/hero-home.svelte";
+import InfolkSlider from "@/components/svelte_components/InfolkSlider/InfolkSlider.svelte";
+
+interface Props {
+  componentType: string;
+}
+
+const { componentType } = Astro.props as Props;
+
+// Get the component configuration for validation
+const config = getSvelteComponentConfig(componentType);
+const isValidComponent = !!config;
+---
+
+<div class="svelte-component-wrapper">
+  {componentType === "heroHome" && (
+    <HeroHome client:load />
+  )}
+  
+  {componentType === "infolkSlider" && (
+    <InfolkSlider client:load />
+  )}
+  
+  {!isValidComponent && (
+    <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+      <p class="text-red-700">
+        Unknown component type: {componentType}
+      </p>
+    </div>
+  )}
+</div>
+
+<style>
+  .svelte-component-wrapper {
+    /* Wrapper styles for Svelte components */
+    width: 100%;
+  }
+</style>

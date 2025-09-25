@@ -157,6 +157,7 @@ export const CASE_STUDY_DETAIL_FIELDS = `
     _type,
     title,
     content,
+    componentType,
     asset->{
       _id,
       url,
