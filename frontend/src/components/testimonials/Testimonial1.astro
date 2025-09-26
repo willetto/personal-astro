@@ -1,18 +1,76 @@
 ---
-// Fundations
+// Foundations
 import Text from "@/components/foundations/elements/Text.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
 
-import CustomerEntry2 from "@/components/customers/CustomerEntry2.astro";
-// Content
-import { getCollection } from "astro:content";
-const allCustomers = await getCollection("customers");
+// Props interface
+interface Props { 
+  testimonial?: import("@/data/sanity").Testimonial1Section 
+}
+const { testimonial } = Astro.props as Props;
+
+// Extract data with fallbacks
+const quote = testimonial?.quote || "This platform has transformed how we work. The intuitive design and powerful features have made our team more productive than ever.";
+const customerName = testimonial?.customerName || "Sarah Johnson";
+const companyName = testimonial?.companyName || "TechCorp Solutions";
+const customerUrl = testimonial?.customerUrl;
+const companyUrl = testimonial?.companyUrl;
+const showBorders = testimonial?.showBorders === true;
+const isCenter = (testimonial?.alignment || "center") === "center";
 ---
 
 <section>
-  <Wrapper variant="standard" class="py-4 border-t">
-    <div data-aos="fade-up" data-aos-duration="2500">
-      {allCustomers.slice(1, 2).map((post) => <CustomerEntry2 post={post} />)}
+ <Wrapper variant="standard" class={`py-12 border-x-0 ${showBorders ? "border-y brand-border-color" : ""}`}>
+    <div 
+      data-aos="fade-up" 
+      data-aos-duration="1500"
+      class={`max-w-4xl mx-auto ${isCenter ? "text-center" : "text-left"}`}
+    >
+      <!-- Testimonial Quote -->
+      {quote && (
+        <Text 
+          tag="blockquote" 
+          variant="textXL" 
+          class="font-bold brand-heading-color max-w-[45ch] mx-auto text-pretty"
+        >
+          "{quote}"
+        </Text>
+      )}
+      
+      <!-- Customer Attribution -->
+      <div class={`mt-6 ${isCenter ? "flex flex-row items-baseline justify-center gap-1" : ""}`}>
+       {customerName && (
+         <Text
+           tag="p"
+           variant="textBase"
+           class="font-semibold brand-heading-color not-italic"
+         >
+           {customerUrl ? (
+             <a href={customerUrl} target="_blank" rel="noopener noreferrer" class="hover:underline">
+               {customerName}
+             </a>
+           ) : (
+             customerName
+           )}
+         </Text>
+       )}
+       {companyName && (
+         <Text
+           tag="p"
+           variant="textSM"
+           class="brand-text-color mt-1"
+         >
+           {" — "}
+           {companyUrl ? (
+             <a href={companyUrl} target="_blank" rel="noopener noreferrer" class="hover:underline">
+               {companyName}
+             </a>
+           ) : (
+             companyName
+           )}
+         </Text>
+       )}
+      </div>
     </div>
   </Wrapper>
 </section>

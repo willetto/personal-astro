@@ -12,6 +12,7 @@ import { cta } from "./elements/cta";
 import { navItem } from "./elements/navItem";
 import { contactForm } from "./sections/contactForm"; // Import the new contactForm schema
 import { svelteComponent } from "./sections/svelteComponent";
+import { testimonial1 } from "./sections/testimonial1";
 
 export const schemaTypes = [
   siteSettings,
@@ -30,4 +31,5 @@ export const schemaTypes = [
   caseStudyListings,
   contactForm, // Add the new contactForm schema
   svelteComponent,
+  testimonial1,
 ];

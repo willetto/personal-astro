@@ -128,13 +128,25 @@ export type ContactFormSection = {
   }>;
 };
 
+export type Testimonial1Section = {
+  _type: "testimonial1";
+  quote?: string;
+  customerName?: string;
+  companyName?: string;
+  alignment?: "center" | "left";
+  showBorders?: boolean;
+  customerUrl?: string;
+  companyUrl?: string;
+};
+
 export type Section =
   | Hero
   | Feature1Section
   | HomeHeroSvelteSection
   | FruitLabelSkillsSection
   | CaseStudyListingsSection
-  | ContactFormSection; // Add the new ContactFormSection
+  | ContactFormSection
+  | Testimonial1Section; // Add this line
 
 export type PageListItem = {
   _id: string;

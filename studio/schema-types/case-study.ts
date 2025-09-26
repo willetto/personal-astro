@@ -239,7 +239,8 @@ export const caseStudy = defineType({
         },
         // Reference the svelteComponent schema
         { type: svelteComponent.name },
-      ],
+        { type: "testimonial1" },
+       ],
       description: "Rich content sections that can include text with formatting, images, or interactive Svelte components",
       group: "content",
     }),

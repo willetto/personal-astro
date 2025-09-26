@@ -9,6 +9,7 @@ import Wrapper from "@/components/foundations/containers/Wrapper.astro";
 import PortableText from "@/components/foundations/elements/PortableText.astro";
 import { sanityImageUrl } from "@/utils/sanity-image";
 import SvelteComponentRenderer from "@/components/SvelteComponentRenderer.astro";
+import Testimonial1 from "@/components/testimonials/Testimonial1.astro";
 // Content
 const { caseStudy } = Astro.props;
 const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200, 600);
@@ -16,34 +17,39 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
 
 <BaseLayout>
   <section>
-    <Wrapper variant="standard" class="">
-      <Text
-        tag="h1"
-        variant="display2XL"
-        data-aos="fade-up"
-        data-aos-duration="1000"
-        class="font-semibold font-display brand-heading-color lg:text-balance uppercase"
-      >
-        {caseStudy.title}
-      </Text>
-      {caseStudy.description && (
-        <Text
+    <Wrapper variant="standard">
+      <div class="header-content">
+        <div class="header-text">
+
+          <Text
+          tag="h1"
+          variant="display2XL"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          class="header-title font-semibold font-display brand-heading-color lg:text-balance uppercase"
+          >
+          {caseStudy.title}
+        </Text>
+        {caseStudy.description && (
+          <Text
           tag="p"
           variant="textLG"
           data-aos="fade-up"
           data-aos-duration="1500"
-          class="mt-4 text-base brand-text-color max-w-2xl"
-        >
+          class="header-description mt-4 text-base brand-text-color max-w-2xl"
+          >
           {caseStudy.description}
         </Text>
       )}
+      </div>
         <Image
         width={1200}
         height={600}
         alt={caseStudy.featuredImage.alt}
         src={featuredImageUrl}
-        class="size-full object-cover object-center max-h-96 mt-4 rounded-2xl"
-       />
+        class="header-image size-full object-cover object-center max-h-96 mt-4 rounded-2xl"
+        />
+      </div>
 
       <div class="mt-6 lg:mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3 items-start">
         <div class="lg:col-span-2">
@@ -76,6 +82,12 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
                           src={section.asset.url}
                           class="w-full h-auto object-cover rounded-lg"
                         />
+                      </div>
+                    )}
+                    
+                    {section._type === "testimonial1" && (
+                      <div>
+                        <Testimonial1 testimonial={section as import("@/data/sanity").Testimonial1Section} />
                       </div>
                     )}
                     
@@ -152,7 +164,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
               {caseStudy.websiteUrl && (
                 <div>
                   <Text tag="p" variant="textSM" class="font-medium brand-heading-color">
-                    Website
+                    Website:
                   </Text>
                   <Link
                     href={caseStudy.websiteUrl}
@@ -195,7 +207,7 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
               </Text>
               <div class="flex flex-wrap gap-2">
                 {caseStudy.technologies.map((tech) => (
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium bg-teal-100 brand-text-color border border-teal-500">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium bg-teal-100 text-teal-900 border border-teal-500">
                     {tech}
                   </span>
                 ))}
@@ -224,6 +236,26 @@ const featuredImageUrl = sanityImageUrl(caseStudy.featuredImage.asset._ref, 1200
   </section>
 </BaseLayout>
 <style>
+  
+  @media (min-width: 1100px) {
+  .header-content {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: center;
+  }
+  .header-title {
+    grid-column: 1;
+  }
+  .header-description {
+    grid-column: 1;
+  }
+  .header-image {
+    grid-column: 2;
+    margin: 0;
+  }
+}
+
   .prose a:hover {
     color: var(--heading-text-color);
   }

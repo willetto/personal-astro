@@ -12,6 +12,7 @@ import Hero2 from "@/components/headers/Hero2.astro";
 import Feature1 from "@/components/features/Feature1.astro";
 import CaseStudyListings from "@/components/case-studies/CaseStudyListings.astro";
 import ContactForm from "@/components/forms/ContactForm.astro";
+import Testimonial1 from "@/components/testimonials/Testimonial1.astro";
 
 const sections = await fetchHomeSections();
 
@@ -22,6 +23,7 @@ const sectionComponents = {
   feature1: Feature1,
   caseStudyListings: CaseStudyListings,
   contactForm: ContactForm,
+  testimonial1: Testimonial1, // Add this line
 } as const;
 ---
 
@@ -64,6 +66,9 @@ const sectionComponents = {
         }
         if (section._type === "contactForm") {
           return <ContactForm feature={section as import("@/data/sanity").ContactFormSection} />;
+        }
+        if (section._type === "testimonial1") {
+          return <Testimonial1 testimonial={section as import("@/data/sanity").Testimonial1Section} />;
         }
         return null;
       })}

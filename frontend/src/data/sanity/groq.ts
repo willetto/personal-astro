@@ -70,11 +70,23 @@ export const CONTACT_FORM_FIELDS = `
   }
 `;
 
+export const TESTIMONIAL1_FIELDS = `
+  _type,
+  quote,
+  customerName,
+  companyName,
+  alignment,
+  showBorders,
+  customerUrl,
+  companyUrl
+`;
+
 export const ALL_SECTION_FIELDS = `
   ${HERO_FIELDS},
   ${FEATURE1_FIELDS},
   ${CASE_STUDY_LISTINGS_FIELDS},
-  ${CONTACT_FORM_FIELDS} // Add the new contact form fields
+  ${CONTACT_FORM_FIELDS},
+  ${TESTIMONIAL1_FIELDS}
 `;
 
 export const PAGE_BY_SLUG_QUERY = `
@@ -158,6 +170,14 @@ export const CASE_STUDY_DETAIL_FIELDS = `
     title,
     content,
     componentType,
+    // Testimonial1 fields (only present when _type == "testimonial1")
+    quote,
+    customerName,
+    companyName,
+    alignment,
+    showBorders,
+    customerUrl,
+    companyUrl,
     asset->{
       _id,
       url,

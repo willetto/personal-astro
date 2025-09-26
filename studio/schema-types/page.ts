@@ -33,6 +33,7 @@ export const page = defineType({
         { type: "feature1" },
         { type: "caseStudyListings" },
         { type: "contactForm" }, // Add the new contactForm section
+        { type: "testimonial1" },
       ],
       description:
         "Structured sections that render on the frontend. Add hero sections, features, and case study listings here.",
