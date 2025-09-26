@@ -9,6 +9,8 @@ import Text from "@/components/foundations/elements/Text.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
 // Icons
 import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
+// Utils
+import { convertLineBreaksToHtml } from "@/utils/text";
 
 interface Props { feature?: import("@/data/sanity").Hero }
 const { feature } = Astro.props as Props;
@@ -16,8 +18,12 @@ const { feature } = Astro.props as Props;
 const header = feature?.header || "Powerful financial APIs for tech innovators";
 const subheading = feature?.subheading || "Seamless, scalable infrastructure for managing funds store, transfer, and reconcile money with ease.";
 
-const primaryLabel = feature?.primaryCtaLabel || "Get started";
-const primaryHref = feature?.primaryCtaHref || "/forms/sign-up";
+// Convert line breaks to HTML for proper rendering
+const headerHtml = convertLineBreaksToHtml(header);
+const subheadingHtml = convertLineBreaksToHtml(subheading);
+
+const primaryLabel = feature?.primaryCtaLabel;
+const primaryHref = feature?.primaryCtaHref;
 
 const secondaryLabel = feature?.secondaryCtaLabel || "Contact sales";
 const secondaryHref = feature?.secondaryCtaHref || "/forms/contact";
@@ -43,49 +49,51 @@ const gradientToColor = feature?.gradientToColor || "oklch(66.98% 0.2236 43.225)
         data-aos="fade-up"
         data-aos-duration="1000"
         class="font-semibold font-display brand-heading-color text-balance uppercase"
-      >
-        {header}
-      </Text>
+        set:html={headerHtml}
+      />
       <Text
         tag="p"
         variant="textLG"
         data-aos="fade-up"
         data-aos-duration="1500"
         class="max-w-lg mt-4 font-medium brand-text-color md:text-balance"
-      >
-        {subheading}
-      </Text>
+        set:html={subheadingHtml}
+      />
       <div
         data-aos="fade-up"
         data-aos-duration="2000"
         class="flex items-center mt-12 gap-2"
       >
-        <Link
-          size="base"
-          variant="default"
-          href={primaryHref}
-          gap="xs"
-          class="group"
-        >
-          {primaryLabel}
-          <ChevronRight
-            size="sm"
-            class="duration-300 easy-out-in group-hover:translate-x-2"
-          />
-        </Link>
-        <Link
-          size="base"
-          variant="muted"
-          href={secondaryHref}
-          gap="xs"
-          class="group"
-        >
-          {secondaryLabel}
-          <ChevronRight
-            size="sm"
-            class="duration-300 easy-out-in group-hover:translate-x-2"
-          />
-        </Link>
+        {primaryLabel && primaryHref && (
+          <Link
+            size="base"
+            variant="default"
+            href={primaryHref}
+            gap="xs"
+            class="group"
+          >
+            {primaryLabel}
+            <ChevronRight
+              size="sm"
+              class="duration-300 easy-out-in group-hover:translate-x-2"
+            />
+          </Link>
+        )}
+        {secondaryLabel && secondaryHref && (
+          <Link
+            size="base"
+            variant="muted"
+            href={secondaryHref}
+            gap="xs"
+            class="group"
+          >
+            {secondaryLabel}
+            <ChevronRight
+              size="sm"
+              class="duration-300 easy-out-in group-hover:translate-x-2"
+            />
+          </Link>
+        )}
       </div>
     </div>
   </Wrapper>

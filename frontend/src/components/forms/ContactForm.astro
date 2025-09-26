@@ -4,6 +4,8 @@ import Text from "@/components/foundations/elements/Text.astro";
 import Button from "@/components/foundations/elements/Button.astro";
 import LucideIcon from "@/components/foundations/icons/LucideIcon.astro";
 import type { ContactFormSection } from "@/data/sanity";
+// Utils
+import { convertLineBreaksToHtml } from "@/utils/text";
 
 interface Props { feature?: ContactFormSection }
 const { feature } = Astro.props as Props;
@@ -17,6 +19,10 @@ if (!feature) {
 }
 
 const contactForm = feature;
+
+// Convert line breaks to HTML for proper rendering
+const headlineHtml = convertLineBreaksToHtml(contactForm?.headline);
+const descriptionHtml = convertLineBreaksToHtml(contactForm?.description);
 ---
 
 {contactForm && (
@@ -43,9 +49,8 @@ const contactForm = feature;
               data-aos="fade-up"
               data-aos-duration="1000"
               class="font-semibold uppercase font-display brand-heading-color lg:text-balance mt-8"
-            >
-              {contactForm.headline}
-            </Text>
+              set:html={headlineHtml}
+            />
           )}
           {contactForm.description && (
             <Text
@@ -54,9 +59,8 @@ const contactForm = feature;
               data-aos="fade-up"
               data-aos-duration="1500"
               class="mt-4 font-medium brand-text-color md:text-balance"
-            >
-              {contactForm.description}
-            </Text>
+              set:html={descriptionHtml}
+            />
           )}
           {contactForm.supportLinks && contactForm.supportLinks.length > 0 && (
             <div
