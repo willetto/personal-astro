@@ -4,6 +4,7 @@ import { getSvelteComponentConfig } from "@/config/svelte-components";
 // Import all available Svelte components
 import HeroHome from "@/components/svelte_components/hero-home.svelte";
 import InfolkSlider from "@/components/svelte_components/InfolkSlider/InfolkSlider.svelte";
+import InhireProgressExample from "@/components/svelte_components/inhireProgress/progress-bar-example.svelte";
 
 interface Props {
   componentType: string;
@@ -23,6 +24,10 @@ const isValidComponent = !!config;
   
   {componentType === "infolkSlider" && (
     <InfolkSlider client:load />
+  )}
+
+  {componentType === "inhireProgressWrapper" && (
+    <InhireProgressExample client:load />
   )}
   
   {!isValidComponent && (

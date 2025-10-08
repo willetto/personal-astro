@@ -11,30 +11,37 @@ export interface SvelteComponentConfig {
 
 export const AVAILABLE_SVELTE_COMPONENTS: SvelteComponentConfig[] = [
   {
-    key: "heroHome", 
+    key: "heroHome",
     title: "Hero Home",
-    path: "hero-home.svelte"
+    path: "hero-home.svelte",
   },
   {
     key: "infolkSlider",
-    title: "Infolk Slider", 
-    path: "InfolkSlider/InfolkSlider.svelte"
-  }
+    title: "Infolk Slider",
+    path: "InfolkSlider/InfolkSlider.svelte",
+  },
+  {
+    key: "inhireProgressWrapper",
+    title: "Inhire Progress Wrapper",
+    path: "inhireProgress/progress-bar-example.svelte",
+  },
 ];
 
 /**
  * Get component config by key
  */
-export function getSvelteComponentConfig(key: string): SvelteComponentConfig | undefined {
-  return AVAILABLE_SVELTE_COMPONENTS.find(component => component.key === key);
+export function getSvelteComponentConfig(
+  key: string
+): SvelteComponentConfig | undefined {
+  return AVAILABLE_SVELTE_COMPONENTS.find((component) => component.key === key);
 }
 
 /**
  * Get all component options for Sanity dropdown
  */
 export function getSvelteComponentOptions() {
-  return AVAILABLE_SVELTE_COMPONENTS.map(component => ({
+  return AVAILABLE_SVELTE_COMPONENTS.map((component) => ({
     title: component.title,
-    value: component.key
+    value: component.key,
   }));
 }

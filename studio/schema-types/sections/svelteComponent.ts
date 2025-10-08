@@ -17,33 +17,34 @@ export const svelteComponent = defineType({
       type: "string",
       options: {
         list: SVELTE_COMPONENT_OPTIONS,
-        layout: "dropdown"
+        layout: "dropdown",
       },
       validation: (rule) => rule.required(),
-      description: "Select which Svelte component to render"
+      description: "Select which Svelte component to render",
     }),
     defineField({
       name: "info",
       title: "Component Info",
       type: "string",
       readOnly: true,
-      description: "The selected Svelte component will be rendered as-is without additional configuration.",
-      initialValue: "Svelte component renders with default settings."
-    })
+      description:
+        "The selected Svelte component will be rendered as-is without additional configuration.",
+      initialValue: "Svelte component renders with default settings.",
+    }),
   ],
   preview: {
     select: {
-      componentType: "componentType"
+      componentType: "componentType",
     },
     prepare({ componentType }) {
       const selectedComponent = SVELTE_COMPONENT_OPTIONS.find(
-        option => option.value === componentType
+        (option) => option.value === componentType
       );
-      
+
       return {
         title: `Svelte Component: ${selectedComponent?.title || "Not Selected"}`,
-        subtitle: "Interactive Svelte component"
+        subtitle: "Interactive Svelte component",
       };
-    }
-  }
+    },
+  },
 });
