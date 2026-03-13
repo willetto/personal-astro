@@ -19,10 +19,15 @@ export async function getStaticPaths() {
 }
 
 const { tag } = Astro.params;
+const normalizedTag = String(tag || "");
 const allPosts = await fetchAllBlogPosts();
 const posts = allPosts.filter((post) =>
-  (post.tags || []).some((item) => normalizeTag(item) === String(tag || ""))
+  (post.tags || []).some((item) => normalizeTag(item) === normalizedTag)
 );
+const displayTag =
+  posts.find((post) => (post.tags || []).some((item) => normalizeTag(item) === normalizedTag))?.tags?.find(
+    (item) => normalizeTag(item) === normalizedTag
+  ) || normalizedTag;
 ---
 
 <BaseLayout>
@@ -37,7 +42,7 @@ const posts = allPosts.filter((post) =>
             data-aos-duration="1000"
             class="font-semibold tracking-tighter brand-heading-color lg:text-balance capitalize"
           >
-            {tag}
+            {displayTag}
           </Text>
           <Text
             tag="p"

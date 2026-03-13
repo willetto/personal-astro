@@ -6,11 +6,11 @@ import Text from "@/components/foundations/elements/Text.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
 // Data
 import { fetchAllBlogPosts, fetchAllBlogTags } from "@/data/sanity/fetch";
-import { uniqueNormalizedTags } from "@/utils/tags";
+import { uniqueTagOptions } from "@/utils/tags";
 
 const allPosts = await fetchAllBlogPosts();
 const allTags = await fetchAllBlogTags();
-const tags = uniqueNormalizedTags(allTags);
+const tags = uniqueTagOptions(allTags);
 ---
 
 <BaseLayout>
@@ -43,9 +43,9 @@ const tags = uniqueNormalizedTags(allTags);
         <ul role="list" class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 xl:grid-cols-4">
           {tags.map((tag) => (
             <li class="p-2 aspect-square bg-base-100 border brand-border-color group rounded-xl shadow flex justify-center items-center relative hover:shadow-xl duration-300">
-              <a href={`/blog/tags/${tag}`} class="absolute inset-0" />
+              <a href={`/blog/tags/${tag.slug}`} class="absolute inset-0" />
               <Text tag="p" variant="textXL" class="capitalize font-medium group-hover:text-teal-600 brand-heading-color">
-                {tag}
+                {tag.label}
               </Text>
             </li>
           ))}

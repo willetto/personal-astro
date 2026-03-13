@@ -10,10 +10,10 @@ import BlogEntries2 from "@/components/blog/BlogEntries2.astro";
 import SubscribeCta from "@/components/blog/SubscribeCta.astro";
 // Data
 import { fetchAllBlogPosts } from "@/data/sanity/fetch";
-import { uniqueNormalizedTags } from "@/utils/tags";
+import { uniqueTagOptions } from "@/utils/tags";
 
 const allPosts = await fetchAllBlogPosts();
-const tags = uniqueNormalizedTags(allPosts.flatMap((post) => post.tags || []));
+const tags = uniqueTagOptions(allPosts.flatMap((post) => post.tags || []));
 ---
 
 <BaseLayout>
@@ -73,12 +73,12 @@ const tags = uniqueNormalizedTags(allPosts.flatMap((post) => post.tags || []));
             <Text
               tag="a"
               variant="textSM"
-              title={tag}
-              aria-label={tag}
-              href={`/blog/tags/${tag}`}
+              title={tag.label}
+              aria-label={tag.label}
+              href={`/blog/tags/${tag.slug}`}
               class="capitalize brand-text-color"
             >
-              {tag}
+              {tag.label}
             </Text>
           ))}
         </div>

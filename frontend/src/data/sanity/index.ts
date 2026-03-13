@@ -13,8 +13,10 @@ export type Hero = {
   subheading?: string;
   primaryCtaLabel?: string;
   primaryCtaHref?: string;
+  primaryCtaTarget?: LinkTarget;
   secondaryCtaLabel?: string;
   secondaryCtaHref?: string;
+  secondaryCtaTarget?: LinkTarget;
   gradientFromColor?: string;
   gradientToColor?: string;
   heroImages?: Array<{

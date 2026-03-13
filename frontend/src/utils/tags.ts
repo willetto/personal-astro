@@ -8,6 +8,20 @@ export function normalizeTag(tag: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export function uniqueNormalizedTags(tags: string[]): string[] {
-  return [...new Set(tags.map(normalizeTag).filter(Boolean))];
+export type TagOption = {
+  label: string;
+  slug: string;
+};
+
+export function uniqueTagOptions(tags: string[]): TagOption[] {
+  const map = new Map<string, string>();
+
+  for (const rawTag of tags) {
+    const label = String(rawTag || "").trim();
+    const slug = normalizeTag(label);
+    if (!slug || map.has(slug)) continue;
+    map.set(slug, label);
+  }
+
+  return Array.from(map.entries()).map(([slug, label]) => ({ slug, label }));
 }

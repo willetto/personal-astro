@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  yargs@17.7.2:
+    hash: c91848e96b63902719a5bd186e5fb1124a2a95a175ad3098099bae01e2c2386a
+    path: patches/yargs@17.7.2.patch
+
 importers:
 
   .:
@@ -8364,7 +8369,7 @@ snapshots:
       chokidar: 4.0.3
       kleur: 4.1.5
       typescript: 5.8.3
-      yargs: 17.7.2
+      yargs: 17.7.2(patch_hash=c91848e96b63902719a5bd186e5fb1124a2a95a175ad3098099bae01e2c2386a)
     transitivePeerDependencies:
       - prettier
       - prettier-plugin-astro
@@ -16515,7 +16520,7 @@ snapshots:
       vite: 7.1.7(@types/node@24.5.2)(jiti@2.6.0)(lightningcss@1.30.1)(yaml@2.8.1)
       which: 5.0.0
       xstate: 5.22.0
-      yargs: 17.7.2
+      yargs: 17.7.2(patch_hash=c91848e96b63902719a5bd186e5fb1124a2a95a175ad3098099bae01e2c2386a)
     transitivePeerDependencies:
       - '@emotion/is-prop-valid'
       - '@portabletext/sanity-bridge'
@@ -17844,7 +17849,7 @@ snapshots:
 
   yargs-parser@21.1.1: {}
 
-  yargs@17.7.2:
+  yargs@17.7.2(patch_hash=c91848e96b63902719a5bd186e5fb1124a2a95a175ad3098099bae01e2c2386a):
     dependencies:
       cliui: 8.0.1
       escalade: 3.2.0
