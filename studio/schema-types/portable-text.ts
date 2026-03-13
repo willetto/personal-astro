@@ -45,5 +45,18 @@ export const portableText = defineType({
         ],
       },
     },
+    {
+      type: "code",
+      title: "Code",
+      options: {
+        language: "typescript",
+        languageAlternatives: [
+          { title: "JavaScript", value: "javascript" },
+          { title: "TypeScript", value: "typescript" },
+          { title: "HTML", value: "html" },
+          { title: "CSS", value: "css" },
+        ],
+      },
+    },
   ],
 });

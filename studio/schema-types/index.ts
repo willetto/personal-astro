@@ -2,6 +2,7 @@ import { page } from "./page";
 import { portableText } from "./portable-text";
 import { siteSettings } from "./site-settings";
 import { caseStudy } from "./case-study";
+import { blogPost } from "./blog-post";
 import { hero1 } from "./sections/hero1";
 import { hero2 } from "./sections/hero2";
 import { feature1 } from "./sections/feature1";
@@ -19,6 +20,7 @@ export const schemaTypes = [
   page,
   portableText,
   caseStudy,
+  blogPost,
   // Elements
   cta,
   navItem,
