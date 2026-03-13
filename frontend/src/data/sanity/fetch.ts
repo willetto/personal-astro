@@ -1,5 +1,13 @@
 import { createClient } from "@sanity/client";
-import type { Section, SiteHead, NavItem, PageDetail, PageListItem } from ".";
+import type {
+  Section,
+  SiteHead,
+  NavItem,
+  PageDetail,
+  PageListItem,
+  BlogPost,
+  BlogPostListItem,
+} from ".";
 import {
   PAGE_BY_SLUG_QUERY,
   HOME_PAGE_WITH_SECTIONS_QUERY,
@@ -8,17 +16,28 @@ import {
   SITE_SETTINGS_HEAD_QUERY,
   SITE_SETTINGS_FAVICON_QUERY,
   SITE_SETTINGS_NAVIGATION_QUERY,
+  BLOG_POST_LIST_QUERY,
+  BLOG_POST_BY_SLUG_QUERY,
+  BLOG_POST_SLUGS_QUERY,
+  BLOG_POST_TAGS_QUERY,
 } from "./groq";
 
 const projectId = import.meta.env.SANITY_STUDIO_PROJECT_ID;
 const dataset = import.meta.env.SANITY_STUDIO_DATASET || "production";
 const apiVersion = "2025-02-19";
+const sanityReadToken =
+  import.meta.env.SANITY_API_READ_TOKEN ||
+  import.meta.env.SANITY_STUDIO_READ_TOKEN ||
+  "";
+const isDraftMode = import.meta.env.DEV || import.meta.env.SANITY_INCLUDE_DRAFTS === "true";
 
 export const sanityClient = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true,
+  useCdn: !isDraftMode,
+  token: sanityReadToken || undefined,
+  perspective: isDraftMode ? "drafts" : "published",
 });
 
 // Minimal, safe logs (console is fine in Astro runtime)
@@ -172,6 +191,64 @@ export async function fetchSiteNavigation(): Promise<NavItem[]> {
 
     return items;
   } catch {
+    return [];
+  }
+}
+
+export async function fetchAllBlogPosts(): Promise<BlogPostListItem[]> {
+  try {
+    const result = await sanityClient.fetch<BlogPostListItem[]>(BLOG_POST_LIST_QUERY);
+    return Array.isArray(result) ? result : [];
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    errorLog("fetchAllBlogPosts failed", { message });
+    return [];
+  }
+}
+
+export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+  try {
+    const result = await sanityClient.fetch<BlogPost | null>(BLOG_POST_BY_SLUG_QUERY, {
+      slug,
+    });
+    return result ?? null;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    errorLog("fetchBlogPostBySlug failed", { message, slug });
+    return null;
+  }
+}
+
+export async function fetchBlogPostSlugs(): Promise<string[]> {
+  try {
+    const result = await sanityClient.fetch<Array<{ slug?: string }>>(BLOG_POST_SLUGS_QUERY);
+    if (!Array.isArray(result)) return [];
+    return result
+      .map((item) => String(item?.slug ?? "").trim())
+      .filter(Boolean);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    errorLog("fetchBlogPostSlugs failed", { message });
+    return [];
+  }
+}
+
+export async function fetchAllBlogTags(): Promise<string[]> {
+  try {
+    const result = await sanityClient.fetch<Array<{ tags?: string[] }>>(BLOG_POST_TAGS_QUERY);
+    if (!Array.isArray(result)) return [];
+
+    return [
+      ...new Set(
+        result
+          .flatMap((item) => item?.tags ?? [])
+          .map((tag) => String(tag).trim())
+          .filter(Boolean)
+      ),
+    ];
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    errorLog("fetchAllBlogTags failed", { message });
     return [];
   }
 }

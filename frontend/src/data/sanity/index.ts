@@ -148,6 +148,28 @@ export type Section =
   | ContactFormSection
   | Testimonial1Section; // Add this line
 
+export type PortableTextBlock = {
+  _type: string;
+  [key: string]: unknown;
+};
+
+export type BlogPost = {
+  _id: string;
+  title: string;
+  slug: string;
+  description: string;
+  publishedAt: string;
+  tags: string[];
+  coverImage?: {
+    asset?: { _ref?: string };
+    assetUrl?: string;
+    alt?: string;
+  };
+  body: PortableTextBlock[];
+};
+
+export type BlogPostListItem = Omit<BlogPost, "body">;
+
 export type PageListItem = {
   _id: string;
   title: string;
