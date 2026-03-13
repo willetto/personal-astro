@@ -223,16 +223,6 @@ declare module 'astro:content' {
   rendered?: RenderedContent;
   filePath?: string;
 }>;
-"posts": Record<string, {
-  id: string;
-  render(): Render[".md"];
-  slug: string;
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">;
-  rendered?: RenderedContent;
-  filePath?: string;
-}>;
 "team": Record<string, {
   id: string;
   render(): Render[".md"];

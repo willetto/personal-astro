@@ -2,6 +2,7 @@ import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
 import { media } from "sanity-plugin-media";
+import { codeInput } from "@sanity/code-input";
 import { schemaTypes } from "./schema-types";
 import StudioIcon from "./components/StudioIcon";
 import CustomLayout from "./components/CustomLayout";
@@ -32,6 +33,7 @@ export default defineConfig({
     }),
     visionTool(),
     media(),
+    codeInput(),
   ],
   schema: {
     types: schemaTypes,
