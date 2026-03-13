@@ -1,5 +1,6 @@
 ---
 import { PortableText as PT } from "astro-portabletext";
+import PortableCode from "./PortableCode.astro";
 
 interface Props {
   value?: any[];
@@ -8,6 +9,13 @@ interface Props {
 const { value = [] } = Astro.props as Props;
 ---
 
-<PT value={value} />
+<PT
+  value={value}
+  components={{
+    type: {
+      code: PortableCode,
+    },
+  }}
+/>
 
 

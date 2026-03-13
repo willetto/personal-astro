@@ -1,0 +1,25 @@
+---
+import { highlightCode } from "@/utils/shiki";
+
+interface CodeNode {
+  code?: string;
+  language?: string;
+  filename?: string;
+}
+
+interface Props {
+  node: CodeNode;
+}
+
+const { node } = Astro.props as Props;
+const language = node?.language || "typescript";
+const code = node?.code || "";
+const html = await highlightCode(code, language);
+---
+
+<div class="portable-code my-6">
+  {node?.filename && (
+    <div class="text-xs brand-text-color mb-2">{node.filename}</div>
+  )}
+  <Fragment set:html={html} />
+</div>
