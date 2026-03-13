@@ -4,30 +4,16 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/foundations/elements/Text.astro";
 import Button from "@/components/foundations/elements/Button.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
-// Component
+// Components
 import BlogSearch from "@/components/blog/BlogSearch.astro";
 import BlogEntries2 from "@/components/blog/BlogEntries2.astro";
+import SubscribeCta from "@/components/blog/SubscribeCta.astro";
 // Data
-import { fetchAllBlogPosts, fetchAllBlogTags } from "@/data/sanity/fetch";
-import { normalizeTag } from "@/utils/tags";
+import { fetchAllBlogPosts } from "@/data/sanity/fetch";
+import { uniqueTagOptions } from "@/utils/tags";
 
-export async function getStaticPaths() {
-  const tags = await fetchAllBlogTags();
-  const slugs = [...new Set(tags.map((tag) => normalizeTag(tag)).filter(Boolean))];
-
-  return slugs.map((tag) => ({ params: { tag } }));
-}
-
-const { tag } = Astro.params;
-const normalizedTag = String(tag || "");
 const allPosts = await fetchAllBlogPosts();
-const posts = allPosts.filter((post) =>
-  (post.tags || []).some((item) => normalizeTag(item) === normalizedTag)
-);
-const displayTag =
-  posts.find((post) => (post.tags || []).some((item) => normalizeTag(item) === normalizedTag))?.tags?.find(
-    (item) => normalizeTag(item) === normalizedTag
-  ) || normalizedTag;
+const tags = uniqueTagOptions(allPosts.flatMap((post) => post.tags || []));
 ---
 
 <BaseLayout>
@@ -40,9 +26,9 @@ const displayTag =
             variant="display2XL"
             data-aos="fade-up"
             data-aos-duration="1000"
-            class="font-semibold tracking-tighter brand-heading-color lg:text-balance capitalize"
+            class="font-semibold tracking-tighter brand-heading-color lg:text-balance"
           >
-            {displayTag}
+            Latest news
           </Text>
           <Text
             tag="p"
@@ -51,7 +37,7 @@ const displayTag =
             data-aos-duration="1500"
             class="max-w-lg mt-4 font-medium brand-text-color md:text-balance"
           >
-            Filtered posts for this topic.
+            The latest news about my projects, ideas, and experiments.
           </Text>
         </div>
         <form data-aos="fade-up" data-aos-duration="2000">
@@ -71,20 +57,42 @@ const displayTag =
             </Button>
           </div>
           <Text tag="p" variant="textXS" class="mt-2 font-medium brand-text-color">
-            By subscribing, you agree to receive our latest updates. No spam, promise!
+            By subscribing, you agree to receive my latest updates. No spam, promise!
           </Text>
         </form>
       </div>
     </Wrapper>
-    <Wrapper variant="standard" class="py-4 border-t brand-border-color">
-      <div>
+  </section>
+
+  <section>
+    <Wrapper variant="standard" class="border-t brand-border-color">
+      <div class="flex items-center gap-2">
         <BlogSearch posts={allPosts} />
-      </div>
-    </Wrapper>
-    <Wrapper variant="standard" class="py-4 border-t brand-border-color">
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 gap-y-12 lg:gap-y-24">
-        {posts.map((post) => <BlogEntries2 post={post} />)}
+        <div class="relative flex gap-2 h-full px-2 py-2 overflow-x-scroll scrollable-content snap-x snap-proximity scrollbar-hide">
+          {tags.map((tag) => (
+            <Text
+              tag="a"
+              variant="textSM"
+              title={tag.label}
+              aria-label={tag.label}
+              href={`/blog/tags/${tag.slug}`}
+              class="capitalize brand-text-color"
+            >
+              {tag.label}
+            </Text>
+          ))}
+        </div>
       </div>
     </Wrapper>
   </section>
+
+  <section>
+    <Wrapper variant="standard" class="py-4 border-t brand-border-color">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+        {allPosts.map((post) => <BlogEntries2 post={post} />)}
+      </div>
+    </Wrapper>
+  </section>
+
+  <SubscribeCta />
 </BaseLayout>

@@ -1,0 +1,36 @@
+---
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import PortableText from "@/components/foundations/elements/PortableText.astro";
+import { fetchBlogPostBySlug, fetchBlogPostSlugs } from "@/data/sanity/fetch";
+
+export async function getStaticPaths() {
+  const slugs = await fetchBlogPostSlugs();
+
+  return slugs.map((slug) => ({
+    params: { slug: String(slug) },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await fetchBlogPostBySlug(String(slug));
+
+if (!post) {
+  return Astro.redirect("/404");
+}
+
+const frontmatter = {
+  title: post.title,
+  description: post.description,
+  pubDate: post.publishedAt,
+  author: "Trey Willetto",
+  image: {
+    url: post.coverImage?.assetUrl || "",
+    alt: post.coverImage?.alt || post.title,
+  },
+  tags: post.tags || [],
+};
+---
+
+<BlogLayout frontmatter={frontmatter}>
+  <PortableText value={post.body} />
+</BlogLayout>

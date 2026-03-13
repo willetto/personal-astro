@@ -1,62 +1,63 @@
 ---
-import { Image } from "astro:assets";
 import Text from "@/components/foundations/elements/Text.astro";
 // Icons
 import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
 
-// Content
-const { url, title, description, pubDate, image } = {
-  url: "/blog/posts/" + Astro.props.post.slug,
-  title: Astro.props.post.data.title,
-  description: Astro.props.post.data.description,
-  image: Astro.props.post.data.image.url,
-  pubDate: new Date(Astro.props.post.data.pubDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "2-digit",
-  }),
-};
+interface PostInput {
+  slug: string;
+  title: string;
+  description: string;
+  publishedAt: string;
+  coverImage?: {
+    assetUrl?: string;
+    alt?: string;
+  };
+}
+
+const post = Astro.props.post as PostInput;
+
+const url = "/blog/" + post.slug;
+const title = post.title;
+const description = post.description;
+const image = post.coverImage?.assetUrl || "";
+const pubDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "2-digit",
+});
 ---
 
 <div
-  class="BlogEntries2 relative overflow-hidden group  flex h-full justify-between flex-col gap-12 lg:gap-24 bg-white group group transition-all md:min-h-[150px] cursor-pointer hover:bg-shadow-xl shadow rounded-(--card-radius) p-(--card-padding) group [--card-padding:--spacing(2)] [--card-radius:var(--radius-2xl)] hover:shadow-xl duration-500 outline outline-base-200"
+  class="BlogEntries2 relative overflow-hidden group flex h-full justify-between flex-col gap-12 lg:gap-24 bg-base-100 transition-all md:min-h-[150px] cursor-pointer shadow rounded-(--card-radius) p-(--card-padding) [--card-padding:--spacing(2)] [--card-radius:var(--radius-2xl)] hover:shadow-xl duration-500 border brand-border-color"
 >
   <a href={url} title={title} class="absolute inset-0 z-10"></a>
   <div>
-    <Image
-      src={image}
-      alt={title}
-      width="1000"
-      height="1000"
-      class="object-cover object-center aspect-12/9 rounded-[calc(var(--card-radius)-var(--card-padding))]"
-    />
+    {image && (
+      <img
+        src={image}
+        alt={post.coverImage?.alt || title}
+        width="1000"
+        height="1000"
+        loading="lazy"
+        class="object-cover object-center aspect-12/9 rounded-[calc(var(--card-radius)-var(--card-padding))]"
+      />
+    )}
     <div class="mt-2 px-4">
-      <Text tag="p" variant="textXS" class="uppercase text-base-400">
+      <Text tag="p" variant="textXS" class="uppercase brand-text-color">
         {pubDate}
       </Text>
-      <Text tag="h3" variant="textBase" class="mt-2 font-medium text-base-900">
+      <Text tag="h3" variant="textBase" class="mt-2 font-medium brand-heading-color">
         {title}
       </Text>
-      <Text
-        tag="p"
-        variant="textSM"
-        class="mt-2 text-base-600 text-balance line-clamp-2"
-      >
+      <Text tag="p" variant="textSM" class="mt-2 brand-text-color text-balance line-clamp-2">
         {description}
       </Text>
     </div>
   </div>
   <div class="px-4 pb-2">
-    <Text
-      tag="p"
-      variant="textSM"
-      class="flex items-center font-medium gap-2 text-base-800"
-    >
+    <Text tag="p" variant="textSM" class="flex items-center font-medium gap-2 brand-heading-color">
       Read further
-      <ChevronRight
-        size="sm"
-        class="duration-300 easy-out-in group-hover:translate-x-2"
-      />
+      <ChevronRight size="sm" class="duration-300 easy-out-in group-hover:translate-x-2" />
     </Text>
   </div>
 </div>

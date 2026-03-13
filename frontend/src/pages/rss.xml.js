@@ -1,11 +1,18 @@
-import rss, { pagesGlobToRssItems } from '@astrojs/rss';
+import rss from "@astrojs/rss";
+import { fetchAllBlogPosts } from "@/data/sanity/fetch";
+
 export async function GET(context) {
+  const posts = await fetchAllBlogPosts();
+
   return rss({
-     title: 'Lexington Themes',
-    description: 'Free and premium multipage themes and UI Kits For freelancers, developers, businesses, and personal use.Beautifully crafted with Astro.js, and Tailwind CSS — Simple & easy to customise.',
+    title: "Trey Willetto Blog",
+    description: "Posts on projects, code, and ideas.",
     site: context.site,
-    items: await pagesGlobToRssItems(
-      import.meta.glob('./blog/*.{md,mdx}'),
-    ),
+    items: posts.map((post) => ({
+      title: post.title,
+      description: post.description,
+      pubDate: new Date(post.publishedAt),
+      link: `/blog/${post.slug}`,
+    })),
   });
 }

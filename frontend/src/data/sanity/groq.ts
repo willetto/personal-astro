@@ -231,3 +231,42 @@ export const SITE_SETTINGS_NAVIGATION_QUERY = `
     ${SITE_SETTINGS_NAVIGATION_FIELDS}
   }
 `;
+
+export const BLOG_POST_FIELDS = `
+  _id,
+  title,
+  "slug": slug.current,
+  description,
+  publishedAt,
+  tags,
+  coverImage {
+    asset,
+    alt,
+    "assetUrl": asset->url
+  }
+`;
+
+export const BLOG_POST_LIST_QUERY = `
+  *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {
+    ${BLOG_POST_FIELDS}
+  }
+`;
+
+export const BLOG_POST_SLUGS_QUERY = `
+  *[_type == "blogPost" && defined(slug.current)] {
+    "slug": slug.current
+  }
+`;
+
+export const BLOG_POST_BY_SLUG_QUERY = `
+  *[_type == "blogPost" && slug.current == $slug][0] {
+    ${BLOG_POST_FIELDS},
+    body
+  }
+`;
+
+export const BLOG_POST_TAGS_QUERY = `
+  *[_type == "blogPost" && defined(slug.current)] {
+    tags
+  }
+`;
