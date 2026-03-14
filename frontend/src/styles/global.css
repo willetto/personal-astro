@@ -172,8 +172,7 @@
     background-color: light-dark(var(--color-tw-white), var(--color-base-800));
   }
   .link-neutral-background-color {
-    background-color: light-dark(var(--color-base-200)
-    , var(--color-base-800));
+    background-color: light-dark(var(--color-base-200), var(--color-base-800));
   }
   *::selection {
     background-color: var(--color-tw-blue-o8);

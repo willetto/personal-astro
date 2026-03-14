@@ -21,7 +21,7 @@ const normalizedTags = (frontmatter?.tags || []).map((tag: string) => ({
         variant="display2XL"
         data-aos="fade-up"
         data-aos-duration="1000"
-        class="font-semibold tracking-tighter brand-heading-color lg:text-balance"
+        class="text-5xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold font-display brand-heading-color text-balance uppercase"
       >
         {frontmatter.title}
       </Text>
@@ -35,16 +35,18 @@ const normalizedTags = (frontmatter?.tags || []).map((tag: string) => ({
         {frontmatter.description}
       </Text>
 
-      {frontmatter?.image?.url && (
-        <img
-          width="1200"
-          height="675"
-          alt={frontmatter.image.alt}
-          src={frontmatter.image.url}
-          loading="eager"
-          class="size-full object-cover object-center max-h-100 mt-4 rounded-2xl"
-        />
-      )}
+      {
+        frontmatter?.image?.url && (
+          <img
+            width="1200"
+            height="675"
+            alt={frontmatter.image.alt}
+            src={frontmatter.image.url}
+            loading="eager"
+            class="size-full object-cover object-center max-h-100 mt-4 rounded-2xl"
+          />
+        )
+      }
 
       <div class="mt-12 grid grid-cols-1 gap-4 lg:grid-cols-3 items-start">
         <Wrapper variant="prose" class="lg:col-span-2">
@@ -53,33 +55,45 @@ const normalizedTags = (frontmatter?.tags || []).map((tag: string) => ({
         <div>
           <div class="flex items-center">
             <div class="ml-0">
-              <Text tag="p" variant="textSM" class="text-base brand-text-color md:text-balance">
+              <Text
+                tag="p"
+                variant="textSM"
+                class="text-base brand-text-color md:text-balance"
+              >
                 Trey Willetto
                 <br />
                 <time datetime={new Date(frontmatter.pubDate).toISOString()}>
-                  {new Date(frontmatter.pubDate).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                  })}
+                  {
+                    new Date(frontmatter.pubDate).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                    })
+                  }
                 </time>
               </Text>
             </div>
           </div>
           <div class="mt-4 pt-4 border-t brand-border-color">
-            <Text tag="p" variant="textSM" class="brand-heading-color font-medium">
+            <Text
+              tag="p"
+              variant="textSM"
+              class="brand-heading-color font-medium"
+            >
               Tags:
             </Text>
             <div class="flex flex-wrap items-center gap-2 mt-2">
-              {normalizedTags.map((tag) => (
-                <Text
-                  tag="a"
-                  variant="textSM"
-                  href={`/blog/tags/${tag.slug}`}
-                  class="capitalize brand-text-color hover:brand-heading-color"
-                >
-                  {tag.label}
-                </Text>
-              ))}
+              {
+                normalizedTags.map((tag) => (
+                  <Text
+                    tag="a"
+                    variant="textSM"
+                    href={`/blog/tags/${tag.slug}`}
+                    class="capitalize brand-text-color hover:brand-heading-color"
+                  >
+                    {tag.label}
+                  </Text>
+                ))
+              }
             </div>
           </div>
         </div>

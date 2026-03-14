@@ -10,8 +10,7 @@ const variantClasses = {
   // Standard wrapper
   standard:
     "max-w-6xl 2xl:max-w-[1400px] mx-auto border-x brand-border-color p-4",
-  carousel:
-    "max-w-6xl 2xl:max-w-[1400px] mx-auto border-x brand-border-color",
+  carousel: "max-w-6xl 2xl:max-w-[1400px] mx-auto border-x brand-border-color",
   modal: "max-w-6xl   2xl:max-w-[1400px] mx-auto p-4",
   // Prose styles
   prose:
@@ -27,8 +26,7 @@ const classes = `Wrapper ${variantClasses[variant]} ${extraClass}`.trim();
 
 <style>
   .wrapper {
-    background-color: light-dark(var(--color-tw-white)
-    , var(--color-base-900));
+    background-color: light-dark(var(--color-tw-white), var(--color-base-900));
     color: light-dark(var(--color-base-800), var(--color-base-50));
   }
 </style>

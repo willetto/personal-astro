@@ -12,6 +12,7 @@ import Navigation from "@/components/global/Navigation.astro";
 // <BaseLayout hideNav={true} hideFooter={true}>
 const { hideNav = false, hideFooter = false } = Astro.props;
 ---
+
 <html
   lang="en"
   class="scroll-smooth selection:bg-base-800 selection:text-teal-500"
@@ -27,7 +28,7 @@ const { hideNav = false, hideFooter = false } = Astro.props;
       <main class="grow" style="padding-top: var(--nav-height, 0px);">
         <slot />
       </main>
-    { !hideFooter && <Footer /> }
+      {!hideFooter && <Footer />}
     </div>
     <!-- Scripts -->
     <AOSBody />
@@ -35,13 +36,15 @@ const { hideNav = false, hideFooter = false } = Astro.props;
 </html>
 
 <style>
-  body{
+  body {
     position: relative;
     display: flex;
     flex-direction: column;
     min-height: 100svh;
-    background-color: light-dark(var(--color-tw-white), var(--color-base-800));    
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    background-color: light-dark(var(--color-tw-white), var(--color-base-800));
+    transition:
+      background-color 0.3s ease-in-out,
+      color 0.3s ease-in-out;
     text-wrap: pretty;
   }
 </style>

@@ -28,36 +28,68 @@ const pubDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
 ---
 
 <div
-  class="BlogEntries2 relative overflow-hidden group flex h-full justify-between flex-col gap-12 lg:gap-24 bg-base-100 transition-all md:min-h-[150px] cursor-pointer shadow rounded-(--card-radius) p-(--card-padding) [--card-padding:--spacing(2)] [--card-radius:var(--radius-2xl)] hover:shadow-xl duration-500 border brand-border-color"
+  class="BlogEntries2 relative overflow-hidden group flex h-full justify-between flex-col gap-12 bg-base-100 transition-all md:min-h-[100px] cursor-pointer shadow rounded-(--card-radius) p-(--card-padding) [--card-padding:--spacing(2)] [--card-radius:var(--radius-2xl)] hover:shadow-xl duration-500 border brand-border-color"
 >
   <a href={url} title={title} class="absolute inset-0 z-10"></a>
   <div>
-    {image && (
-      <img
-        src={image}
-        alt={post.coverImage?.alt || title}
-        width="1000"
-        height="1000"
-        loading="lazy"
-        class="object-cover object-center aspect-12/9 rounded-[calc(var(--card-radius)-var(--card-padding))]"
-      />
-    )}
-    <div class="mt-2 px-4">
-      <Text tag="p" variant="textXS" class="uppercase brand-text-color">
+    {
+      image && (
+        <img
+          src={image}
+          alt={post.coverImage?.alt || title}
+          width="1000"
+          height="1000"
+          loading="lazy"
+          class="object-cover object-center aspect-12/9 rounded-[calc(var(--card-radius)-var(--card-padding))]"
+        />
+      )
+    }
+    <div class="mt-3 px-2 blog-card-content">
+      <Text
+        tag="p"
+        variant="textXS"
+        class="uppercase brand-text-color blog-card-date"
+      >
         {pubDate}
       </Text>
-      <Text tag="h3" variant="textBase" class="mt-2 font-medium brand-heading-color">
+      <Text
+        tag="h3"
+        variant="textLG"
+        class="mt-2 font-medium brand-heading-color blog-card-title"
+      >
         {title}
       </Text>
-      <Text tag="p" variant="textSM" class="mt-2 brand-text-color text-balance line-clamp-2">
+      <Text
+        tag="p"
+        variant="textBase"
+        class="mt-2 brand-text-color text-balance"
+      >
         {description}
       </Text>
     </div>
   </div>
-  <div class="px-4 pb-2">
-    <Text tag="p" variant="textSM" class="flex items-center font-medium gap-2 brand-heading-color">
+  <div class="px-2 pb-2">
+    <Text
+      tag="p"
+      variant="textSM"
+      class="flex items-center font-medium gap-2 brand-heading-color"
+    >
       Read further
-      <ChevronRight size="sm" class="duration-300 easy-out-in group-hover:translate-x-2" />
+      <ChevronRight
+        size="sm"
+        class="duration-300 easy-out-in group-hover:translate-x-2"
+      />
     </Text>
   </div>
 </div>
+
+<style>
+  .blog-card-content {
+    .blog-card-date {
+      color: var(--color-base-400);
+    }
+    .blog-card-title {
+      color: var(--color-tw-green);
+    }
+  }
+</style>
