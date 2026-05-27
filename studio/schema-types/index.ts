@@ -14,6 +14,7 @@ import { navItem } from "./elements/navItem";
 import { contactForm } from "./sections/contactForm"; // Import the new contactForm schema
 import { svelteComponent } from "./sections/svelteComponent";
 import { testimonial1 } from "./sections/testimonial1";
+import { youtube } from "./youtube";
 
 export const schemaTypes = [
   siteSettings,
@@ -24,6 +25,7 @@ export const schemaTypes = [
   // Elements
   cta,
   navItem,
+  youtube,
   // Sections
   hero1,
   hero2,

@@ -46,6 +46,9 @@ export const portableText = defineType({
       },
     },
     {
+      type: "youtube",
+    },
+    {
       type: "code",
       title: "Code",
       options: {

@@ -1,0 +1,97 @@
+---
+interface YouTubeNode {
+  url?: string;
+  caption?: string;
+}
+
+interface Props {
+  node: YouTubeNode;
+}
+
+const { node } = Astro.props as Props;
+const url = node?.url ?? "";
+const caption = node?.caption;
+
+const YOUTUBE_URL_RE =
+  /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
+const match = url.match(YOUTUBE_URL_RE);
+const videoId = match?.[1];
+
+const thumb = videoId
+  ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+  : "";
+const embed = videoId
+  ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`
+  : "";
+const title = caption || "YouTube video";
+---
+
+{videoId && (
+  <figure class="portable-youtube my-6">
+    <button
+      type="button"
+      class="yt-facade group relative block w-full aspect-video overflow-hidden rounded-2xl border brand-border-color bg-black/5 cursor-pointer"
+      data-embed={embed}
+      aria-label={`Play video: ${title}`}
+    >
+      <img
+        src={thumb}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="absolute inset-0 size-full object-cover transition-opacity duration-200 group-hover:opacity-90"
+      />
+      <span class="absolute inset-0 flex items-center justify-center">
+        <span
+          class="flex items-center justify-center size-16 rounded-full bg-black/60 text-white shadow-lg backdrop-blur-sm transition-transform duration-200 group-hover:scale-110 group-focus-visible:scale-110"
+          aria-hidden="true"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="size-7 translate-x-0.5"
+          >
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </span>
+      </span>
+    </button>
+    {caption && (
+      <figcaption class="mt-2 text-sm brand-text-color text-center italic">
+        {caption}
+      </figcaption>
+    )}
+  </figure>
+)}
+
+<script>
+  const init = () => {
+    const facades = document.querySelectorAll<HTMLButtonElement>(
+      ".yt-facade:not([data-yt-ready])",
+    );
+    facades.forEach((btn) => {
+      btn.setAttribute("data-yt-ready", "");
+      btn.addEventListener("click", () => {
+        const embed = btn.getAttribute("data-embed");
+        if (!embed) return;
+        const wrapper = document.createElement("div");
+        wrapper.className =
+          "relative w-full aspect-video overflow-hidden rounded-2xl border brand-border-color";
+        const iframe = document.createElement("iframe");
+        iframe.src = embed;
+        iframe.title = btn.getAttribute("aria-label") || "YouTube video";
+        iframe.allow =
+          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        iframe.allowFullscreen = true;
+        iframe.className = "absolute inset-0 size-full border-0";
+        wrapper.appendChild(iframe);
+        btn.replaceWith(wrapper);
+      });
+    });
+  };
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

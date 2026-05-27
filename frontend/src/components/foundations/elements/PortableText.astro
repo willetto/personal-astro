@@ -1,6 +1,7 @@
 ---
 import { PortableText as PT } from "astro-portabletext";
 import PortableCode from "./PortableCode.astro";
+import PortableYouTube from "./PortableYouTube.astro";
 
 interface Props {
   value?: any[];
@@ -14,6 +15,7 @@ const { value = [] } = Astro.props as Props;
   components={{
     type: {
       code: PortableCode,
+      youtube: PortableYouTube,
     },
   }}
 />
