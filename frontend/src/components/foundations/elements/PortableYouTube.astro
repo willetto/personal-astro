@@ -18,7 +18,7 @@ const match = url.match(YOUTUBE_URL_RE);
 const videoId = match?.[1];
 
 const thumb = videoId
-  ? `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`
+  ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
   : "";
 const embed = videoId
   ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`
@@ -39,7 +39,7 @@ const title = caption || "YouTube video";
         alt=""
         loading="lazy"
         decoding="async"
-        class="absolute inset-0 size-full object-cover transition-opacity duration-200 group-hover:opacity-90"
+        class="absolute inset-0 m-0! size-full object-cover transition-opacity duration-200 group-hover:opacity-90"
       />
       <span class="absolute inset-0 flex items-center justify-center">
         <span
