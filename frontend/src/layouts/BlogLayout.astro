@@ -5,6 +5,7 @@ import Text from "@/components/foundations/elements/Text.astro";
 import Wrapper from "@/components/foundations/containers/Wrapper.astro";
 // Utilities
 import { normalizeTag } from "@/utils/tags";
+import { sanitySrcSet } from "@/utils/sanity-image";
 
 const { frontmatter } = Astro.props;
 const normalizedTags = (frontmatter?.tags || []).map((tag: string) => ({
@@ -42,6 +43,8 @@ const normalizedTags = (frontmatter?.tags || []).map((tag: string) => ({
             height="675"
             alt={frontmatter.image.alt}
             src={frontmatter.image.url}
+            srcset={sanitySrcSet(frontmatter.image.url, [640, 960, 1200, 1920])}
+            sizes="(max-width: 1200px) 100vw, 1200px"
             loading="eager"
             class="size-full object-cover object-center max-h-100 mt-4 rounded-2xl"
           />

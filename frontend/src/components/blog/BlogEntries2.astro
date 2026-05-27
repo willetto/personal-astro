@@ -1,5 +1,6 @@
 ---
 import Text from "@/components/foundations/elements/Text.astro";
+import { sanitySrcSet } from "@/utils/sanity-image";
 // Icons
 import ChevronRight from "@/components/foundations/icons/ChevronRight.astro";
 
@@ -37,8 +38,10 @@ const pubDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
         <img
           src={image}
           alt={post.coverImage?.alt || title}
-          width="1000"
-          height="1000"
+          width="800"
+          height="800"
+          srcset={sanitySrcSet(image, [400, 600, 800])}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           loading="lazy"
           class="object-cover object-center aspect-12/9 rounded-[calc(var(--card-radius)-var(--card-padding))]"
         />

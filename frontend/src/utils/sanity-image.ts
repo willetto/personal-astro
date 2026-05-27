@@ -29,3 +29,10 @@ export function sanityImageUrl(ref: string, width?: number, height?: number): st
   
   return url;
 }
+
+export function sanitySrcSet(baseUrl: string, widths: number[]): string {
+  if (!baseUrl) return '';
+  return widths
+    .map(w => `${baseUrl}?w=${w}&auto=format ${w}w`)
+    .join(', ');
+}
