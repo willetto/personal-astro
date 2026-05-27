@@ -18,5 +18,6 @@ export default defineCliConfig({
   studioHost: "willetto",
   deployment: {
     autoUpdates: true,
+    appId: "xurr4d8wqbbh0gg7p7k2oyil",
   },
 });
