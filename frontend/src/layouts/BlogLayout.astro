@@ -52,7 +52,7 @@ const normalizedTags = (frontmatter?.tags || []).map((tag: string) => ({
       }
 
       <div class="mt-12 grid grid-cols-1 gap-4 lg:grid-cols-3 items-start">
-        <Wrapper variant="prose" class="lg:col-span-2">
+        <Wrapper variant="prose" class="lg:col-span-2 prose-h2:text-teal-800 prose-h3:text-(--color-tw-orange) prose-h4:text-yellow-700">
           <slot />
         </Wrapper>
         <div>
