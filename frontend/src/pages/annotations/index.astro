@@ -1,0 +1,65 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/foundations/elements/Text.astro";
+import Wrapper from "@/components/foundations/containers/Wrapper.astro";
+import AnnotationCard from "@/components/annotations/AnnotationCard.astro";
+import { getCollection } from "astro:content";
+
+const allAnnotations = (await getCollection("annotations")).sort(
+  (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+);
+---
+
+<BaseLayout>
+  <section>
+    <Wrapper variant="standard" class="py-32">
+      <Text
+        tag="span"
+        variant="textXS"
+        data-aos="fade-down"
+        data-aos-duration="1000"
+        class="flex items-center font-medium uppercase text-base-500 gap-2 mb-8"
+      >
+        Sub-blog
+      </Text>
+      <Text
+        tag="h1"
+        variant="display2XL"
+        data-aos="fade-up"
+        data-aos-duration="1000"
+        class="font-semibold font-display brand-heading-color text-balance uppercase"
+      >
+        Annotations
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        data-aos="fade-up"
+        data-aos-duration="1500"
+        class="mt-4 brand-text-color max-w-xl"
+      >
+        A running log of books, films, and other media — chapter-by-chapter
+        notes paired with images and references that stuck with me. Less review,
+        more record.
+      </Text>
+    </Wrapper>
+  </section>
+
+  <section>
+    <Wrapper variant="standard" class="py-4 border-t brand-border-color">
+      {
+        allAnnotations.length === 0 ? (
+          <Text tag="p" variant="textBase" class="brand-text-color py-12">
+            No annotations yet. Check back soon.
+          </Text>
+        ) : (
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {allAnnotations.map((entry) => (
+              <AnnotationCard entry={entry} />
+            ))}
+          </div>
+        )
+      }
+    </Wrapper>
+  </section>
+</BaseLayout>
