@@ -352,17 +352,21 @@ const mediaTypeLabel: Record<string, string> = {
     opacity: 1;
   }
 
-  /* Section content animation (grid trick) */
+  /* Section content animation */
   :global(.details-content) {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 0.35s ease, opacity 0.3s ease;
     opacity: 0;
+    /* transition is added by JS after initial render to avoid flash */
   }
 
-  :global(.annotation-section[open] .details-content) {
+  :global(.details-content.is-open) {
     grid-template-rows: 1fr;
     opacity: 1;
+  }
+
+  :global(.details-content.animating) {
+    transition: grid-template-rows 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
   }
 
   :global(.details-content > .details-inner) {
@@ -379,7 +383,54 @@ const mediaTypeLabel: Record<string, string> = {
     const h2s = [...proseEl.querySelectorAll<HTMLHeadingElement>("h2")];
     if (!h2s.length) return;
 
-    // Collect sections: each h2 + its following siblings until the next h2
+    // ── Animation helpers ──────────────────────────────────────────────────
+    // Intercept the native <details> toggle so we can run CSS transitions.
+    // Opening: set open=true (content enters DOM), force starting state via
+    //   inline style, then rAF to clear it so the CSS class transition plays.
+    // Closing: animate to closed state first, THEN set open=false so the
+    //   browser doesn't remove the content before the transition finishes.
+
+    function openSection(details: HTMLDetailsElement) {
+      const content = details.querySelector<HTMLElement>(".details-content");
+      if (!content || details.open) return;
+
+      details.open = true; // put content back in flow
+      content.classList.add("animating");
+
+      // Start from 0 (override the .is-open CSS that just applied)
+      content.style.gridTemplateRows = "0fr";
+      content.style.opacity = "0";
+
+      // Force a reflow so the browser registers the "from" state
+      content.getBoundingClientRect();
+
+      // Apply the open state — transition will play from inline 0fr → CSS 1fr
+      content.classList.add("is-open");
+      content.style.gridTemplateRows = "";
+      content.style.opacity = "";
+
+      content.addEventListener("transitionend", () => {
+        content.classList.remove("animating");
+      }, { once: true });
+    }
+
+    function closeSection(details: HTMLDetailsElement) {
+      const content = details.querySelector<HTMLElement>(".details-content");
+      if (!content || !details.open) return;
+
+      content.classList.add("animating");
+
+      // Animate to closed state
+      content.classList.remove("is-open");
+
+      content.addEventListener("transitionend", () => {
+        details.open = false; // now safe to remove from flow
+        content.classList.remove("animating");
+      }, { once: true });
+    }
+
+    // ── Build sections ─────────────────────────────────────────────────────
+
     type Section = { h2: HTMLHeadingElement; siblings: Element[] };
     const sections: Section[] = h2s.map((h2, i) => {
       const nextH2 = h2s[i + 1];
@@ -392,7 +443,6 @@ const mediaTypeLabel: Record<string, string> = {
       return { h2, siblings };
     });
 
-    // Build and insert collapsible details
     sections.forEach(({ h2, siblings }) => {
       const id = h2.id || h2.textContent!.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -401,11 +451,10 @@ const mediaTypeLabel: Record<string, string> = {
       details.id = id;
       details.open = true;
 
-      // Build summary
+      // Summary
       const summary = document.createElement("summary");
       summary.className = "annotation-summary";
 
-      // Left group: chevron + text
       const leftGroup = document.createElement("span");
       leftGroup.className = "annotation-summary-left";
 
@@ -428,7 +477,6 @@ const mediaTypeLabel: Record<string, string> = {
       leftGroup.appendChild(chevronSvg);
       leftGroup.appendChild(textSpan);
 
-      // Right group: copy button
       const actionsGroup = document.createElement("span");
       actionsGroup.className = "annotation-summary-actions";
 
@@ -464,72 +512,68 @@ const mediaTypeLabel: Record<string, string> = {
 
       summary.appendChild(leftGroup);
       summary.appendChild(actionsGroup);
+
+      // Intercept native toggle — drive animation manually
+      summary.addEventListener("click", (e) => {
+        if ((e.target as HTMLElement).closest(".copy-link-btn")) return;
+        e.preventDefault();
+        if (details.open) {
+          closeSection(details);
+        } else {
+          openSection(details);
+        }
+      });
+
       details.appendChild(summary);
 
-      // Content wrapper with animation
+      // Content wrapper
       const contentDiv = document.createElement("div");
-      contentDiv.className = "details-content";
+      contentDiv.className = "details-content is-open"; // starts open
       const innerDiv = document.createElement("div");
       innerDiv.className = "details-inner";
       siblings.forEach((s) => innerDiv.appendChild(s.cloneNode(true)));
       contentDiv.appendChild(innerDiv);
       details.appendChild(contentDiv);
 
-      // Replace original h2 + siblings
       h2.parentNode!.insertBefore(details, h2);
       h2.remove();
       siblings.forEach((s) => s.remove());
     });
 
-    // Handle hash on load: open matching section and scroll to it
-    function openSectionForHash(hash: string) {
-      if (!hash) return;
-      const id = hash.replace("#", "");
+    // ── Hash navigation ────────────────────────────────────────────────────
+
+    function revealSection(id: string) {
       const target = document.getElementById(id) as HTMLDetailsElement | null;
-      if (target && target.tagName === "DETAILS") {
-        target.open = true;
-        setTimeout(() => target.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+      if (target?.tagName === "DETAILS" && !target.open) {
+        openSection(target);
       }
+      setTimeout(() => target?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
     }
 
-    if (location.hash) {
-      openSectionForHash(location.hash);
-    }
+    if (location.hash) revealSection(location.hash.slice(1));
 
-    // TOC link clicks: open section before navigation
+    // TOC clicks
     document.querySelectorAll<HTMLAnchorElement>("[data-toc-target]").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const targetId = link.dataset.tocTarget!;
-        const target = document.getElementById(targetId) as HTMLDetailsElement | null;
-        if (target && target.tagName === "DETAILS") {
-          target.open = true;
-          setTimeout(() => {
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
-            history.pushState(null, "", `#${targetId}`);
-          }, 50);
-        }
+        revealSection(targetId);
+        history.pushState(null, "", `#${targetId}`);
       });
     });
 
-    // Active TOC highlight on scroll
-    const tocLinks = document.querySelectorAll<HTMLAnchorElement>(".toc-link");
+    // ── Active TOC highlight ───────────────────────────────────────────────
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const id = entry.target.id;
-          const link = document.querySelector<HTMLAnchorElement>(`.toc-link[data-toc-target="${id}"]`);
-          if (link) {
-            link.classList.toggle("active", entry.isIntersecting);
-          }
+          const link = document.querySelector<HTMLAnchorElement>(`.toc-link[data-toc-target="${entry.target.id}"]`);
+          if (link) link.classList.toggle("active", entry.isIntersecting);
         });
       },
       { rootMargin: "-10% 0px -80% 0px" }
     );
 
-    document.querySelectorAll<HTMLElement>(".annotation-section").forEach((el) => {
-      observer.observe(el);
-    });
+    document.querySelectorAll<HTMLElement>(".annotation-section").forEach((el) => observer.observe(el));
   }
 
   document.addEventListener("DOMContentLoaded", initAnnotations);
