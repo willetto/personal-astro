@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import AnnotationsLayout from "@/layouts/AnnotationsLayout.astro";
+
+export async function getStaticPaths() {
+  const annotations = await getCollection("annotations");
+  return annotations.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+    trailingSlash: false,
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await entry.render();
+---
+
+<AnnotationsLayout frontmatter={entry.data} headings={headings}>
+  <Content />
+</AnnotationsLayout>

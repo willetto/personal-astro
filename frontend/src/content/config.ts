@@ -89,6 +89,21 @@ const infopages = defineCollection({
     pubDate: z.date().optional(),
   }),
 });
+const annotations = defineCollection({
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    author: z.string(),
+    mediaType: z.enum(['book', 'film', 'album', 'article', 'podcast', 'other']),
+    coverImage: z.object({
+      url: z.string(),
+      alt: z.string(),
+    }),
+    pubDate: z.date(),
+    tags: z.array(z.string()).optional(),
+  }),
+});
+
 export const collections = {
   team: team,
   infopages: infopages,
@@ -96,4 +111,5 @@ export const collections = {
   customers: customers,
   helpcenter: helpcenter,
   integrations: integrations,
+  annotations: annotations,
 };
